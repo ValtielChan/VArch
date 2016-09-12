@@ -17,7 +17,9 @@ public:
 	virtual ~Texture2D() { delete[] m_matrix; }
 
 	virtual void set(int x, int y, T value) { m_matrix[y * m_width + x] = value; }
+	virtual void set(int i, T value) { m_matrix[i] = value; }
 	virtual T get(int x, int y) { return m_matrix[y * m_width + x]; }
+	virtual T get(int i) { return m_matrix[i]; }
 
 	virtual GLuint genGLTexture() = 0;
 

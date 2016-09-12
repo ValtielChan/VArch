@@ -19,8 +19,8 @@
 #include "Mesh.h"
 #include "Object.h"
 
-#define MAX_DEPTH 6
-#define THRESHOLD 30
+#define MAX_DEPTH 5
+#define THRESHOLD 200
 #define FRUSTUM_CULLING true
 
 /// <summary>

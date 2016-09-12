@@ -112,7 +112,7 @@ void HeightMap::transformInterval(float newMin, float newMax)
 	/*std::cout << m_min << " ";
 	std::cout << m_max << " ";*/
 
-	for (int i = 0; i < m_width*m_width; i++) {
+	for (int i = 0; i < m_width*m_height; i++) {
 		m_matrix[i] -= m_min;
 		m_matrix[i] /= m_max;
 

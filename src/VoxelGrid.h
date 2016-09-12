@@ -5,10 +5,9 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Mesh.h"
+#include "enum.h"
 
-enum VoxelSide {
-	UP, DOWN, LEFT, RIGHT, FRONT, BACK
-};
+
 
 struct Voxel {
 
@@ -35,7 +34,7 @@ public:
 	void value();
 
 	void buildMesh();
-	bool checkSide(VoxelSide side, int x, int y, int z);
+	bool checkSide(Side side, int x, int y, int z);
 
 private:
 
@@ -137,7 +136,7 @@ void VoxelGrid::buildMesh()
 
 				Voxel &curVoxel = voxel(x, y, z);
 
-				if (curVoxel.value && !checkSide(VoxelSide::UP, x, y, z)) {
+				if (curVoxel.value && !checkSide(Side::UP, x, y, z)) {
 
                     vertexArray->push_back(Vertex(v7, normal_y, curVoxel.texCoord, curVoxel.color));
                     vertexArray->push_back(Vertex(v4, normal_y, curVoxel.texCoord, curVoxel.color));
@@ -150,7 +149,7 @@ void VoxelGrid::buildMesh()
                     ei += 4;
                 }
 
-                if (curVoxel.value && !checkSide(VoxelSide::DOWN, x, y, z)) {
+                if (curVoxel.value && !checkSide(Side::DOWN, x, y, z)) {
 
                     vertexArray->push_back(Vertex(v0, normal_my, curVoxel.texCoord, curVoxel.color));
                     vertexArray->push_back(Vertex(v3, normal_my, curVoxel.texCoord, curVoxel.color));
@@ -163,7 +162,7 @@ void VoxelGrid::buildMesh()
                     ei += 4;
                 }
 
-                if (curVoxel.value && !checkSide(VoxelSide::LEFT, x, y, z)) {
+                if (curVoxel.value && !checkSide(Side::LEFT, x, y, z)) {
 
                     vertexArray->push_back(Vertex(v4, normal_mx, curVoxel.texCoord, curVoxel.color));
                     vertexArray->push_back(Vertex(v0, normal_mx, curVoxel.texCoord, curVoxel.color));
@@ -176,7 +175,7 @@ void VoxelGrid::buildMesh()
                     ei += 4;
                 }
 
-                if (curVoxel.value && !checkSide(VoxelSide::RIGHT, x, y, z)) {
+                if (curVoxel.value && !checkSide(Side::RIGHT, x, y, z)) {
 
                     vertexArray->push_back(Vertex(v6, normal_x, curVoxel.texCoord, curVoxel.color));
                     vertexArray->push_back(Vertex(v2, normal_x, curVoxel.texCoord, curVoxel.color));
@@ -189,7 +188,7 @@ void VoxelGrid::buildMesh()
                     ei += 4;
                 }
 
-                if (curVoxel.value && !checkSide(VoxelSide::BACK, x, y, z)) {
+                if (curVoxel.value && !checkSide(Side::BACK, x, y, z)) {
 
                     vertexArray->push_back(Vertex(v7, normal_mz, curVoxel.texCoord, curVoxel.color));
                     vertexArray->push_back(Vertex(v3, normal_mz, curVoxel.texCoord, curVoxel.color));
@@ -202,7 +201,7 @@ void VoxelGrid::buildMesh()
                     ei += 4;
                 }
 
-                if (curVoxel.value && !checkSide(VoxelSide::FRONT, x, y, z)) {
+                if (curVoxel.value && !checkSide(Side::FRONT, x, y, z)) {
 
                     vertexArray->push_back(Vertex(v5, normal_z, curVoxel.texCoord, curVoxel.color));
                     vertexArray->push_back(Vertex(v1, normal_z, curVoxel.texCoord, curVoxel.color));
@@ -219,7 +218,7 @@ void VoxelGrid::buildMesh()
 	}
 }
 
-bool VoxelGrid::checkSide(VoxelSide side, int x, int y, int z) {
+bool VoxelGrid::checkSide(Side side, int x, int y, int z) {
 
 	switch (side) {
 	case UP:

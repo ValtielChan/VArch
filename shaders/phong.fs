@@ -17,10 +17,14 @@ struct DirectionalLight {
 };
 
 in vec3 FragPos;  
+in mat3 Model;
+in vec2 TexCoords;
 in vec3 Normal;  
 in vec4 DebugColor;
   
 out vec4 color;
+
+uniform sampler2D normalMap;
   
 uniform vec3 viewPos;
 uniform Material material;
@@ -36,7 +40,10 @@ void main()
     vec3 ambient = (light.ambient + overLum) * material.ambient;
     
     // Diffuse 
-    vec3 norm = normalize(Normal);
+    //vec3 norm = normalize(Normal);
+    vec3 norm = normalize(Model * texture2D(normalMap, TexCoords).rgb);
+
+
     //vec3 lightDir = normalize(lightPos - FragPos);
     vec3 lightDir = normalize(-light.direction);  
     float diff = max(dot(norm, lightDir), 0.0);
@@ -51,4 +58,6 @@ void main()
         
     vec3 result = ambient + diffuse + specular;
     color = vec4(result, 1.0f);
+
+    //color = DebugColor;
 } 

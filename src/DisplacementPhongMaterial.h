@@ -40,13 +40,13 @@ DisplacementPhongMaterial::~DisplacementPhongMaterial()
 
 void DisplacementPhongMaterial::setUniform()
 {
-	/*glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, heightmap->texture());
 	m_shader->setUniform1i("heightMap", 0);
 
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, normalMap->texture());
-	m_shader->setUniform1i("normalMap", 1);*/
+	m_shader->setUniform1i("normalMap", 1);
 
 	m_shader->setUniform3f("material.ambient", ambient);
 	m_shader->setUniform3f("material.diffuse", diffuse);

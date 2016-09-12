@@ -19,6 +19,8 @@
 #include "Mesh.h"
 #include "DisplacementPhongMaterial.h"
 #include "PhongMaterial.h"
+#include "CubeMap.h"
+#include "HeightMapFilter.h"
 
 #include "DefaultRenderer.h"
 
@@ -59,7 +61,7 @@ int main()
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 	glfwWindowHint(GLFW_SAMPLES, 4);
 
-	GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "LearnOpenGL", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "VArch", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 
 	// Set the required callback functions
@@ -110,12 +112,19 @@ int main()
 
 	Shaders::getInstance()->useShader(BuiltInShader::DISPLACEMENT);
 
-	float time = 0;
+	// Test cubemap
+	CubeMap cb(128);
+	cb.generateSimplex(1, 1, 4);
+	HeightMap* hm = cb.GetUniqueHeightMap();
+	//HeightMap* hm = new HeightMap(128, 128);
+	//hm->generateSimplex(new NoiseProperties(1, 1, 4));
+	//hm->transformInterval(0, 1);
+	HeightMapFilter::binarize(hm, 0);
+	GLuint cubemap = hm->genGLTexture();
 
 	// Game loop
 	while (!glfwWindowShouldClose(window))
 	{
-		time += 0.01f;
 
 		// Set frame time
 		GLfloat currentFrame = glfwGetTime();
@@ -127,7 +136,8 @@ int main()
 		Do_Movement();
 		wireframe(&renderer);
 
-		renderer.render();
+		//renderer.render();
+		renderer.renderToQuad(cubemap);
 
 		// Swap the buffers
 		glfwSwapBuffers(window);

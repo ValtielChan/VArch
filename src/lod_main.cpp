@@ -58,7 +58,7 @@ int main()
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 	glfwWindowHint(GLFW_SAMPLES, 4);
 
-	GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "LearnOpenGL", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(1280, 720, "VArch", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 
 	// Set the required callback functions
@@ -82,12 +82,6 @@ int main()
 
 	// Material Setup
 	DisplacementPhongMaterial* mat = new DisplacementPhongMaterial;
-	PhongMaterial* mat2 = new PhongMaterial;
-
-	mat2->ambient = glm::vec3(0.1, 0.5, 0.2);
-	mat2->diffuse = glm::vec3(0.1, 0.75, 0.2);
-	mat2->specular = glm::vec3(0);
-	mat2->shininess = 256;
 
 	mat->ambient = glm::vec3(0.1, 0.5, 0.2);
 	mat->diffuse = glm::vec3(0.1, 0.75, 0.2);
@@ -169,7 +163,8 @@ int main()
 		terrain->getIndices()->clear();
 		node.resetSelection();
 		// Auto position selection
-		node.selection(glm::vec3(cos(time * circleSpeed) * 3, 0, sin(time * circleSpeed) * 3));
+		//node.selection(glm::vec3(cos(time * circleSpeed) * 3, 0, sin(time * circleSpeed) * 3));
+		node.selection(glm::vec3(0, 0, 0));
 		// From camera position selection
 		//node.selection(camera->transform.position());
 		node.buildTriangles();

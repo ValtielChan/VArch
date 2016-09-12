@@ -22,7 +22,7 @@ private:
 		m_shaders.push_back(new Shader("shaders\\phong.vs", "shaders\\phong.fs"));
 		m_shaders.push_back(new Shader("shaders\\displacement.vs", "shaders\\phong.fs"));
 
-		useShader(PHONG);
+		useShader(SCREEN);
 	}
 
 	~Shaders() {}
@@ -34,19 +34,13 @@ private:
 
 public:
 
-	// Hard defined shaders
-	Shader *defaultShader;
-	Shader *phongShader;
-	Shader *displacementShader;
-	Shader *screenShader;
-
 	void useShader(BuiltInShader shader) {
 
 		m_shaders[shader]->use();
 		m_currentShader = m_shaders[shader];
 	}
 
-	void useShader(GLuint shader) {
+	void useShader(unsigned int shader) {
 
 		m_shaders[shader]->use();
 		m_currentShader = m_shaders[shader];

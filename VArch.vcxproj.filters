@@ -27,9 +27,6 @@
     <ClCompile Include="src\FrameBufferObject.cpp">
       <Filter>Engine\Sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\Renderer.cpp">
-      <Filter>Engine\Sources</Filter>
-    </ClCompile>
     <ClCompile Include="src\Noise.cpp">
       <Filter>Procedural</Filter>
     </ClCompile>
@@ -111,6 +108,18 @@
     </ClInclude>
     <ClInclude Include="src\VoxelGrid.h">
       <Filter>Voxel</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Chunk.h">
+      <Filter>Voxel</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CubeMap.h">
+      <Filter>Procedural</Filter>
+    </ClInclude>
+    <ClInclude Include="src\enum.h">
+      <Filter>Engine\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HeightMapFilter.h">
+      <Filter>Procedural</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
