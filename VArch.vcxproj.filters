@@ -121,5 +121,8 @@
     <ClInclude Include="src\HeightMapFilter.h">
       <Filter>Procedural</Filter>
     </ClInclude>
+    <ClInclude Include="src\VoxelOctree.h">
+      <Filter>Voxel</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

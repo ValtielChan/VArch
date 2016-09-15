@@ -20,7 +20,7 @@
 #include "Object.h"
 
 #define MAX_DEPTH 5
-#define THRESHOLD 200
+#define THRESHOLD 50
 #define FRUSTUM_CULLING true
 
 /// <summary>

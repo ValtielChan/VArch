@@ -21,7 +21,7 @@ void main()
 	vec4 texel = texture2D(heightMap, texCoord);
 	vec3 displaced = position;
 
-	//displaced.y += texel.r * 4;
+	displaced.y += texel.r * 4;
 
     gl_Position = projection * view *  model * vec4(displaced, 1.0f);
 

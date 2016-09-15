@@ -163,8 +163,8 @@ int main()
 		terrain->getIndices()->clear();
 		node.resetSelection();
 		// Auto position selection
-		//node.selection(glm::vec3(cos(time * circleSpeed) * 3, 0, sin(time * circleSpeed) * 3));
-		node.selection(glm::vec3(0, 0, 0));
+		node.selection(glm::vec3(cos(time * circleSpeed) * 3, 0, sin(time * circleSpeed) * 3));
+		//node.selection(glm::vec3(0, 0, 0));
 		// From camera position selection
 		//node.selection(camera->transform.position());
 		node.buildTriangles();

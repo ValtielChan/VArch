@@ -55,6 +55,7 @@
     <ClInclude Include="src\Texture2D.h" />
     <ClInclude Include="src\Transform.h" />
     <ClInclude Include="src\VoxelGrid.h" />
+    <ClInclude Include="src\VoxelOctree.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{40CD7850-BF53-42AD-BA5C-DCC98519F044}</ProjectGuid>
