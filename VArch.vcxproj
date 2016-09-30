@@ -54,7 +54,6 @@
     <ClInclude Include="src\Singleton.h" />
     <ClInclude Include="src\Texture2D.h" />
     <ClInclude Include="src\Transform.h" />
-    <ClInclude Include="src\VoxelGrid.h" />
     <ClInclude Include="src\VoxelOctree.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

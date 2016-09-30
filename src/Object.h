@@ -28,6 +28,9 @@ public:
 
 		for (Component* c : m_components)
 			c->update(transform.model());
+
+		for (Object* child : m_childs)
+			child->update();
 	}
 
 	void voidUpdate() {

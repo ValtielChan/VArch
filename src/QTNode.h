@@ -330,13 +330,6 @@ void QTNode::select(bool b)
 	}
 }
 
-/**
-subdivide V1
-Subdivide all the childrens systematically
-Basic Neighboring (Brothers and parent neighbors)
-**/
-
-
 /// <summary>
 /// ajoute 4 QTNodes fils (un niveau supplémentaire dans le QTtree). Nota : ajoute dans m_vertexArray (Scene::m_VAO) les vertex manquants si
 /// non encore existants

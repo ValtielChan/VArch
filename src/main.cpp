@@ -11,7 +11,7 @@
 #include <GLFW/glfw3.h>
 
 // GL includes
-#include "VoxelGrid.h"
+#include "VoxelOctree.h"
 #include "Shaders.h"
 #include "Camera.h"
 #include "MVP.h"
@@ -40,7 +40,7 @@ void Do_Movement();
 void wireframe(DefaultRenderer * renderer);
 
 // Camera
-Camera* camera = new Camera((float)screenWidth, (float)screenHeight, 0.1f, 1000.f, 0.45f);
+Camera* camera = new Camera((float)screenWidth, (float)screenHeight, 0.01f, 1000.f, 0.45f);
 bool keys[1024];
 GLfloat lastX = 400, lastY = 300;
 bool firstMouse = true;
@@ -55,11 +55,11 @@ int main()
 {
 	// Init GLFW
 	glfwInit();
+	// Set all the required options for GLFW
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-	glfwWindowHint(GLFW_SAMPLES, 4);
 
 	GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "VArch", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
@@ -86,22 +86,51 @@ int main()
 	// Set material textures
 	PhongMaterial *mat = new PhongMaterial();
 
+	// HeightMap
+	NoiseProperties np = NoiseProperties(1, 1, 1);
+	HeightMap* heightMap = new HeightMap(256, 256);
+	heightMap->generateSimplex(&np);
+	heightMap->transformInterval(-0.5f, -.25f);
+
 	// Light
 	DirectionalLight* light = new DirectionalLight;
-	light->direction = glm::vec3(1, -0.5f, 0.7f);
+	light->direction = glm::vec3(-0.5, 1, -0.7);
+	light->diffuse = glm::vec3(1);
 	//light->transform.translate(glm::vec3(0, 2, 0));
 
-	// Objects
-	VoxelGrid voxelGrid = VoxelGrid(16, 3, 16, .1f);
-	voxelGrid.fill();
-	voxelGrid.buildMesh();
-	voxelGrid.mesh()->setMaterial(mat);
+	Mesh* refCube = new Mesh(mat);
+	Mesh* landMarkMesh = new Mesh(mat);
+	landMarkMesh->generateLandmark();
 	
-	Mesh* cube = new Mesh(mat);
+	Mesh* octreeMesh = new Mesh(mat);
+	octreeMesh->setMaterial(mat);
+
+	// Octree
+	VoxelOctree* octree = new VoxelOctree(octreeMesh->getVertices(), octreeMesh->getIndices());
+	octree->build(heightMap);
+	octree->rootUpdateNeighbors();
+
+	int nbVoxel = 0;
+	octree->countExistingVoxel(nbVoxel);
+	std::cout << "Nb voxels : " << nbVoxel << std::endl;
+	std::cout << "Size Of Octree : " << (octree->sizeOf() * nbVoxel) / 1000000 << " Mo" << std::endl;
+
+	std::cout << "Size Of glm::vec3 : " << sizeof(glm::vec3) << std::endl;
+	
+	// Have to be a Loop
+	octree->resetSelection();
+	octree->select(camera->transform.position());
+	octree->buildTriangles();
 
 	Object *root = new Object();
-	root->addComponent(voxelGrid.mesh());
-	//root->addComponent(cube);
+	root->addComponent(octreeMesh);
+
+	Object *landMark = new Object();
+	landMark->addComponent(landMarkMesh);
+
+	landMark->transform.translate(glm::vec3(-1, -1, -1));
+
+	root->addChild(landMark);
 
 	// Scene
 	Scene scene = Scene(root, camera);
@@ -110,24 +139,15 @@ int main()
 	DefaultRenderer renderer(&scene);
 	renderer.setWireframe(false);
 
-	Shaders::getInstance()->useShader(BuiltInShader::DISPLACEMENT);
+	Shaders::getInstance()->useShader(BuiltInShader::PHONG);
 
-	// Test cubemap
-	CubeMap cb(128);
-	cb.generateSimplex(1, 1, 4);
-	HeightMap* hm = cb.GetUniqueHeightMap();
-	//HeightMap* hm = new HeightMap(128, 128);
-	//hm->generateSimplex(new NoiseProperties(1, 1, 4));
-	//hm->transformInterval(0, 1);
-	HeightMapFilter::binarize(hm, 0);
-	GLuint cubemap = hm->genGLTexture();
+	int demulti = 0;
 
 	// Game loop
 	while (!glfwWindowShouldClose(window))
 	{
-
 		// Set frame time
-		GLfloat currentFrame = glfwGetTime();
+ 		GLfloat currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
@@ -136,8 +156,21 @@ int main()
 		Do_Movement();
 		wireframe(&renderer);
 
-		//renderer.render();
-		renderer.renderToQuad(cubemap);
+		light->direction = camera->front();
+
+		if (demulti == 2) {
+
+			octree->resetSelection();
+			octree->select(camera->transform.position());
+			octree->buildTriangles();
+
+			demulti = 0;
+		}
+
+		demulti++;
+
+		renderer.render();
+		//renderer.renderToQuad(cubemap);
 
 		// Swap the buffers
 		glfwSwapBuffers(window);
@@ -151,15 +184,17 @@ int main()
 // Moves/alters the camera positions based on user input
 void Do_Movement()
 {
+	float speed = 3.f;
+
 	// Camera controls
 	if (keys[GLFW_KEY_W])
-		camera->processMove(CameraMovement::FORWARD, deltaTime);
+		camera->processMove(CameraMovement::FORWARD, deltaTime / speed);
 	if (keys[GLFW_KEY_S])
-		camera->processMove(CameraMovement::BACKWARD, deltaTime);
+		camera->processMove(CameraMovement::BACKWARD, deltaTime / speed);
 	if (keys[GLFW_KEY_A])
-		camera->processMove(CameraMovement::LEFTWARD, deltaTime);
+		camera->processMove(CameraMovement::LEFTWARD, deltaTime / speed);
 	if (keys[GLFW_KEY_D])
-		camera->processMove(CameraMovement::RIGHTWARD, deltaTime);
+		camera->processMove(CameraMovement::RIGHTWARD, deltaTime / speed);
 
 	// LOD autocircle speed control
 	if (keys[GLFW_KEY_H])

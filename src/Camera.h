@@ -46,6 +46,7 @@ public:
 	float nearPlane() { return m_nearPlane; }
 	float farPlane() { return m_farPlane; }
 	float zoom() { return m_zoom; }
+	glm::vec3 front() { return m_front; }
 	glm::mat4 view() { return m_view; }
 	glm::mat4 projection() { return m_projection; }
 

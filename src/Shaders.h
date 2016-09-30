@@ -20,7 +20,7 @@ private:
 		m_shaders.push_back(new Shader("shaders\\default.vs", "shaders\\default.fs"));
 		m_shaders.push_back(new Shader("shaders\\screen.vs", "shaders\\screen.fs"));
 		m_shaders.push_back(new Shader("shaders\\phong.vs", "shaders\\phong.fs"));
-		m_shaders.push_back(new Shader("shaders\\displacement.vs", "shaders\\phong.fs"));
+		m_shaders.push_back(new Shader("shaders\\displacement.vs", "shaders\\displacement.fs"));
 
 		useShader(SCREEN);
 	}
