@@ -19,11 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Camera.cpp" />
-    <ClCompile Include="src\FrameBufferObject.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Noise.cpp" />
-    <ClCompile Include="src\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Camera.h" />

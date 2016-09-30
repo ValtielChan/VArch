@@ -21,18 +21,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Shader.cpp">
-      <Filter>Engine\Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FrameBufferObject.cpp">
-      <Filter>Engine\Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Noise.cpp">
-      <Filter>Procedural</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Camera.cpp">
-      <Filter>Engine\Sources</Filter>
-    </ClCompile>
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
