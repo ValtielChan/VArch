@@ -53,6 +53,4 @@ void main()
     vec3 result = ambient + diffuse + specular;
     color = vec4(diffuse, 1.0f);
 
-    color = DebugColor;
-
 } 

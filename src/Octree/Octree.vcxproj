@@ -73,8 +73,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <SourcePath>$(VC_SourcePath);</SourcePath>
-    <IncludePath>C:\Users\MetalDiamond\Documents\Visual Studio 2015\Projects\VArch\libs\glm;$(ProjectDir)\libs\glfw-3.2.bin.WIN64\include;$(ProjectDir)\libs\glew-1.13.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)\libs\glew-1.13.0\lib\Release\x64;$(ProjectDir)\libs\glfw-3.2.bin.WIN64\lib-vc2015;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\src;$(SolutionDir)\libs\glm;$(SolutionDir)\libs\glfw-3.2.bin.WIN64\include;$(SolutionDir)\libs\glew-1.13.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\libs\glew-1.13.0\lib\Release\x64;$(SolutionDir)\libs\glfw-3.2.bin.WIN64\lib-vc2015;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(ProjectDir)\libs\glfw-3.2.bin.WIN32\include;$(ProjectDir)\libs\glew-1.13.0\include;$(IncludePath)</IncludePath>
