@@ -19,7 +19,6 @@ struct DirectionalLight {
 in vec3 FragPos;
 in vec2 TexCoords;
 in vec3 Normal;  
-in vec3 Color;  
 in vec4 DebugColor;
   
 out vec4 color;
@@ -52,8 +51,8 @@ void main()
     vec3 specular = light.specular * (spec * material.specular);  
         
     vec3 result = ambient + diffuse + specular;
-    color = vec4(result, 0.0f);
+    color = vec4(diffuse, 1.0f);
 
-    //color = DebugColor;
+    color = DebugColor;
 
 } 

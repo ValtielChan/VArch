@@ -5,7 +5,6 @@ layout (location = 1) in vec3 normal;
 layout (location = 2) in vec2 texCoord;
 
 out vec3 Normal;
-out mat3 Model;
 out vec2 TexCoords;
 out vec3 FragPos;
 out vec4 DebugColor;
@@ -15,6 +14,7 @@ uniform mat4 view;
 uniform mat4 projection;
 
 uniform sampler2D heightMap;
+uniform sampler2D normalMap;
 
 void main()
 {
@@ -26,11 +26,8 @@ void main()
     gl_Position = projection * view *  model * vec4(displaced, 1.0f);
 
     FragPos = vec3(model * vec4(displaced, 1.0f));
-    //vec4 normalTexel = texture2D(normalMap, texCoord);
-    //Normal = mat3(transpose(inverse(model))) * normalTexel.xyz;
+    Normal = texture2D(normalMap, texCoord).xyz;
 
-    DebugColor = vec4(texCoord, 0, 1);
-
+    DebugColor = vec4(1, 0, 0, 1);
     TexCoords = texCoord;
-    Model = mat3(transpose(inverse(model)));
 }
