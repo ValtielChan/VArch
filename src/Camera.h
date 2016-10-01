@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/matrix_access.hpp>
 
 #include "Object.h"
 #include "MVP.h"
@@ -19,6 +20,7 @@ private:
 
 	glm::mat4 m_view;
 	glm::mat4 m_projection;
+	glm::mat4 m_permissiveProjection;
 
 	glm::vec3 m_front; 
 	glm::vec3 m_up;
@@ -36,6 +38,8 @@ public:
 
 	Camera(float screenWidth = 16.f, float screenHeight = 9.f, float nearPlane = 0.1f, float farPlane = 1000.f, float zoom = 46.f);
 	~Camera();
+
+	bool isInFrustum(const glm::vec3 & position);
 
 	// Movements
 	void processMove(CameraMovement direction, float deltaTime);
@@ -79,6 +83,36 @@ Camera::Camera(float screenWidth, float screenHeight, float nearPlane, float far
 
 Camera::~Camera()
 {
+}
+
+inline bool Camera::isInFrustum(const glm::vec3 & position)
+{
+	glm::vec4 pos(position, 1);
+	glm::vec4 tranPos;
+
+	glm::vec4 camSpace = m_view * pos;
+	//glm::mat4x4 VP = m_projection * m_view;
+
+	glm::vec4 row0 = glm::row(m_projection, 0);
+	glm::vec4 row1 = glm::row(m_projection, 1);
+	glm::vec4 row2 = glm::row(m_projection, 2);
+	glm::vec4 row3 = glm::row(m_projection, 3);
+
+	tranPos.x = glm::dot(row0, camSpace);
+	tranPos.y = glm::dot(row1, camSpace);
+	tranPos.z = glm::dot(row2, camSpace);
+	tranPos.w = glm::dot(row3, camSpace);
+
+	tranPos = glm::normalize(tranPos);
+
+	if (tranPos.x >= -tranPos.w && tranPos.x <= tranPos.w
+		&& tranPos.y >= -tranPos.w && tranPos.y <= tranPos.w
+		/*&& tranPos.z >= -tranPos.w && tranPos.z <= tranPos.w*/) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 void Camera::processMove(CameraMovement direction, float deltaTime)
@@ -143,6 +177,7 @@ void Camera::processZoom(float yoffset)
 void Camera::updateProjectionMatrix()
 {
 	m_projection = glm::perspective(m_zoom, m_screenWidth / m_screenHeight, m_nearPlane, m_farPlane);
+	//m_permissiveProjection = glm::perspective(m_zoom, (m_screenWidth / m_screenHeight) * 2.f, m_nearPlane, m_farPlane);
 }
 
 void Camera::updateViewMatrix()

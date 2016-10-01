@@ -7,12 +7,6 @@
     <Filter Include="Engine">
       <UniqueIdentifier>{82645298-d77d-4b15-bb0d-7bb46050dd2e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Headers">
-      <UniqueIdentifier>{957d9b5d-dba2-452f-b50e-cc3ba37c358e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Sources">
-      <UniqueIdentifier>{90cbd3c0-1324-464a-9011-fdcecf3f7d37}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Procedural">
       <UniqueIdentifier>{0f6bf395-89f6-45bb-94ad-1afa17e35152}</UniqueIdentifier>
     </Filter>
@@ -24,52 +18,13 @@
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Texture2D.h">
-      <Filter>Engine\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Renderer.h">
-      <Filter>Engine\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FrameBufferObject.h">
-      <Filter>Engine\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Singleton.h">
-      <Filter>Engine\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\QTNode.h">
-      <Filter>Engine\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Transform.h">
-      <Filter>Engine\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\MVP.h">
-      <Filter>Engine\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Drawable.h">
-      <Filter>Engine\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Mesh.h">
-      <Filter>Engine\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Object.h">
-      <Filter>Engine\Headers</Filter>
-    </ClInclude>
     <ClInclude Include="src\Noise.h">
       <Filter>Procedural</Filter>
     </ClInclude>
     <ClInclude Include="src\HeightMap.h">
       <Filter>Procedural</Filter>
     </ClInclude>
-    <ClInclude Include="src\DefaultRenderer.h">
-      <Filter>Engine\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Camera.h">
-      <Filter>Engine\Headers</Filter>
-    </ClInclude>
     <ClInclude Include="src\Component.h" />
-    <ClInclude Include="src\Scene.h">
-      <Filter>Engine\Headers</Filter>
-    </ClInclude>
     <ClInclude Include="src\DisplacementPhongMaterial.h">
       <Filter>Shaders</Filter>
     </ClInclude>
@@ -85,28 +40,70 @@
     <ClInclude Include="src\Shaders.h">
       <Filter>Shaders</Filter>
     </ClInclude>
-    <ClInclude Include="src\Light.h">
-      <Filter>Engine\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\NormalMap.h">
-      <Filter>Engine\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DirectionalLight.h">
-      <Filter>Engine\Headers</Filter>
-    </ClInclude>
     <ClInclude Include="src\Chunk.h">
       <Filter>Voxel</Filter>
     </ClInclude>
     <ClInclude Include="src\CubeMap.h">
       <Filter>Procedural</Filter>
     </ClInclude>
-    <ClInclude Include="src\enum.h">
-      <Filter>Engine\Headers</Filter>
-    </ClInclude>
     <ClInclude Include="src\HeightMapFilter.h">
       <Filter>Procedural</Filter>
     </ClInclude>
     <ClInclude Include="src\VoxelOctree.h">
+      <Filter>Voxel</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Camera.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DefaultRenderer.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DirectionalLight.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Drawable.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\enum.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FrameBufferObject.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Light.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mesh.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MVP.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\NormalMap.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Object.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\QTNode.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Singleton.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Texture2D.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Transform.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Terrain.h">
       <Filter>Voxel</Filter>
     </ClInclude>
   </ItemGroup>

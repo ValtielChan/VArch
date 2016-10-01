@@ -10,8 +10,9 @@
 #include "Mesh.h"
 #include "enum.h"
 #include "HeightMap.h"
+#include "Camera.h"
 
-#define DEPTH 7
+#define DEPTH 6
 #define THRESHOLD 10
 
 //#define BENCHMARK
@@ -63,12 +64,12 @@ public:
 	/// <summary>
 	/// Root Octree constructor
 	/// </summary>
-	VoxelOctree(std::vector<Vertex>* vertices, std::vector<GLuint>* indices, glm::vec3 worldCenter = glm::vec3(0), float voxelSize = 1.f);
+	VoxelOctree(glm::vec3 worldCenter = glm::vec3(0), float voxelSize = 1.f);
 
 	/// <summary>
 	/// Child Octree construtor
 	/// </summary>
-	VoxelOctree(VoxelOctree* parent, std::vector<Vertex>* vertices, std::vector<GLuint>* indices, glm::vec3 worldCenter, float voxelSize, int depth, OctreePosition relPos);
+	VoxelOctree(VoxelOctree* parent, Mesh* mesh, glm::vec3 worldCenter, float voxelSize, int depth, OctreePosition relPos);
 
 	~VoxelOctree();
 
@@ -78,6 +79,7 @@ public:
 	std::vector<VoxelOctree*> getCells();
 	int depth() { return m_depth; }
 	VoxelOctree* parent() { return m_parent; }
+	Mesh* mesh() { return m_mesh; }
 	OctreePosition relativePosition() { return m_relativePosition; }
 
 	/// <summary>
@@ -90,6 +92,8 @@ public:
 	/// </summary>
 	bool checkNeighbor(Side side);
 
+	bool isInFrustum(Camera* camera, int subLevel);
+
 	/// <summary>
 	/// Create 8 childs
 	/// </summary>
@@ -98,7 +102,7 @@ public:
 	/// <summary>
 	/// build Octree according to user defined datas
 	/// </summary>
-	/*abstract*/void build();
+	virtual void build();
 	 
 	/// <summary>
 	/// build with heightmap
@@ -108,7 +112,7 @@ public:
 	/// <summary>
 	/// select the cells according to certains conditions
 	/// </summary>
-	void select(glm::vec3 pov);
+	void select(Camera* camera);
 
 	/// <summary>
 	/// Recursively set selected attribute at false
@@ -139,7 +143,7 @@ public:
 	void countExistingVoxel(int &count);
 	int sizeOf();
 
-private:
+protected:
 
 	VoxelOctree* m_parent;
 	VoxelOctree* m_cells[8];
@@ -147,8 +151,9 @@ private:
 
 	std::vector<int> m_vertices;
 
-	std::vector<Vertex>* ref_vertices;
-	std::vector<GLuint>* ref_indices;
+	Mesh * m_mesh;
+	std::vector<Vertex>* ref_vertices; // fast access
+	std::vector<GLuint>* ref_indices; // fast access
 
 	OctreePosition m_relativePosition;
 	glm::vec3 m_worldCenter;
@@ -158,11 +163,9 @@ private:
 	void addVertices();
 };
 
-VoxelOctree::VoxelOctree(std::vector<Vertex>* vertices, std::vector<GLuint>* indices, glm::vec3 worldCenter, float voxelSize)
+VoxelOctree::VoxelOctree(glm::vec3 worldCenter, float voxelSize)
 	: m_voxelSize(voxelSize), 
 	m_worldCenter(worldCenter),
-	ref_indices(indices), 
-	ref_vertices(vertices), 
 	m_depth(0)
 {
 	m_parent = nullptr;
@@ -171,6 +174,10 @@ VoxelOctree::VoxelOctree(std::vector<Vertex>* vertices, std::vector<GLuint>* ind
 	visited = false;
 	exist = false;
 	deeper = false;
+
+	m_mesh = new Mesh();
+	ref_vertices = m_mesh->getVertices();
+	ref_indices = m_mesh->getIndices();
 
 	for (int i = 0; i < 8; i++)
 		m_cells[i] = nullptr;
@@ -184,13 +191,33 @@ VoxelOctree::VoxelOctree(std::vector<Vertex>* vertices, std::vector<GLuint>* ind
 
 }
 
-VoxelOctree::VoxelOctree(VoxelOctree* parent, std::vector<Vertex>* vertices, std::vector<GLuint>* indices, glm::vec3 worldCenter, float voxelSize, int depth, OctreePosition relPos) 
-	: VoxelOctree(vertices, indices, worldCenter, voxelSize)
+VoxelOctree::VoxelOctree(VoxelOctree* parent, Mesh* mesh, glm::vec3 worldCenter, float voxelSize, int depth, OctreePosition relPos)
+
 {
+	m_voxelSize = voxelSize;
+	m_worldCenter = worldCenter;
+
 	m_parent = parent;
+
+	selected = false;
+	visited = false;
+	exist = false;
+	deeper = false;
+
+	m_mesh = mesh;
+	ref_vertices = mesh->getVertices();
+	ref_indices = mesh->getIndices();
+
+	for (int i = 0; i < 8; i++)
+		m_cells[i] = nullptr;
+
+	for (int i = 0; i < 6; i++)
+		m_neighbors[i] = nullptr;
 
 	m_depth = depth;
 	m_relativePosition = relPos;
+
+	addVertices();
 }
 
 VoxelOctree::~VoxelOctree()
@@ -232,19 +259,68 @@ inline bool VoxelOctree::checkNeighbor(Side side)
 	//return false;
 }
 
+inline bool VoxelOctree::isInFrustum(Camera * camera, int subLevel)
+{
+	float halfSize = m_voxelSize / 2.f;
+	float subSize = m_voxelSize / (float)subLevel;
+
+	bool isInFrustum = false;
+	
+	for (int i = 0; i < subLevel + 1; i++) {
+		for (int j = 0; j < subLevel + 1; j++) {
+
+			glm::vec3 down(m_worldCenter.x - halfSize + i * subSize, m_worldCenter.y - halfSize, m_worldCenter.z - halfSize + j * subSize);
+			glm::vec3 up(m_worldCenter.x - halfSize + i * subSize, m_worldCenter.y + halfSize, m_worldCenter.z - halfSize + j * subSize);
+			glm::vec3 left(m_worldCenter.x - halfSize, m_worldCenter.y - halfSize + i * subSize, m_worldCenter.z - halfSize + j * subSize);
+			glm::vec3 right(m_worldCenter.x + halfSize, m_worldCenter.y - halfSize + i * subSize, m_worldCenter.z - halfSize + j * subSize);
+			glm::vec3 back(m_worldCenter.x - halfSize + i * subSize, m_worldCenter.y - halfSize + j * subSize, m_worldCenter.z - halfSize);
+			glm::vec3 front(m_worldCenter.x - halfSize + i * subSize, m_worldCenter.y - halfSize + j * subSize, m_worldCenter.z + halfSize);
+
+			if (camera->isInFrustum(down)) {
+				isInFrustum = true; 
+				goto abort;
+			}
+			else if (camera->isInFrustum(up)) {
+				isInFrustum = true; 
+				goto abort;
+			}
+			else if (camera->isInFrustum(left)) {
+				isInFrustum = true; 
+				goto abort;
+			}
+			else if (camera->isInFrustum(right)) {
+				isInFrustum = true; 
+				goto abort;
+			}
+			else if (camera->isInFrustum(back)) {
+				isInFrustum = true; 
+				goto abort;
+			}
+			else if (camera->isInFrustum(front)) {
+				isInFrustum = true; 
+				goto abort;
+			}
+		}
+	}
+
+abort:
+
+	return isInFrustum;
+}
+
 void VoxelOctree::subdivide() {
 
 	float quartSize = m_voxelSize / 4.f;
 	float halfSize = m_voxelSize / 2.f;
 
-	m_cells[UP_LEFT_BACK] = new VoxelOctree(this, ref_vertices, ref_indices, m_worldCenter + glm::vec3(-quartSize, quartSize, -quartSize), halfSize, m_depth + 1, UP_LEFT_BACK);
-	m_cells[UP_RIGHT_BACK] = new VoxelOctree(this, ref_vertices, ref_indices, m_worldCenter + glm::vec3(-quartSize, quartSize, quartSize), halfSize, m_depth + 1, UP_RIGHT_BACK);
-	m_cells[UP_LEFT_FRONT] = new VoxelOctree(this, ref_vertices, ref_indices, m_worldCenter + glm::vec3(quartSize, quartSize, -quartSize), halfSize, m_depth + 1, UP_LEFT_FRONT);
-	m_cells[UP_RIGHT_FRONT] = new VoxelOctree(this, ref_vertices, ref_indices, m_worldCenter + glm::vec3(quartSize, quartSize, quartSize), halfSize, m_depth + 1, UP_RIGHT_FRONT);
-	m_cells[DOWN_LEFT_BACK] = new VoxelOctree(this, ref_vertices, ref_indices, m_worldCenter + glm::vec3(-quartSize, -quartSize, -quartSize), halfSize, m_depth + 1, DOWN_LEFT_BACK);
-	m_cells[DOWN_RIGHT_BACK] = new VoxelOctree(this, ref_vertices, ref_indices, m_worldCenter + glm::vec3(-quartSize, -quartSize, quartSize), halfSize, m_depth + 1, DOWN_RIGHT_BACK);
-	m_cells[DOWN_LEFT_FRONT] = new VoxelOctree(this, ref_vertices, ref_indices, m_worldCenter + glm::vec3(quartSize, -quartSize, -quartSize), halfSize, m_depth + 1, DOWN_LEFT_FRONT);
-	m_cells[DOWN_RIGHT_FRONT] = new VoxelOctree(this, ref_vertices, ref_indices, m_worldCenter + glm::vec3(quartSize, -quartSize, quartSize), halfSize, m_depth + 1, DOWN_RIGHT_FRONT);
+	m_cells[UP_LEFT_BACK] = new VoxelOctree(this, m_mesh, m_worldCenter + glm::vec3(-quartSize, quartSize, -quartSize), halfSize, m_depth + 1, UP_LEFT_BACK);
+	m_cells[UP_RIGHT_BACK] = new VoxelOctree(this, m_mesh, m_worldCenter + glm::vec3(-quartSize, quartSize, quartSize), halfSize, m_depth + 1, UP_RIGHT_BACK);
+	m_cells[UP_LEFT_FRONT] = new VoxelOctree(this, m_mesh, m_worldCenter + glm::vec3(quartSize, quartSize, -quartSize), halfSize, m_depth + 1, UP_LEFT_FRONT);
+	m_cells[UP_RIGHT_FRONT] = new VoxelOctree(this, m_mesh, m_worldCenter + glm::vec3(quartSize, quartSize, quartSize), halfSize, m_depth + 1, UP_RIGHT_FRONT);
+	m_cells[DOWN_LEFT_BACK] = new VoxelOctree(this, m_mesh, m_worldCenter + glm::vec3(-quartSize, -quartSize, -quartSize), halfSize, m_depth + 1, DOWN_LEFT_BACK);
+	m_cells[DOWN_RIGHT_BACK] = new VoxelOctree(this, m_mesh, m_worldCenter + glm::vec3(-quartSize, -quartSize, quartSize), halfSize, m_depth + 1, DOWN_RIGHT_BACK);
+	m_cells[DOWN_LEFT_FRONT] = new VoxelOctree(this, m_mesh, m_worldCenter + glm::vec3(quartSize, -quartSize, -quartSize), halfSize, m_depth + 1, DOWN_LEFT_FRONT);
+	m_cells[DOWN_RIGHT_FRONT] = new VoxelOctree(this, m_mesh, m_worldCenter + glm::vec3(quartSize, -quartSize, quartSize), halfSize, m_depth + 1, DOWN_RIGHT_FRONT);
 
 	// UP_LEFT_BACK NEIGHBORS
 	m_cells[UP_LEFT_BACK]->setNeighbor(Side::UP, m_neighbors[Side::UP]);
@@ -393,20 +469,21 @@ abort:
 	t = clock() - t;
 
 	if (!m_parent) // Only root print the whole bench result
-		std::cout << "[BENCH] build(HeightMap*) : " << ((float)t) << " ms" << std::endl;
+		std::cout << "[BENCH] VoxelOctree::build() : " << ((float)t) << " ms" << std::endl;
 #endif
 }
 
-inline void VoxelOctree::select(glm::vec3 pov)
+inline void VoxelOctree::select(Camera* camera)
 {
 
 #ifdef BENCHMARK
 	clock_t t = clock();
 #endif
 
+	glm::vec3 pov = camera->transform.position();
+
 	if (!m_parent) {  // if root
 		ref_indices->clear();
-		//ref_vertices->clear();
 
 		selected = true;
 	}
@@ -418,7 +495,8 @@ inline void VoxelOctree::select(glm::vec3 pov)
 		float y = m_worldCenter.z - pov.z;
 		float dist = sqrt(x*x + y*y);
 
-		if (dist < THRESHOLD / (m_depth + 1)) {
+		if (isInFrustum(camera, pow(2, DEPTH - m_depth)) /*&& dist < THRESHOLD / (m_depth + 1)*/) {
+		
 		//if(true) {
 			if (haveChilds()) {
 
@@ -429,7 +507,7 @@ inline void VoxelOctree::select(glm::vec3 pov)
 					if (m_cells[i]->exist)
 						m_cells[i]->selected = true;
 
-					m_cells[i]->select(pov);
+					m_cells[i]->select(camera);
 				}		
 			}
 		}
@@ -439,12 +517,17 @@ inline void VoxelOctree::select(glm::vec3 pov)
 	t = clock() - t;
 
 	if (!m_parent) // Only root print the whole bench result
-		std::cout << "[BENCH] select(glm::vec3) | depth " << DEPTH << " : " << ((float)t) << " ms" << std::endl;
+		std::cout << "[BENCH] VoxelOctree::select() | depth " << DEPTH << " : " << ((float)t) << " ms" << std::endl;
 #endif
 }
 
 inline void VoxelOctree::resetSelection()
 {
+
+#ifdef BENCHMARK
+	clock_t t = clock();
+#endif
+
 	selected = false;
 	visited = false;
 	deeper = false;
@@ -454,6 +537,13 @@ inline void VoxelOctree::resetSelection()
 			m_cells[i]->resetSelection();
 		}
 	}
+
+#ifdef BENCHMARK
+	t = clock() - t;
+
+	if (!m_parent) // Only root print the whole bench result
+		std::cout << "[BENCH] VoxelOctree::resetSelection() | depth " << DEPTH << " : " << ((float)t) << " ms" << std::endl;
+#endif
 }
 
 inline void VoxelOctree::buildTriangles()
@@ -477,8 +567,6 @@ inline void VoxelOctree::buildTriangles()
 				m_cells[i]->buildTriangles();
 		}
 		else {
-
-			exception:
 
 			if (!checkNeighbor(Side::UP)) {
 
@@ -522,7 +610,7 @@ inline void VoxelOctree::buildTriangles()
 	t = clock() - t;
 
 	if (!m_parent) // Only root print the whole bench result
-		std::cout << "[BENCH] buildTriangles() | depth " << DEPTH << " : " << ((float)t) << " ms" << std::endl;
+		std::cout << "[BENCH] VoxelOctree::buildTriangles() | depth " << DEPTH << " : " << ((float)t) << " ms" << std::endl;
 #endif
 }
 
@@ -812,7 +900,7 @@ inline void VoxelOctree::rootUpdateNeighbors()
 	t = clock() - t;
 
 	if (!m_parent) // Only root print the whole bench result
-		std::cout << "[BENCH] rootUpdateNeighbors() | depth " << DEPTH << " : " << ((float)t) << " ms" << std::endl;
+		std::cout << "[BENCH] VoxelOctree::rootUpdateNeighbors() | depth " << DEPTH << " : " << ((float)t) << " ms" << std::endl;
 #endif
 
 }
@@ -865,6 +953,8 @@ inline int VoxelOctree::sizeOf()
 
 inline void VoxelOctree::addVertices()
 {
+
+
 	float halfSize = m_voxelSize / 2;
 
 	glm::vec3 normal_x = glm::vec3(1.0f, 0.0f, 0.0f);

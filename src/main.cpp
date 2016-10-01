@@ -38,12 +38,14 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void Do_Movement();
 void wireframe(DefaultRenderer * renderer);
+void stopSelection();
 
 // Camera
 Camera* camera = new Camera((float)screenWidth, (float)screenHeight, 0.01f, 1000.f, 0.45f);
 bool keys[1024];
 GLfloat lastX = 400, lastY = 300;
 bool firstMouse = true;
+bool stopSelect = false;
 
 GLfloat deltaTime = 0.0f;
 GLfloat lastFrame = 0.0f;
@@ -101,12 +103,13 @@ int main()
 	Mesh* refCube = new Mesh(mat);
 	Mesh* landMarkMesh = new Mesh(mat);
 	landMarkMesh->generateLandmark();
-	
-	Mesh* octreeMesh = new Mesh(mat);
-	octreeMesh->setMaterial(mat);
 
 	// Octree
-	VoxelOctree* octree = new VoxelOctree(octreeMesh->getVertices(), octreeMesh->getIndices());
+	VoxelOctree* octree = new VoxelOctree();
+
+	Mesh* octreeMesh = octree->mesh();
+	octreeMesh->setMaterial(mat);
+
 	octree->build(heightMap);
 	octree->rootUpdateNeighbors();
 
@@ -119,7 +122,7 @@ int main()
 	
 	// Have to be a Loop
 	octree->resetSelection();
-	octree->select(camera->transform.position());
+	octree->select(camera);
 	octree->buildTriangles();
 
 	Object *root = new Object();
@@ -155,15 +158,19 @@ int main()
 		glfwPollEvents();
 		Do_Movement();
 		wireframe(&renderer);
+		stopSelection();
 
 		light->direction = camera->front();
 
-		if (demulti == 2) {
+		if (!stopSelect && demulti == 1) {
 
 			octree->resetSelection();
-			octree->select(camera->transform.position());
+			octree->select(camera);
 			octree->buildTriangles();
 
+			demulti = 0;
+		}
+		else {
 			demulti = 0;
 		}
 
@@ -196,11 +203,15 @@ void Do_Movement()
 	if (keys[GLFW_KEY_D])
 		camera->processMove(CameraMovement::RIGHTWARD, deltaTime / speed);
 
-	// LOD autocircle speed control
-	if (keys[GLFW_KEY_H])
-		circleSpeed ++;
-	if (keys[GLFW_KEY_G])
-		if (circleSpeed > 0) circleSpeed --;
+}
+
+void stopSelection()
+{
+	// Camera controls
+	if (keys[GLFW_KEY_H]) 
+		stopSelect = false;
+	if (keys[GLFW_KEY_G]) 
+		stopSelect = true;
 }
 
 void wireframe(DefaultRenderer * renderer)
