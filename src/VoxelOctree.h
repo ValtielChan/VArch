@@ -12,8 +12,9 @@
 #include "HeightMap.h"
 #include "Camera.h"
 
-#define DEPTH 6
-#define THRESHOLD 10
+#define DEPTH 7
+#define THRESHOLD 20
+#define PERVISSIVE_FRUSTUM false
 
 //#define BENCHMARK
 
@@ -75,12 +76,13 @@ public:
 
 	void setNeighbor(Side side, VoxelOctree * neighbor);
 
+	VoxelOctree* parent() { return m_parent; }
 	VoxelOctree* getCell(OctreePosition position);
 	std::vector<VoxelOctree*> getCells();
 	int depth() { return m_depth; }
-	VoxelOctree* parent() { return m_parent; }
 	Mesh* mesh() { return m_mesh; }
 	OctreePosition relativePosition() { return m_relativePosition; }
+	glm::vec3 rootWorldPosition();
 
 	/// <summary>
 	/// Does the node have childs
@@ -102,12 +104,12 @@ public:
 	/// <summary>
 	/// build Octree according to user defined datas
 	/// </summary>
-	virtual void build();
+	void build();
 	 
 	/// <summary>
 	/// build with heightmap
 	/// </summary>
-	void build(HeightMap* hm);
+	void buildTerrain(HeightMap* hm);
 
 	/// <summary>
 	/// select the cells according to certains conditions
@@ -243,6 +245,18 @@ inline std::vector<VoxelOctree*> VoxelOctree::getCells()
 	return cells;
 }
 
+glm::vec3 VoxelOctree::rootWorldPosition()
+{
+	glm::vec3 pos;
+
+	if (m_parent)
+		pos = m_parent->rootWorldPosition();
+	else
+		pos = m_worldCenter;
+
+	return pos;
+}
+
 void VoxelOctree::setNeighbor(Side side, VoxelOctree* neighbor)
 {
 	m_neighbors[side] = neighbor;
@@ -256,7 +270,6 @@ bool VoxelOctree::haveChilds() {
 inline bool VoxelOctree::checkNeighbor(Side side)
 {
 	return m_neighbors[side] && m_neighbors[side]->selected && !m_neighbors[side]->deeper;
-	//return false;
 }
 
 inline bool VoxelOctree::isInFrustum(Camera * camera, int subLevel)
@@ -276,27 +289,27 @@ inline bool VoxelOctree::isInFrustum(Camera * camera, int subLevel)
 			glm::vec3 back(m_worldCenter.x - halfSize + i * subSize, m_worldCenter.y - halfSize + j * subSize, m_worldCenter.z - halfSize);
 			glm::vec3 front(m_worldCenter.x - halfSize + i * subSize, m_worldCenter.y - halfSize + j * subSize, m_worldCenter.z + halfSize);
 
-			if (camera->isInFrustum(down)) {
+			if (camera->isInFrustum(down, PERVISSIVE_FRUSTUM)) {
 				isInFrustum = true; 
 				goto abort;
 			}
-			else if (camera->isInFrustum(up)) {
+			else if (camera->isInFrustum(up, PERVISSIVE_FRUSTUM)) {
 				isInFrustum = true; 
 				goto abort;
 			}
-			else if (camera->isInFrustum(left)) {
+			else if (camera->isInFrustum(left, PERVISSIVE_FRUSTUM)) {
 				isInFrustum = true; 
 				goto abort;
 			}
-			else if (camera->isInFrustum(right)) {
+			else if (camera->isInFrustum(right, PERVISSIVE_FRUSTUM)) {
 				isInFrustum = true; 
 				goto abort;
 			}
-			else if (camera->isInFrustum(back)) {
+			else if (camera->isInFrustum(back, PERVISSIVE_FRUSTUM)) {
 				isInFrustum = true; 
 				goto abort;
 			}
-			else if (camera->isInFrustum(front)) {
+			else if (camera->isInFrustum(front, PERVISSIVE_FRUSTUM)) {
 				isInFrustum = true; 
 				goto abort;
 			}
@@ -405,7 +418,7 @@ inline void VoxelOctree::build()
 	}
 }
 
-inline void VoxelOctree::build(HeightMap * hm)
+void VoxelOctree::buildTerrain(HeightMap * hm)
 {
 	// TODO : Non Square heightmap exception
 
@@ -414,8 +427,9 @@ inline void VoxelOctree::build(HeightMap * hm)
 #endif
 
 	glm::vec3 rootVoxelSize = glm::vec3(m_voxelSize * pow(2, m_depth));
+	glm::vec3 rootWorldCenter = rootWorldPosition();
 
-	glm::vec3 nCenter = (m_worldCenter + (rootVoxelSize / 2.f)) / rootVoxelSize;
+	glm::vec3 nCenter = ((m_worldCenter - rootWorldCenter) + (rootVoxelSize / 2.f)) / rootVoxelSize;
 	float nvSize = m_voxelSize / (rootVoxelSize.x);
 
 	glm::vec2 bMin(nCenter.z - nvSize / 2, nCenter.x - nvSize / 2);
@@ -426,12 +440,6 @@ inline void VoxelOctree::build(HeightMap * hm)
 	bool middle = false;
 	bool above = false;
 	bool below = false;
-
-	std::vector<OctreePosition> path;
-	path.push_back(UP_RIGHT_FRONT); path.push_back(DOWN_RIGHT_FRONT); path.push_back(DOWN_RIGHT_BACK);
-
-	if (debugIsPath(path))
-		bool lawl = true;
 
 	for (int x = (int)bMin.x; x < (int)bMax.x; x++) {
 		for (int y = (int)bMin.y; y < (int)bMax.y; y++) {
@@ -459,7 +467,7 @@ abort:
 		subdivide();
 
 		for (int i = 0; i < 8; i++)
-			m_cells[i]->build(hm);
+			m_cells[i]->buildTerrain(hm);
 	}
 	else if (below || middle) {
 		exist = true;
@@ -495,7 +503,7 @@ inline void VoxelOctree::select(Camera* camera)
 		float y = m_worldCenter.z - pov.z;
 		float dist = sqrt(x*x + y*y);
 
-		if (isInFrustum(camera, pow(2, DEPTH - m_depth)) /*&& dist < THRESHOLD / (m_depth + 1)*/) {
+		if (isInFrustum(camera, pow(2, DEPTH - m_depth)) && dist < THRESHOLD / (m_depth + 1)) {
 		
 		//if(true) {
 			if (haveChilds()) {
@@ -605,6 +613,9 @@ inline void VoxelOctree::buildTriangles()
 			}
 		}
 	}
+
+	if (!m_parent)
+		m_mesh->updateGL();
 
 #ifdef BENCHMARK
 	t = clock() - t;

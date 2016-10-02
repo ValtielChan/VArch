@@ -109,7 +109,7 @@ void Mesh::update(glm::mat4 model)
 	MVP::getInstance()->setModel(model);
 	MVP::setUniform(shader);
 
-	updateGL();
+	//updateGL();
 	m_material->setUniform();
 	draw();
 }

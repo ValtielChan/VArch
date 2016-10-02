@@ -110,7 +110,7 @@ int main()
 	Mesh* octreeMesh = octree->mesh();
 	octreeMesh->setMaterial(mat);
 
-	octree->build(heightMap);
+	octree->buildTerrain(heightMap);
 	octree->rootUpdateNeighbors();
 
 	int nbVoxel = 0;

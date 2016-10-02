@@ -11,7 +11,7 @@
 #include <GLFW/glfw3.h>
 
 // GL includes
-#include "VoxelOctree.h"
+#include "Terrain.h"
 #include "Shaders.h"
 #include "Camera.h"
 #include "MVP.h"
@@ -19,6 +19,7 @@
 #include "Mesh.h"
 #include "DisplacementPhongMaterial.h"
 #include "PhongMaterial.h"
+#include "SelfIlluminMaterial.h"
 #include "CubeMap.h"
 #include "HeightMapFilter.h"
 
@@ -29,6 +30,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#define NBCHUNK 4
+
 // Properties
 GLuint screenWidth = 1280, screenHeight = 720;
 
@@ -38,12 +41,14 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void Do_Movement();
 void wireframe(DefaultRenderer * renderer);
+void stopSelection();
 
 // Camera
-Camera* camera = new Camera((float)screenWidth, (float)screenHeight, 0.01f, 1000.f, 0.45f);
+Camera* camera = new Camera((float)screenWidth, (float)screenHeight, 0.01f, 1000.f, 0.90f);
 bool keys[1024];
 GLfloat lastX = 400, lastY = 300;
 bool firstMouse = true;
+bool stopSelect = false;
 
 GLfloat deltaTime = 0.0f;
 GLfloat lastFrame = 0.0f;
@@ -85,12 +90,13 @@ int main()
 
 	// Set material textures
 	PhongMaterial *mat = new PhongMaterial();
+	SelfIlluminMaterial *SIMat = new SelfIlluminMaterial();
 
 	// HeightMap
-	NoiseProperties np = NoiseProperties(1, 1, 1);
-	HeightMap* heightMap = new HeightMap(256, 256);
+	NoiseProperties np = NoiseProperties(2, 1, 4);
+	HeightMap* heightMap = new HeightMap(NBCHUNK * 256, NBCHUNK * 256);
 	heightMap->generateSimplex(&np);
-	heightMap->transformInterval(-0.5f, -.25f);
+	heightMap->transformInterval(-0.5f, .5f);
 
 	// Light
 	DirectionalLight* light = new DirectionalLight;
@@ -99,31 +105,14 @@ int main()
 	//light->transform.translate(glm::vec3(0, 2, 0));
 
 	Mesh* refCube = new Mesh(mat);
-	Mesh* landMarkMesh = new Mesh(mat);
+	Mesh* landMarkMesh = new Mesh(SIMat);
 	landMarkMesh->generateLandmark();
 
-	Mesh* octreeMesh = new Mesh(mat);
-	octreeMesh->setMaterial(mat);
-
 	// Octree
-	VoxelOctree* octree = new VoxelOctree(octreeMesh->getVertices(), octreeMesh->getIndices());
-	octree->build(heightMap);
-	octree->rootUpdateNeighbors();
-
-	int nbVoxel = 0;
-	octree->countExistingVoxel(nbVoxel);
-	std::cout << "Nb voxels : " << nbVoxel << std::endl;
-	std::cout << "Size Of Octree : " << (octree->sizeOf() * nbVoxel) / 1000000 << " Mo" << std::endl;
-
-	std::cout << "Size Of glm::vec3 : " << sizeof(glm::vec3) << std::endl;
-
-	// Have to be a Loop
-	octree->resetSelection();
-	octree->select(camera->transform.position());
-	octree->buildTriangles();
+	Terrain terrain(heightMap, camera, NBCHUNK, 4);
 
 	Object *root = new Object();
-	root->addComponent(octreeMesh);
+	terrain.addMeshesToObject(root);
 
 	Object *landMark = new Object();
 	landMark->addComponent(landMarkMesh);
@@ -155,15 +144,13 @@ int main()
 		glfwPollEvents();
 		Do_Movement();
 		wireframe(&renderer);
+		stopSelection();
 
 		light->direction = camera->front();
 
-		if (demulti == 2) {
+		if (!stopSelect) {
 
-			octree->resetSelection();
-			octree->select(camera->transform.position());
-			octree->buildTriangles();
-
+			terrain.process();
 			demulti = 0;
 		}
 
@@ -196,11 +183,15 @@ void Do_Movement()
 	if (keys[GLFW_KEY_D])
 		camera->processMove(CameraMovement::RIGHTWARD, deltaTime / speed);
 
-	// LOD autocircle speed control
+}
+
+void stopSelection()
+{
+	// Camera controls
 	if (keys[GLFW_KEY_H])
-		circleSpeed++;
+		stopSelect = false;
 	if (keys[GLFW_KEY_G])
-		if (circleSpeed > 0) circleSpeed--;
+		stopSelect = true;
 }
 
 void wireframe(DefaultRenderer * renderer)

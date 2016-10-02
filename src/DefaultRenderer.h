@@ -46,8 +46,10 @@ void DefaultRenderer::lightPass() {
 
 	for (Light* light : m_scene->getLights()) {
 
-		for (Shader* shader : shaders) 
+		for (Shader* shader : shaders) {
+			shader->use();
 			light->setLightUniform(shader);
+		}
 	}
 }
 

@@ -39,7 +39,7 @@ public:
 	Camera(float screenWidth = 16.f, float screenHeight = 9.f, float nearPlane = 0.1f, float farPlane = 1000.f, float zoom = 46.f);
 	~Camera();
 
-	bool isInFrustum(const glm::vec3 & position);
+	bool isInFrustum(const glm::vec3 & position, bool permissive = false);
 
 	// Movements
 	void processMove(CameraMovement direction, float deltaTime);
@@ -85,18 +85,19 @@ Camera::~Camera()
 {
 }
 
-inline bool Camera::isInFrustum(const glm::vec3 & position)
+bool Camera::isInFrustum(const glm::vec3 & position, bool permissive)
 {
 	glm::vec4 pos(position, 1);
 	glm::vec4 tranPos;
 
 	glm::vec4 camSpace = m_view * pos;
-	//glm::mat4x4 VP = m_projection * m_view;
 
-	glm::vec4 row0 = glm::row(m_projection, 0);
-	glm::vec4 row1 = glm::row(m_projection, 1);
-	glm::vec4 row2 = glm::row(m_projection, 2);
-	glm::vec4 row3 = glm::row(m_projection, 3);
+	glm::mat4x4 &proj = permissive ? m_permissiveProjection : m_projection;
+
+	glm::vec4 row0 = glm::row(proj, 0);
+	glm::vec4 row1 = glm::row(proj, 1);
+	glm::vec4 row2 = glm::row(proj, 2);
+	glm::vec4 row3 = glm::row(proj, 3);
 
 	tranPos.x = glm::dot(row0, camSpace);
 	tranPos.y = glm::dot(row1, camSpace);
@@ -177,7 +178,7 @@ void Camera::processZoom(float yoffset)
 void Camera::updateProjectionMatrix()
 {
 	m_projection = glm::perspective(m_zoom, m_screenWidth / m_screenHeight, m_nearPlane, m_farPlane);
-	//m_permissiveProjection = glm::perspective(m_zoom, (m_screenWidth / m_screenHeight) * 2.f, m_nearPlane, m_farPlane);
+	m_permissiveProjection = glm::perspective(m_zoom, (m_screenWidth / m_screenHeight) * 2.f, m_nearPlane, m_farPlane);
 }
 
 void Camera::updateViewMatrix()
@@ -201,9 +202,13 @@ void Camera::updateVectors()
 
 void Camera::update()
 {
-	Shader* shader = Shaders::getInstance()->currentShader();
+	std::vector<Shader*> shaders = Shaders::getInstance()->getShaders();
 
-	shader->setUniform3f("viewPos", transform.position());
+	for (Shader* shader : shaders) {
+		shader->use();
+		shader->setUniform3f("viewPos", transform.position());
+	}
+	
 }
 
 void Camera::useMVP()

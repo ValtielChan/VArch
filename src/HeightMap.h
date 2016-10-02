@@ -31,7 +31,9 @@ public:
 
 	void generateSimplex(NoiseProperties *np);
 	NormalMap* generateNormalMap();
+
 	void transformInterval(float newMin, float newMax);
+	HeightMap* getPart(glm::vec2 min, glm::vec2 max);
 
 	GLuint genGLTexture();
 };
@@ -126,6 +128,27 @@ void HeightMap::transformInterval(float newMin, float newMax)
 	m_max = newMax;
 
 	genGLTexture();
+}
+
+HeightMap * HeightMap::getPart(glm::vec2 min, glm::vec2 max)
+{
+	// TODO : Exception min max coherence
+
+	HeightMap* hm = new HeightMap(max.x - min.x, max.y - min.y);
+
+	int i = 0;
+	int j = 0;
+
+	for (int x = min.x; x < max.x; x++, i++) {
+		for (int y = min.y; y < max.y; y++, j++) {
+
+			hm->set(i, j, get(x, y));
+		}
+
+		j = 0;
+	}
+
+	return hm;
 }
 
 GLuint HeightMap::genGLTexture()

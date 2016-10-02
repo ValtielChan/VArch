@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Camera.h" />
@@ -45,6 +46,7 @@
     <ClInclude Include="src\QTNode.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\Scene.h" />
+    <ClInclude Include="src\SelfIlluminMaterial.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\Shaders.h" />
     <ClInclude Include="src\Singleton.h" />
