@@ -66,7 +66,7 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-	GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "VArch", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "VArch - Octree", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 
 	// Set the required callback functions
@@ -93,10 +93,11 @@ int main()
 	SelfIlluminMaterial *SIMat = new SelfIlluminMaterial();
 
 	// HeightMap
+
 	NoiseProperties np = NoiseProperties(2, 1, 4);
-	HeightMap* heightMap = new HeightMap(NBCHUNK * 256, NBCHUNK * 256);
+	HeightMap* heightMap = new HeightMap(NBCHUNK * 127, NBCHUNK * 127);
 	heightMap->generateSimplex(&np);
-	heightMap->transformInterval(-0.5f, .5f);
+	//heightMap->transformInterval(-0.5f, .5f);
 
 	// Light
 	DirectionalLight* light = new DirectionalLight;
@@ -157,7 +158,7 @@ int main()
 		demulti++;
 
 		renderer.render();
-		//renderer.renderToQuad(cubemap);
+		//renderer.renderToQuad(terrain.colorMap()->genGLTexture());
 
 		// Swap the buffers
 		glfwSwapBuffers(window);

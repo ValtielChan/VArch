@@ -20,11 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Chunk.h" />
+    <ClInclude Include="src\ColorTable.h" />
     <ClInclude Include="src\Component.h" />
     <ClInclude Include="src\CubeMap.h" />
     <ClInclude Include="src\DefaultRenderer.h" />
@@ -32,6 +32,7 @@
     <ClInclude Include="src\DisplacementPhongMaterial.h" />
     <ClInclude Include="src\Drawable.h" />
     <ClInclude Include="src\enum.h" />
+    <ClInclude Include="src\Exception.h" />
     <ClInclude Include="src\FrameBufferObject.h" />
     <ClInclude Include="src\HeightMap.h" />
     <ClInclude Include="src\HeightMapFilter.h" />
@@ -52,6 +53,7 @@
     <ClInclude Include="src\Singleton.h" />
     <ClInclude Include="src\Terrain.h" />
     <ClInclude Include="src\Texture2D.h" />
+    <ClInclude Include="src\TextureRGB.h" />
     <ClInclude Include="src\Transform.h" />
     <ClInclude Include="src\VoxelOctree.h" />
   </ItemGroup>

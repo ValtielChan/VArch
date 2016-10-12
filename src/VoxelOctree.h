@@ -109,7 +109,7 @@ public:
 	/// <summary>
 	/// build with heightmap
 	/// </summary>
-	void buildTerrain(HeightMap* hm);
+	void buildTerrain(HeightMap* hm, TextureRGB* colorMap = nullptr, NormalMap* normalMap = nullptr);
 
 	/// <summary>
 	/// select the cells according to certains conditions
@@ -418,7 +418,7 @@ inline void VoxelOctree::build()
 	}
 }
 
-void VoxelOctree::buildTerrain(HeightMap * hm)
+void VoxelOctree::buildTerrain(HeightMap * hm, TextureRGB* colorMap, NormalMap* normalMap)
 {
 	// TODO : Non Square heightmap exception
 
@@ -462,12 +462,20 @@ void VoxelOctree::buildTerrain(HeightMap * hm)
 
 abort:
 
+	if (colorMap) {
+
+		glm::vec3 color = colorMap->get(bMin.x + nvSize / 2, bMin.y + nvSize / 2);
+		for (int i : m_vertices) {
+			ref_vertices->at(i).color = color;
+		}
+	}
+
 	if (middle && m_depth < DEPTH) {
 		exist = true;
 		subdivide();
 
 		for (int i = 0; i < 8; i++)
-			m_cells[i]->buildTerrain(hm);
+			m_cells[i]->buildTerrain(hm, colorMap, normalMap);
 	}
 	else if (below || middle) {
 		exist = true;

@@ -12,10 +12,10 @@ public:
 	Terrain(HeightMap* heightMap, Camera* camera, int nbChunk = 1, float chunkSize = 1.f);
 	~Terrain();
 
+	TextureRGB* colorMap() { return m_colorMap; }
+
 	void addMeshesToObject(Object* object);
-
 	void findNearest();
-
 	void process();
 
 private:
@@ -24,6 +24,7 @@ private:
 
 	std::vector<VoxelOctree*> m_chunks;
 	HeightMap* m_heightMap;
+	TextureRGB* m_colorMap;
 
 	int m_nbChunk;
 	float m_chunkSize; // Correspond to voxelSize of Octrees
@@ -40,6 +41,9 @@ Terrain::Terrain(HeightMap* heightMap, Camera* camera, int nbChunk, float chunkS
 	m_heightMap(heightMap),
 	ref_camera(camera)
 {
+	ColorTable colorTable = ColorTable::Nature(128);
+	m_colorMap = heightMap->generateColorMap(colorTable);
+
 	for (int x = 0; x < nbChunk; x++) {
 		for (int z = 0; z < nbChunk; z++) {
 
@@ -47,8 +51,9 @@ Terrain::Terrain(HeightMap* heightMap, Camera* camera, int nbChunk, float chunkS
 
 			m_chunks.push_back(new VoxelOctree(glm::vec3(x * m_chunkSize, 0, z * m_chunkSize), m_chunkSize));
 			HeightMap* hm = m_heightMap->getPart(glm::vec2(z * hmStep, x * hmStep), glm::vec2((z + 1) * hmStep, (x + 1) * hmStep));
-			
-			m_chunks.back()->buildTerrain(hm);
+			TextureRGB* cm = m_colorMap->getPart(glm::vec2(z * hmStep, x * hmStep), glm::vec2((z + 1) * hmStep, (x + 1) * hmStep));
+
+			m_chunks.back()->buildTerrain(hm, cm);
 			
 			m_chunks.back()->rootUpdateNeighbors();
 		}
@@ -82,7 +87,7 @@ void Terrain::findNearest()
 
 	m_curChunk = m_chunks[(int)xIndex * m_nbChunk + (int)zIndex];
 
-	std::cout << "(" << xIndex << "," << zIndex << ")" << std::endl;
+	//std::cout << "(" << xIndex << "," << zIndex << ")" << std::endl;
 }
 
 void Terrain::process()

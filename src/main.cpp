@@ -11,7 +11,7 @@
 #include <GLFW/glfw3.h>
 
 // GL includes
-#include "VoxelOctree.h"
+#include "ColorTable.h"
 #include "Shaders.h"
 #include "Camera.h"
 #include "MVP.h"
@@ -30,7 +30,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 // Properties
-GLuint screenWidth = 1280, screenHeight = 720;
+GLuint screenWidth = 1080, screenHeight = 1080;
 
 // Function prototypes
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
@@ -84,67 +84,22 @@ int main()
 	// Setup some OpenGL options
 	glEnable(GL_DEPTH_TEST);
 
-
-	// Set material textures
-	PhongMaterial *mat = new PhongMaterial();
+	// ColorTable
+	ColorTable colorTable = ColorTable::Nature(128);
 
 	// HeightMap
-	NoiseProperties np = NoiseProperties(1, 1, 1);
+	NoiseProperties np = NoiseProperties(2, 1, 4);
 	HeightMap* heightMap = new HeightMap(256, 256);
 	heightMap->generateSimplex(&np);
-	heightMap->transformInterval(-0.5f, -.25f);
+	//heightMap->transformInterval(0.f, 1.f);
 
-	// Light
-	DirectionalLight* light = new DirectionalLight;
-	light->direction = glm::vec3(-0.5, 1, -0.7);
-	light->diffuse = glm::vec3(1);
-	//light->transform.translate(glm::vec3(0, 2, 0));
-
-	Mesh* refCube = new Mesh(mat);
-	Mesh* landMarkMesh = new Mesh(mat);
-	landMarkMesh->generateLandmark();
-
-	// Octree
-	VoxelOctree* octree = new VoxelOctree();
-
-	Mesh* octreeMesh = octree->mesh();
-	octreeMesh->setMaterial(mat);
-
-	octree->buildTerrain(heightMap);
-	octree->rootUpdateNeighbors();
-
-	int nbVoxel = 0;
-	octree->countExistingVoxel(nbVoxel);
-	std::cout << "Nb voxels : " << nbVoxel << std::endl;
-	std::cout << "Size Of Octree : " << (octree->sizeOf() * nbVoxel) / 1000000 << " Mo" << std::endl;
-
-	std::cout << "Size Of glm::vec3 : " << sizeof(glm::vec3) << std::endl;
-	
-	// Have to be a Loop
-	octree->resetSelection();
-	octree->select(camera);
-	octree->buildTriangles();
-
-	Object *root = new Object();
-	root->addComponent(octreeMesh);
-
-	Object *landMark = new Object();
-	landMark->addComponent(landMarkMesh);
-
-	landMark->transform.translate(glm::vec3(-1, -1, -1));
-
-	root->addChild(landMark);
+	TextureRGB* colorMap = heightMap->generateColorMap(colorTable);
 
 	// Scene
-	Scene scene = Scene(root, camera);
-	scene.addLight(light);
+	Scene scene = Scene(NULL, camera);
 
 	DefaultRenderer renderer(&scene);
 	renderer.setWireframe(false);
-
-	Shaders::getInstance()->useShader(BuiltInShader::PHONG);
-
-	int demulti = 0;
 
 	// Game loop
 	while (!glfwWindowShouldClose(window))
@@ -157,27 +112,8 @@ int main()
 		// Check and call events
 		glfwPollEvents();
 		Do_Movement();
-		wireframe(&renderer);
-		stopSelection();
 
-		light->direction = camera->front();
-
-		if (!stopSelect && demulti == 1) {
-
-			octree->resetSelection();
-			octree->select(camera);
-			octree->buildTriangles();
-
-			demulti = 0;
-		}
-		else {
-			demulti = 0;
-		}
-
-		demulti++;
-
-		renderer.render();
-		//renderer.renderToQuad(cubemap);
+		renderer.renderToQuad(colorMap->genGLTexture());
 
 		// Swap the buffers
 		glfwSwapBuffers(window);

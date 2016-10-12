@@ -9,14 +9,16 @@
 
 // Engine
 #include "NormalMap.h"
+#include "TextureRGB.h"
 #include "Noise.h"
+#include "ColorTable.h"
+
+#define EXCEPTION_ID "[HeightMap]"
 
 class HeightMap : public Texture2D<float>
 {
 private:
 
-	float m_min;
-	float m_max;
 
 public:
 
@@ -26,11 +28,9 @@ public:
 	void set(int x, int y, float value);
 	float get(int x, int y);
 
-	float min() { return m_min; }
-	float max() { return m_max; }
-
 	void generateSimplex(NoiseProperties *np);
 	NormalMap* generateNormalMap();
+	TextureRGB* generateColorMap(const ColorTable &colorTable);
 
 	void transformInterval(float newMin, float newMax);
 	HeightMap* getPart(glm::vec2 min, glm::vec2 max);
@@ -38,7 +38,7 @@ public:
 	GLuint genGLTexture();
 };
 
-HeightMap::HeightMap(int width, int height) : Texture2D(width, height), m_min(2542.f), m_max(-2542.f)
+HeightMap::HeightMap(int width, int height) : Texture2D(width, height)
 {}
 
 
@@ -47,10 +47,21 @@ HeightMap::~HeightMap()
 
 void HeightMap::set(int x, int y, float value)
 {
-	m_matrix[y * m_width + x] = value;
+	try {
+		if (x >= 0 || x < m_width || y >= 0 || y < m_height) {
 
-	m_min = std::fmin(value, m_min);
-	m_max = std::fmax(value, m_max);
+			m_matrix[y * m_width + x] = value;
+
+			m_min = std::fmin(value, m_min);
+			m_max = std::fmax(value, m_max);
+		}
+		else {
+			throw Exception(ErrorLevel::ERROR, std::string(EXCEPTION_ID) + " Out of bound texel access");
+		}
+	}
+	catch (Exception const &e) {
+		e.print();
+	}
 }
 
 float HeightMap::get(int x, int y)
@@ -107,6 +118,21 @@ NormalMap * HeightMap::generateNormalMap()
 	return normalMap;
 }
 
+TextureRGB * HeightMap::generateColorMap(const ColorTable &colorTable)
+{
+	TextureRGB* colorMap = new TextureRGB(m_width, m_height);
+
+	for (int x = 0; x < m_width; x++) {
+		for (int y = 0; y < m_height; y++) {
+
+			int index = ((get(x, y) - m_min) / (m_max - m_min)) * colorTable.size();
+			colorMap->set(x, y, colorTable.color(index));
+		}
+	}
+
+	return colorMap;
+}
+
 void HeightMap::transformInterval(float newMin, float newMax)
 {
 	m_max -= m_min;
@@ -147,6 +173,10 @@ HeightMap * HeightMap::getPart(glm::vec2 min, glm::vec2 max)
 
 		j = 0;
 	}
+
+	// TODO : shade set min max of part
+	hm->setMin(m_min);
+	hm->setMax(m_max);
 
 	return hm;
 }

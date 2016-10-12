@@ -13,16 +13,18 @@
     <Filter Include="Voxel">
       <UniqueIdentifier>{0c4af16a-210c-4b33-9c96-3c8a25b4c424}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Exception">
+      <UniqueIdentifier>{cf1c1cf0-b56e-4803-87df-469be3f689f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Texture">
+      <UniqueIdentifier>{3c64eb96-9ad0-499c-b34b-1c110d9340d1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Noise.h">
-      <Filter>Procedural</Filter>
-    </ClInclude>
-    <ClInclude Include="src\HeightMap.h">
       <Filter>Procedural</Filter>
     </ClInclude>
     <ClInclude Include="src\Component.h" />
@@ -80,9 +82,6 @@
     <ClInclude Include="src\MVP.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="src\NormalMap.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="src\Object.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -98,9 +97,6 @@
     <ClInclude Include="src\Singleton.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="src\Texture2D.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="src\Transform.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -109,6 +105,24 @@
     </ClInclude>
     <ClInclude Include="src\SelfIlluminMaterial.h">
       <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Exception.h">
+      <Filter>Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Texture2D.h">
+      <Filter>Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\NormalMap.h">
+      <Filter>Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HeightMap.h">
+      <Filter>Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ColorTable.h">
+      <Filter>Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TextureRGB.h">
+      <Filter>Texture</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
