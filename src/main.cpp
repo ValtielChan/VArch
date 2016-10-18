@@ -30,7 +30,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 // Properties
-GLuint screenWidth = 1080, screenHeight = 1080;
+GLuint screenWidth = 900, screenHeight = 900;
 
 // Function prototypes
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
@@ -91,8 +91,10 @@ int main()
 	NoiseProperties np = NoiseProperties(2, 1, 4);
 	HeightMap* heightMap = new HeightMap(256, 256);
 	heightMap->generateSimplex(&np);
+	
 	//heightMap->transformInterval(0.f, 1.f);
 
+	NormalMap* normalMap = heightMap->generateNormalMap();
 	TextureRGB* colorMap = heightMap->generateColorMap(colorTable);
 
 	// Scene
@@ -113,7 +115,7 @@ int main()
 		glfwPollEvents();
 		Do_Movement();
 
-		renderer.renderToQuad(colorMap->genGLTexture());
+		renderer.renderToQuad(normalMap->genGLTexture());
 
 		// Swap the buffers
 		glfwSwapBuffers(window);

@@ -66,7 +66,7 @@ void HeightMap::set(int x, int y, float value)
 
 float HeightMap::get(int x, int y)
 {
-	if (x < 0 || x >= m_width || y < 0 || y > m_height)
+	if (x < 0 || x >= m_width || y < 0 || y >= m_height)
 		return 0;
 	else
 		return m_matrix[y * m_width + x];
@@ -91,26 +91,45 @@ NormalMap * HeightMap::generateNormalMap()
 {
 	NormalMap* normalMap = new NormalMap(m_width, m_height);
 
+	float strength = 2.f;
+
 	for (int x = 0; x < m_width; x++) {
 		for (int y = 0; y < m_height; y++) {
 
 			float center = get(x, y);
-			float up = get(x, y - 1);
-			float down = get(x, y + 1);
-			float left = get(x - 1, y);
-			float right = get(x + 1, y);
-			float upleft = get(x - 1, y - 1);
-			float upright = get(x + 1, y - 1);
-			float downleft = get(x - 1, y + 1);
-			float downright = get(x + 1, y + 1);
+			float up = get(x, y - 1); //up = y-1 < 0 ? center : up;
+			float down = get(x, y + 1); //down = y+1 > m_height ? center : down;
+			float left = get(x - 1, y); //left = x-1 == 0 ? center : left;
+			float right = get(x + 1, y); //right = x+1 == m_width ? center : right;
+			float upleft = get(x - 1, y - 1); //upleft = x-1 < 0 || y-1 < 0 ? center : upleft;
+			float upright = get(x + 1, y - 1); //upright = x+1 > m_width || y-1 < 0 ? center : upright;
+			float downleft = get(x - 1, y + 1); //downleft = x-1 < 0 || y+1 > m_height ? center : downleft;
+			float downright = get(x + 1, y + 1); //downright = x+1 > m_width || y+1 > m_height ? center : downright;
 
-			float dx = 2 * (right - left) - upleft - downleft + upright + downright;
-			float dy = 1.f / 2.f;
-			float dz = 2 * (up - down) - upleft - upright + downleft + downright;
+			float dx = 2 * (down - up) - upleft - upright + downleft + downright;
+			float dy = 1.f / strength;
+			float dz = 2 * (right - left) - upleft - downleft + upright + downright;
 
 			normalMap->set(x, y, glm::normalize(glm::vec3(dx, dy, dz)));
 			//normalMap->set(x, y, glm::vec3(0, 0, 1));
 		}
+	}
+
+	// Fix borders
+	for (int y = 0; y < m_height; y++) {
+		normalMap->set(0, y, normalMap->get(1, y));
+	}
+
+	for (int y = 0; y < m_height; y++) {
+		normalMap->set(m_width - 1, y, normalMap->get(m_width - 2, y));
+	}
+
+	for (int x = 0; x < m_height; x++) {
+		normalMap->set(x, 0, normalMap->get(x, 1-));
+	}
+
+	for (int x = 0; x < m_height; x++) {
+		normalMap->set(x, m_height - 1, normalMap->get(x, m_height - 2));
 	}
 
 	normalMap->genGLTexture();

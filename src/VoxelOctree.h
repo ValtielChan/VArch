@@ -13,7 +13,8 @@
 #include "Camera.h"
 
 #define DEPTH 7
-#define THRESHOLD 20
+#define DEPTH_LOD 4
+#define THRESHOLD 50
 #define PERVISSIVE_FRUSTUM false
 
 //#define BENCHMARK
@@ -178,6 +179,15 @@ VoxelOctree::VoxelOctree(glm::vec3 worldCenter, float voxelSize)
 	deeper = false;
 
 	m_mesh = new Mesh();
+
+	PhongMaterial* mat = new PhongMaterial();
+	//mat->ambient = glm::vec3(1);
+	//mat->diffuse = glm::vec3(1);
+	//mat->specular = glm::vec3(1);
+	mat->shininess = 1;
+
+	m_mesh->setMaterial(mat);
+
 	ref_vertices = m_mesh->getVertices();
 	ref_indices = m_mesh->getIndices();
 
@@ -470,6 +480,14 @@ abort:
 		}
 	}
 
+	if (normalMap) {
+
+		glm::vec3 normal = normalMap->get(bMin.x + nvSize / 2, bMin.y + nvSize / 2);
+		for (int i : m_vertices) {
+			ref_vertices->at(i).normal = normal;
+		}
+	}
+
 	if (middle && m_depth < DEPTH) {
 		exist = true;
 		subdivide();
@@ -511,7 +529,7 @@ inline void VoxelOctree::select(Camera* camera)
 		float y = m_worldCenter.z - pov.z;
 		float dist = sqrt(x*x + y*y);
 
-		if (isInFrustum(camera, pow(2, DEPTH - m_depth)) && dist < THRESHOLD / (m_depth + 1)) {
+		if (isInFrustum(camera, pow(2, DEPTH - m_depth)) && (dist < THRESHOLD / (m_depth + 1) || m_depth < DEPTH_LOD)) {
 		
 		//if(true) {
 			if (haveChilds()) {

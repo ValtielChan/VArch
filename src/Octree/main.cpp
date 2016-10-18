@@ -33,7 +33,7 @@
 #define NBCHUNK 4
 
 // Properties
-GLuint screenWidth = 1280, screenHeight = 720;
+GLuint screenWidth = 1920, screenHeight = 1080;
 
 // Function prototypes
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
@@ -90,18 +90,22 @@ int main()
 
 	// Set material textures
 	PhongMaterial *mat = new PhongMaterial();
+	mat->ambient = glm::vec3(1);
+	mat->diffuse = glm::vec3(1);
+	mat->specular = glm::vec3(1);
+	mat->shininess = 32;
+
 	SelfIlluminMaterial *SIMat = new SelfIlluminMaterial();
 
 	// HeightMap
-
 	NoiseProperties np = NoiseProperties(2, 1, 4);
-	HeightMap* heightMap = new HeightMap(NBCHUNK * 127, NBCHUNK * 127);
+	HeightMap* heightMap = new HeightMap(NBCHUNK * 150, NBCHUNK * 150);
 	heightMap->generateSimplex(&np);
 	//heightMap->transformInterval(-0.5f, .5f);
 
 	// Light
 	DirectionalLight* light = new DirectionalLight;
-	light->direction = glm::vec3(-0.5, 1, -0.7);
+	light->direction = glm::vec3(0, -1, 0);
 	light->diffuse = glm::vec3(1);
 	//light->transform.translate(glm::vec3(0, 2, 0));
 
@@ -147,7 +151,7 @@ int main()
 		wireframe(&renderer);
 		stopSelection();
 
-		light->direction = camera->front();
+		//light->direction = camera->front();
 
 		if (!stopSelect) {
 

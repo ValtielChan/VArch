@@ -16,6 +16,7 @@ public:
 	NormalMap(int width, int height);
 	~NormalMap();
 
+	NormalMap* getPart(glm::vec2 min, glm::vec2 max);
 	GLuint genGLTexture();
 
 private:
@@ -31,6 +32,26 @@ NormalMap::~NormalMap()
 {
 }
 
+NormalMap *NormalMap::getPart(glm::vec2 min, glm::vec2 max)
+{
+	NormalMap* normalMap = new NormalMap(max.x - min.x, max.y - min.y);
+
+	int i = 0;
+	int j = 0;
+
+	for (int x = min.x; x < max.x; x++, i++) {
+		for (int y = min.y; y < max.y; y++, j++) {
+
+			normalMap->set(i, j, get(x, y));
+		}
+
+		j = 0;
+	}
+
+	return normalMap;
+}
+
+
 GLuint NormalMap::genGLTexture()
 {
 	glGenTextures(1, &m_texture);
@@ -41,8 +62,8 @@ GLuint NormalMap::genGLTexture()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	// Set texture filtering
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	// Load texture data form this
 	float* data = new float[m_width*m_height*3]; // TODO

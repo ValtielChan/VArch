@@ -43,7 +43,7 @@ void main()
     vec3 lightDir = normalize(-light.direction);  
     float diff = max(dot(norm, lightDir), 0.0);
     diff += wireframe;
-    vec3 diffuse = (light.diffuse + overLum) * (diff * Color);//material.diffuse);
+    vec3 diffuse = (light.diffuse + overLum) * (diff * Color * material.diffuse);
     
     // Specular
     vec3 viewDir = normalize(viewPos - FragPos);
