@@ -20,6 +20,8 @@ public:
 	void findNearest();
 	void process();
 
+	int sizeOf() const;
+
 private:
 
 	Camera* ref_camera;
@@ -41,6 +43,7 @@ private:
 
 	// Timers
 	bool m_alt;
+	bool m_alt2;
 	int m_nearestFrameCounter;
 	int m_remainFrameCounter;
 	int m_findNearestCounter;
@@ -50,6 +53,7 @@ Terrain::Terrain(HeightMap* heightMap, Camera* camera, int nbChunk, float chunkS
 	: m_nbChunk(nbChunk), 
 	m_chunkSize(chunkSize),
 	m_alt(true),
+	m_alt2(true),
 	m_nearestFrameCounter(0),
 	m_remainFrameCounter(0),
 	m_findNearestCounter(0),
@@ -82,7 +86,11 @@ Terrain::Terrain(HeightMap* heightMap, Camera* camera, int nbChunk, float chunkS
 
 Terrain::~Terrain()
 {
+	for (std::vector<VoxelOctree*>::iterator it = m_chunks.begin(); it != m_chunks.end(); ++it)
+		delete (*it);
 
+	delete m_colorMap;
+	delete m_normalMap;
 }
 
 void Terrain::addMeshesToObject(Object* object)
@@ -136,8 +144,18 @@ void Terrain::process()
 {
 	int i = 0;
 
+	m_chunks[m_remainFrameCounter]->resetSelection();
+	m_chunks[m_remainFrameCounter]->select(ref_camera);
+	m_chunks[m_remainFrameCounter]->buildTriangles();
+
+	m_remainFrameCounter++;
+
+	if (m_remainFrameCounter >= m_chunks.size()) {
+		m_remainFrameCounter = 0;
+	}
+
 	// Find nearest update
-	if (m_findNearestCounter >= UPDATE_NEAREST_FRAME) {
+	/*if (m_findNearestCounter >= UPDATE_NEAREST_FRAME) {
 		findNearest();
 		m_findNearestCounter = 0;
 	}
@@ -156,21 +174,39 @@ void Terrain::process()
 	}
 	else {
 
-		while (i < PROCESS_PER_FRAME) {
+		m_alt2 = !m_alt2;
 
-			m_chunks[m_aroundIndexes[m_nearestFrameCounter]]->resetSelection();
-			m_chunks[m_aroundIndexes[m_nearestFrameCounter]]->select(ref_camera);
-			m_chunks[m_aroundIndexes[m_nearestFrameCounter]]->buildTriangles();
+		if (m_alt2) {
 
-			i++;
-			m_nearestFrameCounter++;
+			while (i < PROCESS_PER_FRAME) {
 
-			if (m_nearestFrameCounter >= m_aroundIndexes.size())
-				m_nearestFrameCounter = 0;
+				m_chunks[m_aroundIndexes[m_nearestFrameCounter]]->resetSelection();
+				m_chunks[m_aroundIndexes[m_nearestFrameCounter]]->select(ref_camera);
+				m_chunks[m_aroundIndexes[m_nearestFrameCounter]]->buildTriangles();
+
+				i++;
+				m_nearestFrameCounter++;
+
+				if (m_nearestFrameCounter >= m_aroundIndexes.size())
+					m_nearestFrameCounter = 0;
+			}
+
 		}
-	}
+		else {
+			m_remainFrameCounter = 0;
 
-	if (m_remainFrameCounter >= REMAIN_PROCESS_FRAME) {
+			if (m_curRemain >= m_remainIndexes.size())
+				m_curRemain = 0;
+
+			m_chunks[m_remainIndexes[m_curRemain]]->resetSelection();
+			m_chunks[m_remainIndexes[m_curRemain]]->select(ref_camera);
+			m_chunks[m_remainIndexes[m_curRemain]]->buildTriangles();
+
+			m_curRemain++;
+		}
+	}*/
+
+	/*if (m_remainFrameCounter >= REMAIN_PROCESS_FRAME) {
 
 		m_remainFrameCounter = 0;
 
@@ -184,6 +220,24 @@ void Terrain::process()
 		m_curRemain++;
 	}
 
-	m_remainFrameCounter++;
+	m_remainFrameCounter++;*/
+}
+
+int Terrain::sizeOf() const
+{
+	int colorMapSize = 0;
+	int normalMapSize = 0;
+	int octreeArraySize = 0;
+
+	if (m_colorMap)
+		colorMapSize += m_colorMap->sizeOf();
+
+	if (m_normalMap)
+		normalMapSize += m_normalMap->sizeOf();
+
+	for (int i = 0; i < m_chunks.size(); i++)
+		octreeArraySize += m_chunks[i]->sizeOf();
+
+	return m_heightMap->sizeOf() + colorMapSize + normalMapSize + octreeArraySize;
 }
 

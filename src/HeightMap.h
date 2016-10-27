@@ -110,7 +110,7 @@ NormalMap * HeightMap::generateNormalMap()
 			float dy = 1.f / strength;
 			float dz = 2 * (right - left) - upleft - downleft + upright + downright;
 
-			normalMap->set(x, y, glm::normalize(glm::vec3(dx, dy, dz)));
+			normalMap->set(x, y, glm::normalize(glm::vec3(-dx, dy, -dz)));
 			//normalMap->set(x, y, glm::vec3(0, 0, 1));
 		}
 	}
@@ -125,7 +125,7 @@ NormalMap * HeightMap::generateNormalMap()
 	}
 
 	for (int x = 0; x < m_height; x++) {
-		normalMap->set(x, 0, normalMap->get(x, 1-));
+		normalMap->set(x, 0, normalMap->get(x, 1));
 	}
 
 	for (int x = 0; x < m_height; x++) {

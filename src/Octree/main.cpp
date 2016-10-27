@@ -29,11 +29,12 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp>
 
-#define NBCHUNK 4
+#define NBCHUNK 8
 
 // Properties
-GLuint screenWidth = 1920, screenHeight = 1080;
+GLuint screenWidth = 1600, screenHeight = 900;
 
 // Function prototypes
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
@@ -41,10 +42,12 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void Do_Movement();
 void wireframe(DefaultRenderer * renderer);
+void printTerrainSize(const Terrain &terrain);
 void stopSelection();
 
 // Camera
 Camera* camera = new Camera((float)screenWidth, (float)screenHeight, 0.01f, 1000.f, 0.90f);
+
 bool keys[1024];
 GLfloat lastX = 400, lastY = 300;
 bool firstMouse = true;
@@ -87,6 +90,9 @@ int main()
 	// Setup some OpenGL options
 	glEnable(GL_DEPTH_TEST);
 
+	// Camera
+	camera->transform.setPosition(glm::vec3(16.3f, 10.7f, -6.5f));
+	camera->transform.setRotation(glm::vec3(-40.f, 124.f, 0.f));
 
 	// Set material textures
 	PhongMaterial *mat = new PhongMaterial();
@@ -98,14 +104,14 @@ int main()
 	SelfIlluminMaterial *SIMat = new SelfIlluminMaterial();
 
 	// HeightMap
-	NoiseProperties np = NoiseProperties(2, 1, 4);
+	NoiseProperties np = NoiseProperties(2, 1, 8);
 	HeightMap* heightMap = new HeightMap(NBCHUNK * 150, NBCHUNK * 150);
 	heightMap->generateSimplex(&np);
-	//heightMap->transformInterval(-0.5f, .5f);
+	heightMap->transformInterval(-1.f, 1.f);
 
 	// Light
 	DirectionalLight* light = new DirectionalLight;
-	light->direction = glm::vec3(0, -1, 0);
+	light->direction = glm::vec3(.5f, -1, .5f);
 	light->diffuse = glm::vec3(1);
 	//light->transform.translate(glm::vec3(0, 2, 0));
 
@@ -114,7 +120,7 @@ int main()
 	landMarkMesh->generateLandmark();
 
 	// Octree
-	Terrain terrain(heightMap, camera, NBCHUNK, 4);
+	Terrain terrain(heightMap, camera, NBCHUNK, 2);
 
 	Object *root = new Object();
 	terrain.addMeshesToObject(root);
@@ -150,6 +156,7 @@ int main()
 		Do_Movement();
 		wireframe(&renderer);
 		stopSelection();
+		printTerrainSize(terrain);
 
 		//light->direction = camera->front();
 
@@ -176,7 +183,7 @@ int main()
 // Moves/alters the camera positions based on user input
 void Do_Movement()
 {
-	float speed = 3.f;
+	float speed = 1.f;
 
 	// Camera controls
 	if (keys[GLFW_KEY_W])
@@ -206,6 +213,12 @@ void wireframe(DefaultRenderer * renderer)
 		renderer->setWireframe(false);
 	if (keys[GLFW_KEY_Z])
 		renderer->setWireframe(true);
+}
+
+void printTerrainSize(const Terrain &terrain)
+{
+	if (keys[GLFW_KEY_T])
+		std::cout << "Terrain size : " << terrain.sizeOf() / 1000000 << " Mo" << std::endl;
 }
 
 // Is called whenever a key is pressed/released via GLFW

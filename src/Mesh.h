@@ -53,6 +53,8 @@ public:
 	void updateGL();
 	void generateCube(float size, glm::vec3 offset, glm::vec3 color);
 	void generateLandmark();
+
+	int sizeOf();
 };
 
 Mesh::Mesh()
@@ -225,4 +227,9 @@ inline void Mesh::generateLandmark()
 	generateCube(.2f, glm::vec3(0.5f, 0, 0), glm::vec3(1, 0, 0));
 	generateCube(.2f, glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0));
 	generateCube(.2f, glm::vec3(0, 0, 0.5f), glm::vec3(0, 0, 1));
+}
+
+int Mesh::sizeOf()
+{
+	return m_indices.size() * sizeof(int) + m_vertices.size() * sizeof(Vertex) + sizeof(*this);
 }

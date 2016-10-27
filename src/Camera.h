@@ -202,6 +202,9 @@ void Camera::updateVectors()
 
 void Camera::update()
 {
+	updateVectors();
+	updateViewMatrix();
+
 	std::vector<Shader*> shaders = Shaders::getInstance()->getShaders();
 
 	for (Shader* shader : shaders) {

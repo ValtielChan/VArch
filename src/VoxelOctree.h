@@ -12,9 +12,9 @@
 #include "HeightMap.h"
 #include "Camera.h"
 
-#define DEPTH 7
+#define DEPTH 6
 #define DEPTH_LOD 4
-#define THRESHOLD 50
+#define THRESHOLD 100
 #define PERVISSIVE_FRUSTUM false
 
 //#define BENCHMARK
@@ -234,7 +234,8 @@ VoxelOctree::VoxelOctree(VoxelOctree* parent, Mesh* mesh, glm::vec3 worldCenter,
 
 VoxelOctree::~VoxelOctree()
 {
-
+	for (int i = 0; i < 8; i++)
+		delete m_cells[i];
 }
 
 VoxelOctree* VoxelOctree::getCell(OctreePosition position)
@@ -289,6 +290,7 @@ inline bool VoxelOctree::isInFrustum(Camera * camera, int subLevel)
 
 	bool isInFrustum = false;
 	
+#pragma omp parallel for collapse(2)
 	for (int i = 0; i < subLevel + 1; i++) {
 		for (int j = 0; j < subLevel + 1; j++) {
 
@@ -503,7 +505,7 @@ abort:
 	t = clock() - t;
 
 	if (!m_parent) // Only root print the whole bench result
-		std::cout << "[BENCH] VoxelOctree::build() : " << ((float)t) << " ms" << std::endl;
+		std::cout << "[BENCH] VoxelOctree::buildTerrain() : " << ((float)t) << " ms" << std::endl;
 #endif
 }
 
@@ -516,11 +518,8 @@ inline void VoxelOctree::select(Camera* camera)
 
 	glm::vec3 pov = camera->transform.position();
 
-	if (!m_parent) {  // if root
-		ref_indices->clear();
-
+	if (!m_parent)   // if root
 		selected = true;
-	}
 	
 	if (exist) {
 		
@@ -586,6 +585,9 @@ inline void VoxelOctree::buildTriangles()
 #ifdef BENCHMARK
 	clock_t t = clock();
 #endif
+
+	if (!m_parent)  // if root
+		ref_indices->clear();
 
 	if (selected) {
 
@@ -985,7 +987,7 @@ inline void VoxelOctree::countExistingVoxel(int &count)
 
 inline int VoxelOctree::sizeOf()
 {
-	 return m_vertices.size() * sizeof(int) + sizeof(*this);
+	return m_vertices.size() * sizeof(int) + sizeof(*this) + m_mesh->sizeOf();
 }
 
 inline void VoxelOctree::addVertices()

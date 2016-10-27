@@ -36,6 +36,8 @@ public:
 
 	virtual GLuint genGLTexture() = 0;
 
+	virtual int sizeOf();
+
 	int width() { return m_width; }
 	int height() { return m_height; }
 
@@ -60,4 +62,10 @@ inline void Texture2D<T>::set(int x, int y, T value)
 	catch (Exception const &e) {
 		e.print();
 	}
+}
+
+template<typename T>
+int Texture2D<T>::sizeOf()
+{
+	return m_width * m_height * sizeof(T);
 }
