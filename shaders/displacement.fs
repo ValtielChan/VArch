@@ -1,4 +1,4 @@
-#version 330 core
+#version 430
 
 struct Material {
     vec3 ambient;

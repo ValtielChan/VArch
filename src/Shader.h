@@ -19,6 +19,7 @@ public:
 
 	GLuint program;
 
+	Shader(const GLchar *computePath);
 	Shader(const GLchar *vertexPath, const GLchar *fragmentPath);
 	Shader(const GLchar* vertexPath, const GLchar* fragmentPath, const GLchar *geometryPath);
 
@@ -30,6 +31,65 @@ public:
 
 	void use();
 };
+
+Shader::Shader(const GLchar * computePath)
+{
+	// 1. Retrieve the vertex/fragment source code from filePath
+	std::string computeCode;
+	std::ifstream computeShaderFile;
+	// ensures ifstream objects can throw exceptions:
+	computeShaderFile.exceptions(std::ifstream::badbit);
+	try
+	{
+		// Open files
+		computeShaderFile.open(computePath);
+		std::stringstream computeShaderStream;
+		// Read file's buffer contents into streams
+		computeShaderStream << computeShaderFile.rdbuf();
+		// close file handlers
+		computeShaderFile.close();
+		// Convert stream into string
+		computeCode = computeShaderStream.str();
+	}
+	catch (std::ifstream::failure e)
+	{
+		std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+	}
+
+	const GLchar* computeShaderCode = computeCode.c_str();
+
+	// 2. Compile shaders
+	GLuint compute;
+	GLint success;
+	GLchar infoLog[512];
+
+	// Compute Shader
+	compute = glCreateShader(GL_COMPUTE_SHADER);
+	glShaderSource(compute, 1, &computeShaderCode, NULL);
+	glCompileShader(compute);
+	// Print compile errors if any
+	glGetShaderiv(compute, GL_COMPILE_STATUS, &success);
+	if (!success)
+	{
+		glGetShaderInfoLog(compute, 512, NULL, infoLog);
+		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+	}
+	// Shader program
+	this->program = glCreateProgram();
+
+	glAttachShader(this->program, compute);
+	glLinkProgram(this->program);
+
+	// Print linking errors if any
+	glGetProgramiv(this->program, GL_LINK_STATUS, &success);
+	if (!success)
+	{
+		glGetProgramInfoLog(this->program, 512, NULL, infoLog);
+		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+	}
+	// Delete the shaders as they're linked into our program now and no longer necessery
+	glDeleteShader(compute);
+}
 
 Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
 {
@@ -63,6 +123,7 @@ Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
 	}
 	const GLchar* vShaderCode = vertexCode.c_str();
 	const GLchar* fShaderCode = fragmentCode.c_str();
+
 	// 2. Compile shaders
 	GLuint vertex, fragment;
 	GLint success;

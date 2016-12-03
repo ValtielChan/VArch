@@ -7,7 +7,7 @@
 #include "Singleton.h"
 
 enum BuiltInShader {
-	DEFAULT, SCREEN, PHONG, DISPLACEMENT, SELFILLUMIN
+	DEFAULT, SCREEN, PHONG, DISPLACEMENT, SELFILLUMIN, COMPUTE_SAMPLE
 };
 
 class Shaders : public Singleton<Shaders>
@@ -22,6 +22,7 @@ private:
 		m_shaders.push_back(new Shader("shaders\\phong.vs", "shaders\\phong.fs"));
 		m_shaders.push_back(new Shader("shaders\\displacement.vs", "shaders\\displacement.fs"));
 		m_shaders.push_back(new Shader("shaders\\selfillumin.vs", "shaders\\selfillumin.fs"));
+		m_shaders.push_back(new Shader("shaders\\sample.cs"));
 
 		useShader(SCREEN);
 	}

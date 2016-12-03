@@ -78,6 +78,8 @@ inline GLuint TextureRGB::genGLTexture()
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, m_width, m_height, 0, GL_RGB, GL_FLOAT, datas);
 	//glGenerateMipmap(GL_TEXTURE_2D);
 
+	glBindImageTexture(0, m_texture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGB32F);
+
 	// Unbind
 	glBindTexture(GL_TEXTURE_2D, 0);
 

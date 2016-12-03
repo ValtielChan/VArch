@@ -3,6 +3,7 @@ x64/Release/
 x64/Debug/
 src/Octree/x64/
 src/Quadtree/x64/
+src/Compute_Shaders/x64/
 *.opensdf
 *.sdf
 *.VC.db
