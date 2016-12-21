@@ -11,5 +11,5 @@ void main() {
 	float localCoef = length(vec2(ivec2(gl_LocalInvocationID.xy)-8)/8.0);
 	float globalCoef = sin(float(gl_WorkGroupID.x+gl_WorkGroupID.y)*0.1 + roll)*0.5;
 
-	imageStore(destTex, storePos, vec4(1.0, 0.0, 0.0, 0.0));
+	imageStore(destTex, storePos, vec4(1.0-globalCoef*localCoef, 0.0, 0.0, 0.0));
 }

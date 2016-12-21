@@ -36,7 +36,7 @@ private:
 
 public:
 
-	Camera(float screenWidth = 16.f, float screenHeight = 9.f, float nearPlane = 0.1f, float farPlane = 1000.f, float zoom = 46.f);
+	Camera(float screenWidth = 16.f, float screenHeight = 9.f, float nearPlane = 0.1f, float farPlane = 1000.f, float zoom = 60.f);
 	~Camera();
 
 	bool isInFrustum(const glm::vec3 & position, bool permissive = false);
@@ -60,6 +60,7 @@ public:
 	void updateVectors();
 
 	void update();
+	void updateRayTrace();
 
 	// Use camera view and projection matrix as MVP parameters
 	void useMVP();
@@ -206,12 +207,45 @@ void Camera::update()
 	updateViewMatrix();
 
 	std::vector<Shader*> shaders = Shaders::getInstance()->getShaders();
-
+	
+	// Regular Pipeline
 	for (Shader* shader : shaders) {
 		shader->use();
 		shader->setUniform3f("viewPos", transform.position());
 	}
+}
+
+void Camera::updateRayTrace() {
 	
+	// RayTracing ComputeShader
+	Shader* shader = Shaders::getInstance()->getShader(VOXEL_RAYTRACING);
+	shader->use();
+
+	glm::mat4 invViewProjMat = glm::inverse(m_view * m_projection);
+
+	glm::vec4 ray00 = glm::vec4(0, -1, -1, 1) * invViewProjMat;
+	ray00 /= ray00.w;
+	ray00 -= glm::vec4(transform.position(), 1);
+
+	glm::vec4 ray10 = glm::vec4(0, -1, 1, 1) * invViewProjMat;
+	ray10 /= ray10.w;
+	ray10 -= glm::vec4(transform.position(), 1);
+
+	glm::vec4 ray01 = glm::vec4(0, 1, -1, 1) * invViewProjMat;
+	ray01 /= ray01.w;
+	ray01 -= glm::vec4(transform.position(), 1);
+
+	glm::vec4 ray11 = glm::vec4(0, 1, 1, 1) * invViewProjMat;
+	ray11 /= ray11.w;
+	ray11 -= glm::vec4(transform.position(), 1);
+
+	glm::vec4 rayOrigin = glm::vec4(transform.position(), 0) * glm::transpose(m_view * m_projection);
+	shader->setUniform3f("viewPos", glm::vec3(rayOrigin));
+
+	shader->setUniform3f("ray00", glm::normalize(glm::vec3(ray00)));
+	shader->setUniform3f("ray10", glm::normalize(glm::vec3(ray10)));
+	shader->setUniform3f("ray01", glm::normalize(glm::vec3(ray01)));
+	shader->setUniform3f("ray11", glm::normalize(glm::vec3(ray11)));
 }
 
 void Camera::useMVP()

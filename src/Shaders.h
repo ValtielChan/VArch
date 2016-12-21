@@ -7,7 +7,7 @@
 #include "Singleton.h"
 
 enum BuiltInShader {
-	DEFAULT, SCREEN, PHONG, DISPLACEMENT, SELFILLUMIN, COMPUTE_SAMPLE
+	DEFAULT, SCREEN, PHONG, DISPLACEMENT, SELFILLUMIN, COMPUTE_SAMPLE, VOXEL_RAYTRACING
 };
 
 class Shaders : public Singleton<Shaders>
@@ -23,6 +23,7 @@ private:
 		m_shaders.push_back(new Shader("shaders\\displacement.vs", "shaders\\displacement.fs"));
 		m_shaders.push_back(new Shader("shaders\\selfillumin.vs", "shaders\\selfillumin.fs"));
 		m_shaders.push_back(new Shader("shaders\\sample.cs"));
+		m_shaders.push_back(new Shader("shaders\\voxelraytracing.cs"));
 
 		useShader(SCREEN);
 	}

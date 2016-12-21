@@ -27,6 +27,7 @@ public:
 	void setUniform1f(const char * name, float value);
 	void setUniform2f(const char* name, glm::vec2 vec);
 	void setUniform3f(const char * name, glm::vec3 vec);
+	void setUniform4f(const char * name, glm::vec4 vec);
 	void setUniformMatrix4fv(const char* name, glm::mat4x4 mat);
 
 	void use();
@@ -293,6 +294,12 @@ void Shader::setUniform3f(const char * name, glm::vec3 vec)
 {
 	GLint location = glGetUniformLocation(program, name);
 	glUniform3f(location, vec.x, vec.y, vec.z);
+}
+
+void Shader::setUniform4f(const char * name, glm::vec4 vec)
+{
+	GLint location = glGetUniformLocation(program, name);
+	glUniform4f(location, vec.x, vec.y, vec.z, vec.w);
 }
 
 void Shader::setUniformMatrix4fv(const char * name, glm::mat4x4 mat)

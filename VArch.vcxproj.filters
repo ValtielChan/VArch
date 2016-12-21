@@ -124,5 +124,8 @@
     <ClInclude Include="src\TextureRGB.h">
       <Filter>Texture</Filter>
     </ClInclude>
+    <ClInclude Include="src\ComputeShaderTexture.h">
+      <Filter>Texture</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

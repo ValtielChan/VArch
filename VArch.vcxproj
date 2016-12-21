@@ -26,6 +26,7 @@
     <ClInclude Include="src\Chunk.h" />
     <ClInclude Include="src\ColorTable.h" />
     <ClInclude Include="src\Component.h" />
+    <ClInclude Include="src\ComputeShaderTexture.h" />
     <ClInclude Include="src\CubeMap.h" />
     <ClInclude Include="src\DefaultRenderer.h" />
     <ClInclude Include="src\DirectionalLight.h" />
