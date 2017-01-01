@@ -76,7 +76,7 @@ int main()
 	// Setup some OpenGL options
 	glEnable(GL_DEPTH_TEST);
 
-	camera->transform.setPosition(glm::vec3(3, 2, 7));
+	camera->transform.setPosition(glm::vec3(0, 0, 0));
 
 	ComputeShaderTexture texture(screenWidth, screenHeight);
 	GLuint tex_output = texture.genGLTexture();

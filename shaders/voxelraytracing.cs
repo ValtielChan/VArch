@@ -93,4 +93,5 @@ void main() {
 	vec4 color = trace(viewPos, dir);
 
 	imageStore(frameBuffer, pix, color);
+	//imageStore(frameBuffer, pix, vec4(normalize(viewPos), 1));
 }

@@ -221,9 +221,27 @@ void Camera::updateRayTrace() {
 	Shader* shader = Shaders::getInstance()->getShader(VOXEL_RAYTRACING);
 	shader->use();
 
-	glm::mat4 invViewProjMat = glm::inverse(m_view * m_projection);
+	float focalLength = 1.0f / std::tan(m_zoom / 2);
 
-	glm::vec4 ray00 = glm::vec4(0, -1, -1, 1) * invViewProjMat;
+	glm::vec3 ray00;
+	ray00 = glm::vec3(-focalLength, -1, -1);
+	ray00 = glm::vec3(glm::vec4(ray00, 0) * m_projection * m_view);
+
+	glm::vec3 ray10;
+	ray10 = glm::vec3(-focalLength, 1, -1);
+	ray10 = glm::vec3(glm::vec4(ray10, 0) * m_projection * m_view);
+
+	glm::vec3 ray01;
+	ray01 = glm::vec3(-focalLength, -1, 1);
+	ray01 = glm::vec3(glm::vec4(ray01, 0) * m_projection * m_view);
+
+	glm::vec3 ray11;
+	ray11 = glm::vec3(-focalLength, 1, 1);
+	ray11 = glm::vec3(glm::vec4(ray11, 0) * m_projection * m_view);
+
+	//glm::mat4 invViewProjMat = glm::inverse(m_view * m_projection);
+
+	/*glm::vec4 ray00 = glm::vec4(0, -1, -1, 1) * invViewProjMat;
 	ray00 /= ray00.w;
 	ray00 -= glm::vec4(transform.position(), 1);
 
@@ -237,10 +255,10 @@ void Camera::updateRayTrace() {
 
 	glm::vec4 ray11 = glm::vec4(0, 1, 1, 1) * invViewProjMat;
 	ray11 /= ray11.w;
-	ray11 -= glm::vec4(transform.position(), 1);
+	ray11 -= glm::vec4(transform.position(), 1);*/
 
 	glm::vec4 rayOrigin = glm::vec4(transform.position(), 0) * glm::transpose(m_view * m_projection);
-	shader->setUniform3f("viewPos", glm::vec3(rayOrigin));
+	shader->setUniform3f("viewPos", transform.position());
 
 	shader->setUniform3f("ray00", glm::normalize(glm::vec3(ray00)));
 	shader->setUniform3f("ray10", glm::normalize(glm::vec3(ray10)));
