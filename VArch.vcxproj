@@ -53,6 +53,8 @@
     <ClInclude Include="src\Shaders.h" />
     <ClInclude Include="src\Singleton.h" />
     <ClInclude Include="src\Terrain.h" />
+    <ClInclude Include="src\Texture1D.h" />
+    <ClInclude Include="src\Texture1D_3F.h" />
     <ClInclude Include="src\Texture2D.h" />
     <ClInclude Include="src\TextureRGB.h" />
     <ClInclude Include="src\Transform.h" />

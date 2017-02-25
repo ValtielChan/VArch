@@ -2,10 +2,10 @@
 
 #include "Exception.h"
 
-#define EXCEPTION_ID "[Texture2D]"
+#define EXCEPTION_ID "[Texture1D]"
 
 template <typename T>
-class Texture2D
+class Texture1D
 {
 protected:
 
@@ -17,15 +17,12 @@ protected:
 	T m_max;
 
 	int m_width;
-	int m_height;
 
 public:
-	Texture2D(int width, int height);
-	virtual ~Texture2D() { delete[] m_matrix; }
+	Texture1D(int width);
+	virtual ~Texture1D() { delete[] m_matrix; }
 
-	virtual void set(int x, int y, T value);
-	virtual void set(int i, T value) { m_matrix[i] = value; }
-	virtual T get(int x, int y) { return m_matrix[y * m_width + x]; }
+	virtual void set(int i, T value);
 	virtual T get(int i) { return m_matrix[i]; }
 
 	virtual T min() const& { return m_min; }
@@ -45,17 +42,17 @@ public:
 };
 
 template <typename T>
-Texture2D<T>::Texture2D(int width, int height) : m_width(width), m_height(height), m_min(INT16_MAX), m_max(INT16_MIN)
+Texture1D<T>::Texture1D(int width) : m_width(width), m_min(INT16_MAX), m_max(INT16_MIN)
 {
-	m_matrix = new T[m_width*m_height];
+	m_matrix = new T[m_width];
 }
 
 template<typename T>
-inline void Texture2D<T>::set(int x, int y, T value)
+inline void Texture1D<T>::set(int i, T value)
 {
 	try {
-		if (x >= 0 || x < m_width || y >= 0 || y < m_height)
-			m_matrix[y * m_width + x] = value;
+		if (i >= 0 && i < m_width)
+			m_matrix[i] = value;
 		else
 			throw Exception(ErrorLevel::ERROR, std::string(EXCEPTION_ID) + " Out of bound texel access");
 	}
@@ -65,7 +62,7 @@ inline void Texture2D<T>::set(int x, int y, T value)
 }
 
 template<typename T>
-int Texture2D<T>::sizeOf()
+int Texture1D<T>::sizeOf()
 {
-	return m_width * m_height * sizeof(T);
+	return m_width * sizeof(T);
 }

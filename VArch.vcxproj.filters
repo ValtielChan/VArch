@@ -127,5 +127,11 @@
     <ClInclude Include="src\ComputeShaderTexture.h">
       <Filter>Texture</Filter>
     </ClInclude>
+    <ClInclude Include="src\Texture1D.h">
+      <Filter>Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Texture1D_3F.h">
+      <Filter>Texture</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

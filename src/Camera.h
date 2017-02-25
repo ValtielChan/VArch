@@ -223,21 +223,23 @@ void Camera::updateRayTrace() {
 
 	float focalLength = 1.0f / std::tan(m_zoom / 2);
 
+	glm::mat4 matrix = glm::transpose(glm::inverse(m_view));
+
 	glm::vec3 ray00;
-	ray00 = glm::vec3(-focalLength, -1, -1);
-	ray00 = glm::vec3(glm::vec4(ray00, 0) * m_projection * m_view);
+	ray00 = glm::vec3(-1, -1, -focalLength);
+	ray00 = glm::vec3(glm::vec4(ray00, 0) * matrix);
 
 	glm::vec3 ray10;
-	ray10 = glm::vec3(-focalLength, 1, -1);
-	ray10 = glm::vec3(glm::vec4(ray10, 0) * m_projection * m_view);
+	ray10 = glm::vec3(1, -1, -focalLength);
+	ray10 = glm::vec3(glm::vec4(ray10, 0) * matrix);
 
 	glm::vec3 ray01;
-	ray01 = glm::vec3(-focalLength, -1, 1);
-	ray01 = glm::vec3(glm::vec4(ray01, 0) * m_projection * m_view);
+	ray01 = glm::vec3(-1, 1, -focalLength);
+	ray01 = glm::vec3(glm::vec4(ray01, 0) * matrix);
 
 	glm::vec3 ray11;
-	ray11 = glm::vec3(-focalLength, 1, 1);
-	ray11 = glm::vec3(glm::vec4(ray11, 0) * m_projection * m_view);
+	ray11 = glm::vec3(1, 1, -focalLength);
+	ray11 = glm::vec3(glm::vec4(ray11, 0) * matrix);
 
 	//glm::mat4 invViewProjMat = glm::inverse(m_view * m_projection);
 
