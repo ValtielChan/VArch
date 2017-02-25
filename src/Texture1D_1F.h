@@ -9,11 +9,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-class Texture1D_3F : public Texture1D<glm::vec3>
+class Texture1D_1F : public Texture1D<float>
 {
 public:
-	Texture1D_3F(int width);
-	~Texture1D_3F();
+	Texture1D_1F(int width);
+	~Texture1D_1F();
 
 	GLuint genGLTexture(GLuint = 0);
 
@@ -21,19 +21,19 @@ private:
 
 };
 
-Texture1D_3F::Texture1D_3F(int width) : Texture1D(width)
+Texture1D_1F::Texture1D_1F(int width) : Texture1D(width)
 {
 
 }
 
-Texture1D_3F::~Texture1D_3F()
+Texture1D_1F::~Texture1D_1F()
 {
 
 }
 
 
 
-inline GLuint Texture1D_3F::genGLTexture(GLuint)
+inline GLuint Texture1D_1F::genGLTexture(GLuint)
 {
 	float* datas = new float[m_width * 3]();
 

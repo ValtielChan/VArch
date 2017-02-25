@@ -35,7 +35,7 @@ public:
 	void transformInterval(float newMin, float newMax);
 	HeightMap* getPart(glm::vec2 min, glm::vec2 max);
 
-	GLuint genGLTexture();
+	GLuint genGLTexture(GLuint = 0);
 };
 
 HeightMap::HeightMap(int width, int height) : Texture2D(width, height)
@@ -200,7 +200,7 @@ HeightMap * HeightMap::getPart(glm::vec2 min, glm::vec2 max)
 	return hm;
 }
 
-GLuint HeightMap::genGLTexture()
+GLuint HeightMap::genGLTexture(GLuint)
 {
 	glGenTextures(1, &m_texture);
 	glBindTexture(GL_TEXTURE_2D, m_texture);

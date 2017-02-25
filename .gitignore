@@ -9,3 +9,4 @@ src/Compute_Shaders/x64/
 *.VC.db
 *.VC.VC.opendb
 .vs/
+shaders/voxelraytracing_bak.cs

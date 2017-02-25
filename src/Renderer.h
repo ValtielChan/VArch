@@ -64,7 +64,9 @@ void Renderer::renderToQuad(GLuint texture)
 	Shaders *shaders = Shaders::getInstance();
 
 	shaders->useShader(BuiltInShader::SCREEN);
+
 	glBindVertexArray(m_quadVAO);
+
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);

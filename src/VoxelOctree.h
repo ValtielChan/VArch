@@ -12,7 +12,7 @@
 #include "HeightMap.h"
 #include "Camera.h"
 
-#define DEPTH 6
+#define DEPTH 4
 #define DEPTH_LOD 4
 #define THRESHOLD 100
 #define PERVISSIVE_FRUSTUM false
@@ -21,13 +21,24 @@
 
 struct Voxel {
 
-	bool value;
-	glm::vec2 texCoord; // If color value set into texture
-	glm::vec3 color; // Vertex Color
+	glm::vec3 color;
+	glm::vec3 normal;
+	glm::vec3 min;
+	glm::vec3 max;
 
-	Voxel(bool e = false, glm::vec3 c = glm::vec3(1), glm::vec2 tc = glm::vec2(0))
-		: value(e), color(c), texCoord(tc) {}
+	Voxel(glm::vec3 c, glm::vec3 n, glm::vec3 mi, glm::vec3 ma)
+		: color(c), normal(n), min(mi), max(ma) {}
+};
 
+struct Cell {
+	Voxel voxel;
+	int childs[8];
+
+	Cell(Voxel v) : voxel(v) {}
+
+	void addChild(int i, int childIndex) {
+		if (i > 0 && i < 8) childs[i] = childIndex;
+	}
 };
 
 enum OctreePosition {
@@ -141,6 +152,12 @@ public:
 	/// Recursively update neighborhood, must be called after build()
 	/// </summary>
 	void rootUpdateNeighbors();
+
+	/// <summary>
+	/// build GLSL uniform ready structure
+	/// </summary>
+	int GPUStructure(std::vector<Cell*> &GLSLArray);
+	void VoxelOctree::GLSLArray(std::vector<Cell*> &GLSLArray);
 
 	bool debugIsPath(std::vector<OctreePosition> path);
 	void countExistingVoxel(int &count);
@@ -290,7 +307,6 @@ inline bool VoxelOctree::isInFrustum(Camera * camera, int subLevel)
 
 	bool isInFrustum = false;
 	
-#pragma omp parallel for collapse(2)
 	for (int i = 0; i < subLevel + 1; i++) {
 		for (int j = 0; j < subLevel + 1; j++) {
 
@@ -942,6 +958,37 @@ inline void VoxelOctree::rootUpdateNeighbors()
 		std::cout << "[BENCH] VoxelOctree::rootUpdateNeighbors() | depth " << DEPTH << " : " << ((float)t) << " ms" << std::endl;
 #endif
 
+}
+
+int VoxelOctree::GPUStructure(std::vector<Cell*> &GLSLArray)
+{
+	Cell* cell = new Cell(
+		Voxel(
+			ref_vertices->at(0).color,
+			ref_vertices->at(0).normal,
+			m_worldCenter - glm::vec3(m_voxelSize / 2),
+			m_worldCenter + glm::vec3(m_voxelSize / 2)
+		)
+	);
+
+	GLSLArray.push_back(cell);
+	
+	int currentIndex = GLSLArray.size() - 1;
+
+	for (int i = 0; i < 8; i++) {
+		if (m_cells[i] && m_cells[i]->exist) 
+			cell->addChild(i, m_cells[i]->GPUStructure(GLSLArray));
+		else 
+			cell->addChild(i, -1);
+	}
+
+	return currentIndex;
+}
+
+inline void VoxelOctree::GLSLArray(std::vector<Cell*> &GLSLArray)
+{
+	GPUStructure(GLSLArray);
+	std::cout << GLSLArray.size() << std::endl;
 }
 
 inline bool VoxelOctree::debugIsPath(std::vector<OctreePosition> path)

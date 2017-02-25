@@ -34,7 +34,7 @@ public:
 	virtual void setMin(const T &min) { m_min = min; }
 	virtual void setMax(const T &max) { m_max = max; }
 
-	virtual GLuint genGLTexture() = 0;
+	virtual GLuint genGLTexture(GLuint = 0) = 0;
 
 	virtual int sizeOf();
 

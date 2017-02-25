@@ -16,7 +16,7 @@ public:
 	~TextureRGB();
 
 	TextureRGB * getPart(glm::vec2 min, glm::vec2 max);
-	GLuint genGLTexture();
+	GLuint genGLTexture(GLuint = 0);
 
 private:
 
@@ -53,7 +53,7 @@ TextureRGB * TextureRGB::getPart(glm::vec2 min, glm::vec2 max)
 	return texture;
 }
 
-inline GLuint TextureRGB::genGLTexture()
+inline GLuint TextureRGB::genGLTexture(GLuint)
 {
 	float* datas = new float[m_width*m_height*3]();
 

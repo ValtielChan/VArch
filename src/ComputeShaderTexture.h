@@ -16,7 +16,7 @@ public:
 	ComputeShaderTexture(int width, int height);
 	~ComputeShaderTexture();
 
-	GLuint genGLTexture();
+	GLuint genGLTexture(GLuint textureSlot = 0);
 
 private:
 
@@ -30,10 +30,10 @@ ComputeShaderTexture::~ComputeShaderTexture()
 {
 }
 
-GLuint ComputeShaderTexture::genGLTexture()
+GLuint ComputeShaderTexture::genGLTexture(GLuint textureSlot)
 {
 	glGenTextures(1, &m_texture);
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE0 + textureSlot);
 
 	glBindTexture(GL_TEXTURE_2D, m_texture);
 
@@ -42,12 +42,12 @@ GLuint ComputeShaderTexture::genGLTexture()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	// Set texture filtering
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, m_width, m_height, 0, GL_RGBA, GL_FLOAT,
 		NULL);
-	glBindImageTexture(0, m_texture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+	glBindImageTexture(textureSlot, m_texture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 
 	// Unbind
 	glBindTexture(GL_TEXTURE_2D, 0);

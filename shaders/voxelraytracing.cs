@@ -1,25 +1,22 @@
 #version 430
 
-#define MAX_VOXEL 12000
+#define MAX_VOXEL 50
 
 layout(rgba32f, binding = 0) uniform image2D frameBuffer;
 layout (local_size_x = 16, local_size_y = 16) in;
 
-struct Voxel {
-	vec3 min;
-  	vec3 max;
-  	vec4 color;
-  	vec3 normal;
-};
+uniform int texSize;
+
+//  Voxel Scene uniforms
+uniform sampler1D colors;
+uniform sampler1D mins;
+uniform sampler1D maxs;
 
 struct hitinfo {
 	vec2 lambda;
 	int bi;
+	int index;
 };
-
-// Voxel
-uniform int nbVoxels;
-uniform Voxel scene[MAX_VOXEL];
 
 // Camera & Matrices
 uniform vec3 viewPos;
@@ -29,17 +26,17 @@ uniform vec3 ray01;
 uniform vec3 ray11;
 
 // Test scene
-struct box {
+struct Box {
   vec3 min;
   vec3 max;
 };
 
-const box boxe = { vec3(-1.0, 0.0, -1.0), vec3(1.0, 1.0, 1.0) };
+//const Box testBox = { vec3(-1.0, -1.0, -1.0), vec3(1.0, 1.0, 1.0) };
 
-vec2 intersectBox(vec3 origin, vec3 dir, const box b) {
+vec2 intersectBox(vec3 origin, vec3 dir, int index) {
 
-	vec3 tMin = (b.min - origin) / dir;
-	vec3 tMax = (b.max - origin) / dir;
+	vec3 tMin = (texture(mins, index).xyz - origin) / dir; // min
+	vec3 tMax = (texture(maxs, index).xyz - origin) / dir; // max
 
 	vec3 t1 = min(tMin, tMax);
 	vec3 t2 = max(tMin, tMax);
@@ -55,25 +52,32 @@ bool intersectBoxes(vec3 origin, vec3 dir, out hitinfo info) {
 	float smallest = 5000;
 	bool found = false;
 
-	vec2 lambda = intersectBox(origin, dir, boxe);
+	vec2 lambda;
+	int i = 0;
+	for (i = 0; i < texSize; i++) {
 
-	if (lambda.x > 0.0 && lambda.x < lambda.y && lambda.x < smallest) {
-		info.lambda = lambda;
-		info.bi = 0;
-		smallest = lambda.x;
-		found = true;
+		lambda = intersectBox(origin, dir, i);
+
+		if (lambda.x > 0.0 && lambda.x < lambda.y && lambda.x < smallest) {
+
+			info.lambda = lambda;
+			info.bi = 0;
+			info.index = i;
+			smallest = lambda.x;
+			return true;
+		}
 	}
 
-	return found;
+	return false;
 }
 
 vec4 trace(vec3 origin, vec3 dir) {
 
-	hitinfo i;
+	hitinfo hi;
 
-	if (intersectBoxes(origin, dir, i)) {
-		vec3 gray = vec3(0.6);
-		return vec4(gray.rgb, 1.0);
+	if (intersectBoxes(origin, dir, hi)) {
+		//return vec4(texture(colors, hi.index).rgb, 1);
+		return vec4(1.0, 0.0, 0.0, 1.0);
 	}
 
 	return vec4(0.0, 0.0, 0.0, 1.0);
@@ -88,10 +92,12 @@ void main() {
 		return;
 	}
 
-	vec2 pos = vec2(pix) / vec2(size.x, size.y);
-	vec3 dir = mix(mix(ray00, ray01, pos.y), mix(ray10, ray11, pos.y), pos.x);
+	vec2 pos = vec2(pix) / vec2(size.x, size.x);
+	vec3 dir = mix(mix(ray00, ray10, pos.x), mix(ray01, ray11, pos.x), pos.y);
 	vec4 color = trace(viewPos, dir);
 
 	imageStore(frameBuffer, pix, color);
-	//imageStore(frameBuffer, pix, vec4(normalize(viewPos), 1));
+
+	// DEBUG PRINT COLOR
+	//imageStore(frameBuffer, pix, vec4(0, 0, texSize, 1));
 }

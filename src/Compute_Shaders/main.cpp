@@ -21,6 +21,8 @@
 #include "QTNode.h"
 #include "DefaultRenderer.h"
 #include "ComputeShaderTexture.h"
+#include "VoxelOctree.h"
+#include "Texture1D_3F.h"
 
 // GLM Mathemtics
 #include <glm/glm.hpp>
@@ -76,14 +78,49 @@ int main()
 	// Setup some OpenGL options
 	glEnable(GL_DEPTH_TEST);
 
+	// Octree test
+	TextureRGB* colorMap;
+	NormalMap* normalMap;
+	ColorTable colorTable = ColorTable::Nature(128);
+
+	NoiseProperties np = NoiseProperties(2, 1, 8);
+	HeightMap* heightMap = new HeightMap(150, 150);
+	heightMap->generateSimplex(&np);
+	heightMap->transformInterval(-1.f, 1.f);
+
+	colorMap = heightMap->generateColorMap(colorTable);
+	normalMap = heightMap->generateNormalMap();
+
+	VoxelOctree* octree = new VoxelOctree(glm::vec3(0, 0, 0));
+	octree->buildTerrain(heightMap, colorMap, normalMap);
+	octree->rootUpdateNeighbors();
+
+	std::vector<Cell*> GLSLArray;
+	octree->GLSLArray(GLSLArray);
+
 	camera->transform.setPosition(glm::vec3(0, 0, 0));
 
 	ComputeShaderTexture texture(screenWidth, screenHeight);
-	GLuint tex_output = texture.genGLTexture();
+	GLuint tex_output = texture.genGLTexture(0);
 
 	Shader* compute = Shaders::getInstance()->getShader(VOXEL_RAYTRACING);
 
 	Renderer renderer;
+
+	/// Set textures and compute shader uniforms
+	Texture1D_3F minTexture(GLSLArray.size());
+	Texture1D_3F maxTexture(GLSLArray.size());
+	Texture1D_3F colorTexture(GLSLArray.size());
+
+
+	for (int i = 0; i < GLSLArray.size(); ++i) {
+
+		Cell* currentCell = GLSLArray[i];
+
+		colorTexture.set(i, currentCell->voxel.color);
+		minTexture.set(i, currentCell->voxel.min);
+		maxTexture.set(i, currentCell->voxel.max);
+	}
 
 	// Game loop
 	while (!glfwWindowShouldClose(window))
@@ -95,6 +132,25 @@ int main()
 
 		glfwPollEvents();
 		Do_Movement();
+
+		compute->use();
+		compute->setUniform1i("texSize", GLSLArray.size());
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, tex_output);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_1D, colorTexture.genGLTexture());
+		compute->setUniform1i("colors", 0);
+
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_1D, minTexture.genGLTexture());
+		compute->setUniform1i("mins", 1);
+
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_1D, maxTexture.genGLTexture());
+		compute->setUniform1i("maxs", 2);
+
 
 		// RENDERING
 		camera->updateRayTrace();

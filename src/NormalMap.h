@@ -17,7 +17,7 @@ public:
 	~NormalMap();
 
 	NormalMap* getPart(glm::vec2 min, glm::vec2 max);
-	GLuint genGLTexture();
+	GLuint genGLTexture(GLuint = 0);
 
 private:
 
@@ -52,7 +52,7 @@ NormalMap *NormalMap::getPart(glm::vec2 min, glm::vec2 max)
 }
 
 
-GLuint NormalMap::genGLTexture()
+GLuint NormalMap::genGLTexture(GLuint)
 {
 	glGenTextures(1, &m_texture);
 	glBindTexture(GL_TEXTURE_2D, m_texture);

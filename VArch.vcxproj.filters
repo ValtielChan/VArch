@@ -133,5 +133,8 @@
     <ClInclude Include="src\Texture1D_3F.h">
       <Filter>Texture</Filter>
     </ClInclude>
+    <ClInclude Include="src\Texture1D_1F.h">
+      <Filter>Texture</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
