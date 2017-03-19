@@ -23,6 +23,7 @@
 #include "ComputeShaderTexture.h"
 #include "VoxelOctree.h"
 #include "Texture1D_3F.h"
+#include "Texture1D_4I.h"
 
 // GLM Mathemtics
 #include <glm/glm.hpp>
@@ -83,7 +84,7 @@ int main()
 	NormalMap* normalMap;
 	ColorTable colorTable = ColorTable::Nature(128);
 
-	NoiseProperties np = NoiseProperties(2, 1, 8);
+	NoiseProperties np = NoiseProperties(1, 1, 2);
 	HeightMap* heightMap = new HeightMap(150, 150);
 	heightMap->generateSimplex(&np);
 	heightMap->transformInterval(-1.f, 1.f);
@@ -111,7 +112,7 @@ int main()
 	Texture1D_3F minTexture(GLSLArray.size());
 	Texture1D_3F maxTexture(GLSLArray.size());
 	Texture1D_3F colorTexture(GLSLArray.size());
-
+	Texture1D_4I childsTexture(GLSLArray.size() * 2); //8 childs index (2*RGBA) per "texel"
 
 	for (int i = 0; i < GLSLArray.size(); ++i) {
 
@@ -120,6 +121,25 @@ int main()
 		colorTexture.set(i, currentCell->voxel.color);
 		minTexture.set(i, currentCell->voxel.min);
 		maxTexture.set(i, currentCell->voxel.max);
+	}
+
+	for (int i = 0, j = 0; i < GLSLArray.size() * 2; i += 2, j++) {
+
+		Cell* currentCell = GLSLArray[j];
+
+		childsTexture.set(i, glm::vec4(
+			currentCell->childs[0],
+			currentCell->childs[1],
+			currentCell->childs[2],
+			currentCell->childs[3]));
+
+		childsTexture.set(i+1, glm::vec4(
+			currentCell->childs[4],
+			currentCell->childs[5],
+			currentCell->childs[6],
+			currentCell->childs[7]));
+
+		currentCell = GLSLArray[j];
 	}
 
 	// Game loop
@@ -150,6 +170,10 @@ int main()
 		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_1D, maxTexture.genGLTexture());
 		compute->setUniform1i("maxs", 2);
+
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_1D, childsTexture.genGLTexture());
+		compute->setUniform1i("childs", 3);
 
 
 		// RENDERING

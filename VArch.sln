@@ -14,6 +14,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Quadtree", "src\Quadtree\Qu
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Compute_Shaders", "src\Compute_Shaders\Compute_Shaders.vcxproj", "{40CD7850-BF53-42AD-BA5C-DCC98519F047}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Planet", "src\Planet\Planet.vcxproj", "{6A34A41D-BA52-41F2-BF30-A235E2AD61B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -54,6 +56,14 @@ Global
 		{40CD7850-BF53-42AD-BA5C-DCC98519F047}.Release|x64.Build.0 = Release|x64
 		{40CD7850-BF53-42AD-BA5C-DCC98519F047}.Release|x86.ActiveCfg = Release|Win32
 		{40CD7850-BF53-42AD-BA5C-DCC98519F047}.Release|x86.Build.0 = Release|Win32
+		{6A34A41D-BA52-41F2-BF30-A235E2AD61B0}.Debug|x64.ActiveCfg = Debug|x64
+		{6A34A41D-BA52-41F2-BF30-A235E2AD61B0}.Debug|x64.Build.0 = Debug|x64
+		{6A34A41D-BA52-41F2-BF30-A235E2AD61B0}.Debug|x86.ActiveCfg = Debug|Win32
+		{6A34A41D-BA52-41F2-BF30-A235E2AD61B0}.Debug|x86.Build.0 = Debug|Win32
+		{6A34A41D-BA52-41F2-BF30-A235E2AD61B0}.Release|x64.ActiveCfg = Release|x64
+		{6A34A41D-BA52-41F2-BF30-A235E2AD61B0}.Release|x64.Build.0 = Release|x64
+		{6A34A41D-BA52-41F2-BF30-A235E2AD61B0}.Release|x86.ActiveCfg = Release|Win32
+		{6A34A41D-BA52-41F2-BF30-A235E2AD61B0}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -35,6 +35,7 @@ public:
 	virtual void setMax(const T &max) { m_max = max; }
 
 	virtual GLuint genGLTexture(GLuint = 0) = 0;
+	virtual GLuint getTextureId();
 
 	virtual int sizeOf();
 
@@ -47,6 +48,7 @@ public:
 template <typename T>
 Texture2D<T>::Texture2D(int width, int height) : m_width(width), m_height(height), m_min(INT16_MAX), m_max(INT16_MIN)
 {
+	m_texture = 0;
 	m_matrix = new T[m_width*m_height];
 }
 
@@ -62,6 +64,15 @@ inline void Texture2D<T>::set(int x, int y, T value)
 	catch (Exception const &e) {
 		e.print();
 	}
+}
+
+template<typename T>
+inline GLuint Texture2D<T>::getTextureId()
+{
+	if (m_texture == 0)
+		genGLTexture();
+
+	return m_texture;
 }
 
 template<typename T>

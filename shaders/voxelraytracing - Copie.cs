@@ -1,6 +1,6 @@
 #version 430
 
-#define DEPTH 2
+#define MAX_VOXEL 50
 
 layout(rgba32f, binding = 0) uniform image2D frameBuffer;
 layout (local_size_x = 16, local_size_y = 16) in;
@@ -50,21 +50,18 @@ vec2 intersectBox(vec3 origin, vec3 dir, int index) {
 
 bool intersectBoxes(vec3 origin, vec3 dir, out hitinfo info) {
 
-	float smallest;
+	float smallest = 5000;
+	bool found = false;
 
 	vec2 lambda;
 	int currentChilds[8];
 	int currentIndex = 0;
 
 	bool deeper;
-	int depth = 0;
-
-	bool nothing = true;
 
 	do {
 
 		deeper = false;
-		smallest = 5000;
 
 		// Childs indexes are dispached on 2 texel
 		vec4 tex1 = texelFetch(childs, currentIndex * 2, 0);
@@ -82,14 +79,12 @@ bool intersectBoxes(vec3 origin, vec3 dir, out hitinfo info) {
 		int i; int rightChild = -1;
 		for (i = 0; i < 8; i++) {
 
-			if (currentChilds[i] > 0) { // If child exist	
+			if (currentChilds[i] != -1) { // If child exist	
+
+				deeper = true;
 
 				lambda = intersectBox(origin, dir, currentChilds[i]);
 				if (lambda.x > 0.0 && lambda.x < lambda.y && lambda.x < smallest) {
-
-					deeper = true;
-					nothing = false;
-
 					smallest = lambda.x;
 					info.lambda = lambda;
 					info.bi = 0;
@@ -99,12 +94,11 @@ bool intersectBoxes(vec3 origin, vec3 dir, out hitinfo info) {
 			}
 		}
 
-		depth++;
 		currentIndex = rightChild;
 
 	} while (deeper);
 
-	if (!deeper && !nothing && depth == 4)
+	if (!deeper)
 		return true;
 	else
 		return false;

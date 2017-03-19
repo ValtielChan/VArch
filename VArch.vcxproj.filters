@@ -22,6 +22,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Noise.h">
@@ -133,8 +136,14 @@
     <ClInclude Include="src\Texture1D_3F.h">
       <Filter>Texture</Filter>
     </ClInclude>
-    <ClInclude Include="src\Texture1D_1F.h">
+    <ClInclude Include="src\Texture1D_4I.h">
       <Filter>Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Planet.h">
+      <Filter>Voxel</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FreeCam.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -6,13 +6,14 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include "Mesh.h"
 #include "enum.h"
 #include "HeightMap.h"
 #include "Camera.h"
 
-#define DEPTH 4
+#define DEPTH 8
 #define DEPTH_LOD 4
 #define THRESHOLD 100
 #define PERVISSIVE_FRUSTUM false
@@ -37,7 +38,7 @@ struct Cell {
 	Cell(Voxel v) : voxel(v) {}
 
 	void addChild(int i, int childIndex) {
-		if (i > 0 && i < 8) childs[i] = childIndex;
+		if (i >= 0 && i < 8) childs[i] = childIndex;
 	}
 };
 
@@ -93,6 +94,7 @@ public:
 	std::vector<VoxelOctree*> getCells();
 	int depth() { return m_depth; }
 	Mesh* mesh() { return m_mesh; }
+	float voxelSize() { return m_voxelSize; }
 	OctreePosition relativePosition() { return m_relativePosition; }
 	glm::vec3 rootWorldPosition();
 
@@ -126,7 +128,7 @@ public:
 	/// <summary>
 	/// select the cells according to certains conditions
 	/// </summary>
-	void select(Camera* camera);
+	void select(Camera* camera = NULL);
 
 	/// <summary>
 	/// Recursively set selected attribute at false
@@ -532,19 +534,27 @@ inline void VoxelOctree::select(Camera* camera)
 	clock_t t = clock();
 #endif
 
-	glm::vec3 pov = camera->transform.position();
+	bool LOD = false;
 
 	if (!m_parent)   // if root
 		selected = true;
 	
 	if (exist) {
-		
-		// Test distance between center & pov
-		float x = m_worldCenter.x - pov.x;
-		float y = m_worldCenter.z - pov.z;
-		float dist = sqrt(x*x + y*y);
 
-		if (isInFrustum(camera, pow(2, DEPTH - m_depth)) && (dist < THRESHOLD / (m_depth + 1) || m_depth < DEPTH_LOD)) {
+		if (camera) {
+
+			glm::vec3 pov = camera->transform.position();
+
+			// Test distance between center & pov
+			float x = m_worldCenter.x - pov.x;
+			float y = m_worldCenter.z - pov.z;
+			float dist = sqrt(x*x + y*y);
+
+			LOD = camera ? isInFrustum(camera, pow(2, DEPTH - m_depth)) && (dist < THRESHOLD / (m_depth + 1) || m_depth < DEPTH_LOD) : false;
+		}
+
+		// don't take LOD stuff in account when there's not camera
+		if (LOD || !camera) {
 		
 		//if(true) {
 			if (haveChilds()) {
@@ -964,8 +974,8 @@ int VoxelOctree::GPUStructure(std::vector<Cell*> &GLSLArray)
 {
 	Cell* cell = new Cell(
 		Voxel(
-			ref_vertices->at(0).color,
-			ref_vertices->at(0).normal,
+			ref_vertices->at(m_vertices[0]).color,
+			ref_vertices->at(m_vertices[0]).normal,
 			m_worldCenter - glm::vec3(m_voxelSize / 2),
 			m_worldCenter + glm::vec3(m_voxelSize / 2)
 		)

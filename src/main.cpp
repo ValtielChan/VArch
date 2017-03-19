@@ -11,9 +11,10 @@
 #include <GLFW/glfw3.h>
 
 // GL includes
+#include "Camera.h"
 #include "ColorTable.h"
 #include "Shaders.h"
-#include "Camera.h"
+
 #include "MVP.h"
 #include "DirectionalLight.h"
 #include "Mesh.h"
@@ -84,18 +85,17 @@ int main()
 	// Setup some OpenGL options
 	glEnable(GL_DEPTH_TEST);
 
-	// ColorTable
-	ColorTable colorTable = ColorTable::Nature(128);
-
 	// HeightMap
-	NoiseProperties np = NoiseProperties(2, 1, 4);
-	HeightMap* heightMap = new HeightMap(256, 256);
-	heightMap->generateSimplex(&np);
-	
-	//heightMap->transformInterval(0.f, 1.f);
+	CubeMap* cubeMap = new CubeMap(512);
 
-	NormalMap* normalMap = heightMap->generateNormalMap();
-	TextureRGB* colorMap = heightMap->generateColorMap(colorTable);
+	NoiseProperties np = NoiseProperties(2, 1, 4);
+	cubeMap->generateSimplex(np);
+	HeightMap* heightMap = cubeMap->GetUniqueHeightMap();
+	
+	heightMap->transformInterval(0.f, 1.f);
+
+	/*NormalMap* normalMap = heightMap->generateNormalMap();
+	TextureRGB* colorMap = heightMap->generateColorMap(colorTable);*/
 
 	// Scene
 	Scene scene = Scene(NULL, camera);
@@ -115,7 +115,7 @@ int main()
 		glfwPollEvents();
 		Do_Movement();
 
-		renderer.renderToQuad(normalMap->genGLTexture());
+		renderer.renderToQuad(heightMap->getTextureId());
 
 		// Swap the buffers
 		glfwSwapBuffers(window);

@@ -33,6 +33,7 @@ public:
 	TextureRGB* generateColorMap(const ColorTable &colorTable);
 
 	void transformInterval(float newMin, float newMax);
+	void transformInterval(float newMin, float newMax, float curMin, float curMax);
 	HeightMap* getPart(glm::vec2 min, glm::vec2 max);
 
 	GLuint genGLTexture(GLuint = 0);
@@ -162,6 +163,29 @@ void HeightMap::transformInterval(float newMin, float newMax)
 	for (int i = 0; i < m_width*m_height; i++) {
 		m_matrix[i] -= m_min;
 		m_matrix[i] /= m_max;
+
+		m_matrix[i] *= (newMax - newMin);
+		m_matrix[i] += newMin;
+
+		//std::cout << m_matrix[i] << " ";
+	}
+
+	m_min = newMin;
+	m_max = newMax;
+
+	genGLTexture();
+}
+
+inline void HeightMap::transformInterval(float newMin, float newMax, float curMin, float curMax)
+{
+	curMax -= curMin;
+
+	/*std::cout << m_min << " ";
+	std::cout << m_max << " ";*/
+
+	for (int i = 0; i < m_width*m_height; i++) {
+		m_matrix[i] -= curMin;
+		m_matrix[i] /= curMax;
 
 		m_matrix[i] *= (newMax - newMin);
 		m_matrix[i] += newMin;

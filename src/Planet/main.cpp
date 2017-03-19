@@ -11,8 +11,9 @@
 #include <GLFW/glfw3.h>
 
 // GL includes
-#include "Terrain.h"
+#include "Planet.h"
 #include "Shaders.h"
+#include "FreeCam.h"
 #include "Camera.h"
 #include "MVP.h"
 #include "DirectionalLight.h"
@@ -31,7 +32,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-#define NBCHUNK 5
+#define NBCHUNK 1
 
 // Properties
 GLuint screenWidth = 1600, screenHeight = 900;
@@ -42,7 +43,6 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void Do_Movement();
 void wireframe(DefaultRenderer * renderer);
-void printTerrainSize(const Terrain &terrain);
 void stopSelection();
 
 // Camera
@@ -94,6 +94,8 @@ int main()
 	camera->transform.setPosition(glm::vec3(16.3f, 10.7f, -6.5f));
 	camera->transform.setRotation(glm::vec3(-40.f, 124.f, 0.f));
 
+	FreeCam freeCamManipulator(camera);
+
 	// Set material textures
 	PhongMaterial *mat = new PhongMaterial();
 	mat->ambient = glm::vec3(1);
@@ -104,14 +106,14 @@ int main()
 	SelfIlluminMaterial *SIMat = new SelfIlluminMaterial();
 
 	// HeightMap
-	NoiseProperties np = NoiseProperties(1, 1, 4);
-	HeightMap* heightMap = new HeightMap(NBCHUNK * 150, NBCHUNK * 150);
-	heightMap->generateSimplex(&np);
-	heightMap->transformInterval(-1.f, 0.f);
+	NoiseProperties np = NoiseProperties(0.4, 0.5, 8);
+	CubeMap cubeMap(256);
+	cubeMap.generateSimplex(np);
+	cubeMap.transformInterval(-0.5f, -0.2f);
 
 	// Light
 	DirectionalLight* light = new DirectionalLight;
-	light->direction = glm::vec3(.5f, -1, .5f);
+	light->direction = glm::vec3(0.f, -1, 0.f);
 	light->diffuse = glm::vec3(1);
 	//light->transform.translate(glm::vec3(0, 2, 0));
 
@@ -119,11 +121,12 @@ int main()
 	Mesh* landMarkMesh = new Mesh(SIMat);
 	landMarkMesh->generateLandmark();
 
-	// Octree
-	Terrain terrain(heightMap, camera, NBCHUNK, 2);
+	// Planet
+	ColorTable colorTable = ColorTable::Nature(128);
+	Planet planet(cubeMap, colorTable);
 
 	Object *root = new Object();
-	terrain.addMeshesToObject(root);
+	planet.addMeshesToObject(root);
 
 	Object *landMark = new Object();
 	landMark->addComponent(landMarkMesh);
@@ -156,13 +159,11 @@ int main()
 		Do_Movement();
 		wireframe(&renderer);
 		stopSelection();
-		printTerrainSize(terrain);
 
 		//light->direction = camera->front();
 
 		if (!stopSelect) {
 
-			terrain.process();
 			demulti = 0;
 		}
 
@@ -213,12 +214,6 @@ void wireframe(DefaultRenderer * renderer)
 		renderer->setWireframe(false);
 	if (keys[GLFW_KEY_Z])
 		renderer->setWireframe(true);
-}
-
-void printTerrainSize(const Terrain &terrain)
-{
-	if (keys[GLFW_KEY_T])
-		std::cout << "Terrain size : " << terrain.sizeOf() / 1000000 << " Mo" << std::endl;
 }
 
 // Is called whenever a key is pressed/released via GLFW

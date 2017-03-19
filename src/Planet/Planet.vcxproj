@@ -19,54 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Camera.cpp" />
-    <ClCompile Include="src\main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\Camera.h" />
-    <ClInclude Include="src\Chunk.h" />
-    <ClInclude Include="src\ColorTable.h" />
-    <ClInclude Include="src\Component.h" />
-    <ClInclude Include="src\ComputeShaderTexture.h" />
-    <ClInclude Include="src\CubeMap.h" />
-    <ClInclude Include="src\DefaultRenderer.h" />
-    <ClInclude Include="src\DirectionalLight.h" />
-    <ClInclude Include="src\DisplacementPhongMaterial.h" />
-    <ClInclude Include="src\Drawable.h" />
-    <ClInclude Include="src\enum.h" />
-    <ClInclude Include="src\Exception.h" />
-    <ClInclude Include="src\FrameBufferObject.h" />
-    <ClInclude Include="src\FreeCam.h" />
-    <ClInclude Include="src\HeightMap.h" />
-    <ClInclude Include="src\HeightMapFilter.h" />
-    <ClInclude Include="src\Light.h" />
-    <ClInclude Include="src\Material.h" />
-    <ClInclude Include="src\Mesh.h" />
-    <ClInclude Include="src\MVP.h" />
-    <ClInclude Include="src\Noise.h" />
-    <ClInclude Include="src\NormalMap.h" />
-    <ClInclude Include="src\Object.h" />
-    <ClInclude Include="src\PhongMaterial.h" />
-    <ClInclude Include="src\Planet.h" />
-    <ClInclude Include="src\QTNode.h" />
-    <ClInclude Include="src\Renderer.h" />
-    <ClInclude Include="src\Scene.h" />
-    <ClInclude Include="src\SelfIlluminMaterial.h" />
-    <ClInclude Include="src\Shader.h" />
-    <ClInclude Include="src\Shaders.h" />
-    <ClInclude Include="src\Singleton.h" />
-    <ClInclude Include="src\Terrain.h" />
-    <ClInclude Include="src\Texture1D.h" />
-    <ClInclude Include="src\Texture1D_4I.h" />
-    <ClInclude Include="src\Texture1D_3F.h" />
-    <ClInclude Include="src\Texture2D.h" />
-    <ClInclude Include="src\TextureRGB.h" />
-    <ClInclude Include="src\Transform.h" />
-    <ClInclude Include="src\VoxelOctree.h" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{40CD7850-BF53-42AD-BA5C-DCC98519F044}</ProjectGuid>
-    <RootNamespace>VArch</RootNamespace>
+    <ProjectGuid>{6A34A41D-BA52-41F2-BF30-A235E2AD61B0}</ProjectGuid>
+    <RootNamespace>Planet</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -116,7 +73,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <SourcePath>$(VC_SourcePath);</SourcePath>
-    <IncludePath>$(SolutionDir)\libs\glm;$(SolutionDir)\libs\glfw-3.2.bin.WIN64\include;$(SolutionDir)\libs\glew-1.13.0\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\src;$(SolutionDir)\libs\glm;$(SolutionDir)\libs\glfw-3.2.bin.WIN64\include;$(SolutionDir)\libs\glew-1.13.0\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\libs\glew-1.13.0\lib\Release\x64;$(SolutionDir)\libs\glfw-3.2.bin.WIN64\lib-vc2015;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -124,8 +81,8 @@
     <LibraryPath>$(ProjectDir)\libs\glfw-3.2.bin.WIN32\lib-vc2015;$(ProjectDir)\libs\glew-1.13.0\lib\Release\Win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)\libs\glm;$(SolutionDir)\libs\glfw-3.2.bin.WIN64\include;$(SolutionDir)\libs\glew-1.13.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)\libs\glew-1.13.0\lib\Release\x64;$(ProjectDir)\libs\glfw-3.2.bin.WIN64\lib-vc2015;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\src;$(SolutionDir)\libs\glm;$(SolutionDir)\libs\glfw-3.2.bin.WIN64\include;$(SolutionDir)\libs\glew-1.13.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\libs\glew-1.13.0\lib\Release\x64;$(SolutionDir)\libs\glfw-3.2.bin.WIN64\lib-vc2015;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

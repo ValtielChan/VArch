@@ -3,13 +3,18 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 
+#define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <algorithm>
+
 #include "Component.h"
 #include "PhongMaterial.h" // Choosen as Default Mesh Material
 #include "MVP.h"
+
+#include "enum.h"
 
 struct Vertex {
 
@@ -53,6 +58,14 @@ public:
 	void updateGL();
 	void generateCube(float size, glm::vec3 offset, glm::vec3 color);
 	void generateLandmark();
+
+	glm::vec3 getMax();
+	glm::vec3 getMin();
+
+	void normalizePositions(glm::vec3 norm);
+	void projectToSphere(Side side);
+	void translate(glm::vec3 translation);
+	void rotate(glm::vec3 rotation);
 
 	int sizeOf();
 };
@@ -228,6 +241,280 @@ inline void Mesh::generateLandmark()
 	generateCube(.2f, glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0));
 	generateCube(.2f, glm::vec3(0, 0, 0.5f), glm::vec3(0, 0, 1));
 }
+
+glm::vec3 Mesh::getMax()
+{
+	glm::vec3 max = m_vertices[0].position;
+
+	for (Vertex v : m_vertices) {
+		max.x = std::max(max.x, v.position.x);
+		max.y = std::max(max.y, v.position.y);
+		max.z = std::max(max.z, v.position.z);
+	}
+
+	return max;
+}
+
+glm::vec3 Mesh::getMin()
+{
+	glm::vec3 min = m_vertices[0].position;
+
+	for (Vertex v : m_vertices) {
+		min.x = std::min(min.x, v.position.x);
+		min.y = std::min(min.y, v.position.y);
+		min.z = std::min(min.z, v.position.z);
+	}
+
+	return min;
+}
+
+void Mesh::normalizePositions(glm::vec3 norm) {
+
+	for (auto it = m_vertices.begin(); it != m_vertices.end(); it++) {
+		(*it).position *= norm;
+	}
+
+	updateGL();
+}
+
+inline void Mesh::projectToSphere(Side side)
+{
+	for (auto it = m_vertices.begin(); it != m_vertices.end(); it++) {
+
+		float x2 = (*it).position.x * (*it).position.x;
+		float y2 = (*it).position.y * (*it).position.y;
+		float z2 = (*it).position.z * (*it).position.z;
+
+		float x = (*it).position.x;
+		float y = (*it).position.y;
+		float z = (*it).position.z;
+
+		float w = 0.f;
+
+		if (side == Side::UP) {
+			w = sqrt(x2 + 1 + z2);
+
+			(*it).position.x = y * (x / w);
+			(*it).position.y = y * (1 / w);
+			(*it).position.z = y * (z / w);
+
+			float w2 = w*w;
+			float w3 = w*w*w;
+
+			glm::mat3 J(
+				glm::vec3(y / (w*(1 - x2 / (w2))), (-x*y) / (w3), (-x*z*y) / (w3)),
+				glm::vec3((-x*z*y) / (w3), (-z*y) / (w3), y / (w*(1 - z2 / (w2)))),
+				glm::vec3(x / w, 1 / w, z / w)
+			);
+
+			glm::vec3 T = J * glm::vec3(1.f, 0.f, 0.f);
+			glm::vec3 B = J * glm::vec3(0.f, 0.f, 1.f);
+			glm::vec3 N = glm::cross(T, B);
+
+			glm::mat3 TBN(T, B, N);
+
+			if ((int)glm::dot((*it).normal, glm::vec3(0.f, 1.f, 0.f)) == 1.f)
+				(*it).normal = glm::normalize((*it).position);
+			else
+				(*it).normal = TBN * (*it).normal;
+
+
+		}
+		else if (side == Side::DOWN) {
+			w = sqrt(x2 + 1 + z2);
+
+			(*it).position.x = -y * (x / w);
+			(*it).position.y = y * (1 / w);
+			(*it).position.z = -y * (z / w);
+
+			if ((int)glm::dot((*it).normal, glm::vec3(0.f, -1.f, 0.f)) == 1.f) {
+				(*it).normal = glm::normalize((*it).position);
+			}
+			else if ((int)glm::dot((*it).normal, glm::vec3(1.f, 0.f, 0.f)) == 1.f) {
+
+				glm::vec3 N = glm::normalize((*it).position);
+				glm::vec3 T = glm::cross(N, glm::vec3(-1.f, 0.f, 0.f));
+				(*it).normal = (glm::cross(N, T));
+			}
+			else if ((int)glm::dot((*it).normal, glm::vec3(-1.f, 0.f, 0.f)) == 1.f) {
+
+				glm::vec3 N = glm::normalize((*it).position);
+				glm::vec3 T = glm::cross(N, glm::vec3(1.f, 0.f, 0.f));
+				(*it).normal = (glm::cross(N, T));
+			}
+			else if ((int)glm::dot((*it).normal, glm::vec3(0.f, 0.f, 1.f)) == 1.f) {
+
+				glm::vec3 N = glm::normalize((*it).position);
+				glm::vec3 T = glm::cross(N, glm::vec3(0.f, 0.f, -1.f));
+				(*it).normal = (glm::cross(N, T));
+			}
+			else if ((int)glm::dot((*it).normal, glm::vec3(0.f, 0.f, -1.f)) == 1.f) {
+
+				glm::vec3 N = glm::normalize((*it).position);
+				glm::vec3 T = glm::cross(N, glm::vec3(0.f, 0.f, 1.f));
+				(*it).normal = (glm::cross(N, T));
+			}
+
+		}
+		else if (side == Side::FRONT) {
+			w = sqrt(1 + y2 + z2);
+
+			(*it).position.x = x * (1 / w);
+			(*it).position.y = x * (y / w);
+			(*it).position.z = x * (z / w);
+
+			float w2 = w*w;
+			float w3 = w*w*w;
+
+			glm::mat3 J(
+				glm::vec3((-z*x) / (w3), (-z*y*x) / (w3), x / (w*(1 - z2 / (w2)))),
+				glm::vec3((-y*x) / (w3), x / (w*(1 - y2 / (w2))), (-z*y*x) / (w3)),
+				glm::vec3(1 / w, y / w, z / w)
+			);
+
+			glm::vec3 T = J * glm::vec3(0.f, 0.f, 1.f);
+			glm::vec3 B = J * glm::vec3(0.f, 1.f, 0.f);
+			glm::vec3 N = glm::cross(T, B);
+
+			glm::mat3 TBN(T, B, N);
+
+			if ((int)glm::dot((*it).normal, glm::vec3(1.f, 0.f, 0.f)) == 1.f)
+				(*it).normal = glm::normalize((*it).position);
+			else
+				(*it).normal = TBN * (*it).normal;
+
+		}
+		else if (side == Side::BACK) {
+			w = sqrt(1 + y2 + z2);
+
+			(*it).position.x = x * (1 / w);
+			(*it).position.y = -x * (y / w);
+			(*it).position.z = -x * (z / w);
+
+			if ((int)glm::dot((*it).normal, glm::vec3(-1.f, 0.f, 0.f)) == 1.f) {
+				(*it).normal = glm::normalize((*it).position);
+			}
+			else if ((int)glm::dot((*it).normal, glm::vec3(0.f, 1.f, 0.f)) == 1.f) {
+
+				glm::vec3 N = glm::normalize((*it).position);
+				glm::vec3 T = glm::cross(N, glm::vec3(0.f, -1.f, 0.f));
+				(*it).normal = (glm::cross(N, T));
+			}
+			else if ((int)glm::dot((*it).normal, glm::vec3(0.f, -1.f, 0.f)) == 1.f) {
+
+				glm::vec3 N = glm::normalize((*it).position);
+				glm::vec3 T = glm::cross(N, glm::vec3(0.f, 1.f, 0.f));
+				(*it).normal = (glm::cross(N, T));
+			}
+			else if ((int)glm::dot((*it).normal, glm::vec3(0.f, 0.f, 1.f)) == 1.f) {
+
+				glm::vec3 N = glm::normalize((*it).position);
+				glm::vec3 T = glm::cross(N, glm::vec3(0.f, 0.f, -1.f));
+				(*it).normal = (glm::cross(N, T));
+			}
+			else if ((int)glm::dot((*it).normal, glm::vec3(0.f, 0.f, -1.f)) == 1.f) {
+
+				glm::vec3 N = glm::normalize((*it).position);
+				glm::vec3 T = glm::cross(N, glm::vec3(0.f, 0.f, 1.f));
+				(*it).normal = (glm::cross(N, T));
+			}
+
+		}
+		else if (side == Side::RIGHT) {
+			w = sqrt(x2 + y2 + 1);
+
+			(*it).position.x = z * (x / w);
+			(*it).position.y = z * (y / w);
+			(*it).position.z = z * (1 / w);
+
+			float w2 = w*w;
+			float w3 = w*w*w;
+
+			glm::mat3 J(
+				glm::vec3(z / (w*(1 - x2 / (w2))), (-x*y*z) / (w3), (-x*z) / (w3)),
+				glm::vec3((-x*y*z) / (w3), z / (w*(1 - y2 / (w2))), (-y*z) / (w3)),
+				glm::vec3(x / w, y / w, 1 / w)
+			);
+
+			glm::vec3 T = J * glm::vec3(1.f, 0.f, 0.f);
+			glm::vec3 B = J * glm::vec3(0.f, 1.f, 0.f);
+			glm::vec3 N = glm::cross(T, B);
+
+			glm::mat3 TBN(T, B, N);
+
+			if ((int)glm::dot((*it).normal, glm::vec3(0.f, 0.f, 1.f)) == 1.f)
+				(*it).normal = glm::normalize((*it).position);
+			else
+				(*it).normal = TBN * (*it).normal;
+
+		}
+		else if (side == Side::LEFT) {
+			w = sqrt(x2 + y2 + 1);
+
+			(*it).position.x = -z * (x / w);
+			(*it).position.y = -z * (y / w);
+			(*it).position.z = z * (1 / w);
+
+			if ((int)glm::dot((*it).normal, glm::vec3(0.f, 0.f, -1.f)) == 1.f) {
+				(*it).normal = glm::normalize((*it).position);
+			}
+			else if ((int)glm::dot((*it).normal, glm::vec3(0.f, 1.f, 0.f)) == 1.f) {
+
+				glm::vec3 N = glm::normalize((*it).position);
+				glm::vec3 T = glm::cross(N, glm::vec3(0.f, -1.f, 0.f));
+				(*it).normal = (glm::cross(N, T));
+			}
+			else if ((int)glm::dot((*it).normal, glm::vec3(0.f, -1.f, 0.f)) == 1.f) {
+
+				glm::vec3 N = glm::normalize((*it).position);
+				glm::vec3 T = glm::cross(N, glm::vec3(0.f, 1.f, 0.f));
+				(*it).normal = (glm::cross(N, T));
+			}
+			else if ((int)glm::dot((*it).normal, glm::vec3(1.f, 0.f, 0.f)) == 1.f) {
+
+				glm::vec3 N = glm::normalize((*it).position);
+				glm::vec3 T = glm::cross(N, glm::vec3(-1.f, 0.f, 0.f));
+				(*it).normal = (glm::cross(N, T));
+			}
+			else if ((int)glm::dot((*it).normal, glm::vec3(-1.f, 0.f, 0.f)) == 1.f) {
+
+				glm::vec3 N = glm::normalize((*it).position);
+				glm::vec3 T = glm::cross(N, glm::vec3(1.f, 0.f, 0.f));
+				(*it).normal = (glm::cross(N, T));
+			}
+		}
+	}
+
+	updateGL();
+}
+
+void Mesh::translate(glm::vec3 translation)
+{
+	for (auto it = m_vertices.begin(); it != m_vertices.end(); it++) {
+		(*it).position = (*it).position + translation;
+	}
+
+	updateGL();
+}
+
+void Mesh::rotate(glm::vec3 rotation)
+{
+	glm::mat4 model = glm::mat4();
+
+	model = glm::rotate(model, glm::radians(rotation.x), glm::vec3(1.f, 0.f, 0.f));
+	model = glm::rotate(model, glm::radians(rotation.y), glm::vec3(0.f, 1.f, 0.f));
+	model = glm::rotate(model, glm::radians(rotation.z), glm::vec3(0.f, 0.f, 1.f));
+	model = glm::scale(model, glm::vec3(1.f));
+
+	for (auto it = m_vertices.begin(); it != m_vertices.end(); it++) {
+		(*it).position = glm::vec3( glm::vec4((*it).position, 1.f) * model);
+		(*it).normal = (*it).normal * glm::transpose(glm::inverse(glm::mat3(model)));
+	}
+
+	updateGL();
+}
+
+
 
 int Mesh::sizeOf()
 {
