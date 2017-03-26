@@ -1,5 +1,10 @@
 #include "Camera.h"
 
+#include "MVP.h"
+#include "Shaders.h"
+
+#include "FreeCam.h"
+
 Camera::Camera(float screenWidth, float screenHeight, float nearPlane, float farPlane, float zoom)
 	: m_screenWidth(screenWidth),
 	m_screenHeight(screenHeight),
@@ -53,44 +58,25 @@ bool Camera::isInFrustum(const glm::vec3 & position, bool permissive)
 
 void Camera::processMove(CameraMovement direction, float deltaTime)
 {
-	float velocity = m_movementSpeed * deltaTime;
+	// Set FreeCam as Default Manipulator if not set yet
+	if (!m_manipulator) { 
+		FreeCam* freeCamManipulator = new FreeCam(this);
+		setManipulator(freeCamManipulator);
+	}
 
-	if (direction == CameraMovement::FORWARD)
-		transform.translate(m_front * velocity);
-	if (direction == CameraMovement::BACKWARD)
-		transform.translate(-m_front * velocity);
-	if (direction == CameraMovement::LEFTWARD)
-		transform.translate(-m_right * velocity);
-	if (direction == CameraMovement::RIGHTWARD)
-		transform.translate(m_right * velocity);
-
-	//std::cout << "Moving" << std::endl;
-
-	updateViewMatrix();
+	m_manipulator->processMove(direction, deltaTime);
 }
 
 void Camera::processLook(float xoffset, float yoffset, bool constrainPitch)
 {
-	xoffset *= m_mouseSensitivity;
-	yoffset *= m_mouseSensitivity;
-
-	transform.rotate(glm::vec3(0.f, xoffset, 0.f));
-	transform.rotate(glm::vec3(yoffset, 0.f, 0.f));
-
-	//std::cout << "x " << transform.rotation().x << " y " << transform.rotation().y << " z " << transform.rotation().z << std::endl;
-
-	// Make sure that when pitch is out of bounds, screen doesn't get flipped
-	if (constrainPitch)
-	{
-		if (transform.rotation().x > 89.0f)
-			transform.setRotX(89.0f);
-		else if (transform.rotation().x < -89.0f)
-			transform.setRotX(-89.0f);
+	// Set FreeCam as Default Manipulator if not set yet
+	if (!m_manipulator) {
+		FreeCam* freeCamManipulator = new FreeCam(this);
+		setManipulator(freeCamManipulator);
 	}
 
-	// Update Front, Right and Up Vectors using the updated Eular angles
-	updateVectors();
-	updateViewMatrix();
+	m_manipulator->processLook(xoffset, yoffset, constrainPitch);
+
 }
 
 void Camera::processZoom(float yoffset)
@@ -110,6 +96,11 @@ void Camera::processZoom(float yoffset)
 	std::cout << "Zooming : " << m_zoom << std::endl;
 }
 
+void Camera::setManipulator(CameraManipulator * manipulator)
+{
+	m_manipulator = manipulator;
+}
+
 void Camera::updateProjectionMatrix()
 {
 	m_projection = glm::perspective(m_zoom, m_screenWidth / m_screenHeight, m_nearPlane, m_farPlane);
@@ -118,7 +109,7 @@ void Camera::updateProjectionMatrix()
 
 void Camera::updateViewMatrix()
 {
-	m_view = glm::lookAt(transform.position(), transform.position() + m_front, m_up);
+	m_view = glm::lookAt(transform.position(), glm::vec3(0), m_up);
 }
 
 void Camera::updateVectors()

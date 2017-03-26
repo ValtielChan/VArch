@@ -20,11 +20,42 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="src\ColorTable.cpp" />
+    <ClCompile Include="src\ComputeShaderTexture.cpp" />
+    <ClCompile Include="src\CubeMap.cpp" />
+    <ClCompile Include="src\DefaultRenderer.cpp" />
+    <ClCompile Include="src\DirectionalLight.cpp" />
+    <ClCompile Include="src\DisplacementPhongMaterial.cpp" />
+    <ClCompile Include="src\Drawable.cpp" />
+    <ClCompile Include="src\Exception.cpp" />
+    <ClCompile Include="src\FrameBufferObject.cpp" />
+    <ClCompile Include="src\FreeCam.cpp" />
+    <ClCompile Include="src\HeightMap.cpp" />
+    <ClCompile Include="src\HeightMapFilter.cpp" />
+    <ClCompile Include="src\Light.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Mesh.cpp" />
+    <ClCompile Include="src\MVP.cpp" />
+    <ClCompile Include="src\Noise.cpp" />
+    <ClCompile Include="src\NormalMap.cpp" />
+    <ClCompile Include="src\Object.cpp" />
+    <ClCompile Include="src\OrbitalManipulator.cpp" />
+    <ClCompile Include="src\PhongMaterial.cpp" />
+    <ClCompile Include="src\Planet.cpp" />
+    <ClCompile Include="src\QTNode.cpp" />
+    <ClCompile Include="src\Renderer.cpp" />
+    <ClCompile Include="src\Scene.cpp" />
+    <ClCompile Include="src\SelfIlluminMaterial.cpp" />
+    <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\Shaders.cpp" />
+    <ClCompile Include="src\Terrain.cpp" />
+    <ClCompile Include="src\Texture1D_3F.cpp" />
+    <ClCompile Include="src\Texture1D_4I.cpp" />
+    <ClCompile Include="src\TextureRGB.cpp" />
+    <ClCompile Include="src\VoxelOctree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Camera.h" />
-    <ClInclude Include="src\Chunk.h" />
     <ClInclude Include="src\ColorTable.h" />
     <ClInclude Include="src\Component.h" />
     <ClInclude Include="src\ComputeShaderTexture.h" />
@@ -46,6 +77,7 @@
     <ClInclude Include="src\Noise.h" />
     <ClInclude Include="src\NormalMap.h" />
     <ClInclude Include="src\Object.h" />
+    <ClInclude Include="src\OrbitalManipulator.h" />
     <ClInclude Include="src\PhongMaterial.h" />
     <ClInclude Include="src\Planet.h" />
     <ClInclude Include="src\QTNode.h" />
@@ -90,7 +122,7 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -124,7 +156,7 @@
     <LibraryPath>$(ProjectDir)\libs\glfw-3.2.bin.WIN32\lib-vc2015;$(ProjectDir)\libs\glew-1.13.0\lib\Release\Win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)\libs\glm;$(SolutionDir)\libs\glfw-3.2.bin.WIN64\include;$(SolutionDir)\libs\glew-1.13.0\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\libs\glm;$(SolutionDir)\libs\glfw-3.2.bin.WIN64\include;$(SolutionDir)\libs\glew-1.13.0\include;$(SolutionDir)\src;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)\libs\glew-1.13.0\lib\Release\x64;$(ProjectDir)\libs\glfw-3.2.bin.WIN64\lib-vc2015;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

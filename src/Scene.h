@@ -1,7 +1,11 @@
-#pragma once
+#ifndef SCENE_H
+#define SCENE_H
 
-#include "Camera.h"
-#include "Light.h"
+#include <vector>
+
+class Object;
+class Camera;
+class Light;
 
 class Scene
 {
@@ -22,16 +26,4 @@ private:
 	std::vector<Light*> m_lights;
 };
 
-Scene::Scene(Object* root, Camera* camera) : m_root(root), m_camera(camera)
-{
-
-}
-
-Scene::~Scene()
-{
-
-}
-
-void Scene::addLight(Light* light) {
-	m_lights.push_back(light);
-}
+#endif SCENE_H

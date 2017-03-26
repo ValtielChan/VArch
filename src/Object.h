@@ -1,11 +1,13 @@
-#pragma once
+#ifndef OBJECT_H
+#define OBJECT_H
 
 #include <iostream>
 #include <vector>
 
 #include "Transform.h"
-#include "Component.h"
 #include "MVP.h"
+
+class Component;
 
 class Object
 {
@@ -24,41 +26,13 @@ public:
 	Object() {}
 	~Object() {}
 
-	void update() {
-
-		for (Component* c : m_components)
-			c->update(transform.model());
-
-		for (Object* child : m_childs)
-			child->update();
-	}
-
-	void voidUpdate() {
-
-		// Update MVP
-		MVP::getInstance()->setModel(transform.model());
-		MVP::setUniform();
-
-		for (Component* c : m_components)
-			c->update();
-	}
-
-	std::vector<Object*> getChilds() {
-		return m_childs;
-	}
-
-	void addChild(Object* child) {
-		m_childs.push_back(child);
-	}
-
-	void addComponent(Component* c) {
-		m_components.push_back(c);
-	}
-
-	bool isActive() {
-		return m_active; // TODO check parents
-	}
-
-	void setActive(bool active) { m_active = active; }
+	void update();
+	void voidUpdate();
+	std::vector<Object*> getChilds();
+	void addChild(Object* child);
+	void addComponent(Component* c);
+	bool isActive();
+	void setActive(bool active);
 };
 
+#endif // OBJECT_H

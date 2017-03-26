@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MATERIAL_H
+#define MATERIAL_H
 
 #include "Shaders.h"
 
@@ -17,3 +18,5 @@ public:
 
 	Shader* getShader() { return m_shader; }
 };
+
+#endif // !MATERIAL_H

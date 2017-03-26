@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SINGLETON_H
+#define SINGLETON_H
 
 #include <iostream>
 
@@ -33,3 +34,5 @@ public:
 
 template <typename T>
 T *Singleton<T>::m_singleton = NULL;
+
+#endif // !SINGLETON_H

@@ -22,7 +22,10 @@
 #include "PhongMaterial.h"
 #include "CubeMap.h"
 #include "HeightMapFilter.h"
-
+#include "HeightMap.h"
+#include "HeightMapFilter.h"
+#include "Noise.h"
+#include "Scene.h"
 #include "DefaultRenderer.h"
 
 // GLM Mathemtics
@@ -98,7 +101,8 @@ int main()
 	TextureRGB* colorMap = heightMap->generateColorMap(colorTable);*/
 
 	// Scene
-	Scene scene = Scene(NULL, camera);
+	Object* object = new Object();
+	Scene scene = Scene(object, camera);
 
 	DefaultRenderer renderer(&scene);
 	renderer.setWireframe(false);

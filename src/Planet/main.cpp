@@ -13,7 +13,7 @@
 // GL includes
 #include "Planet.h"
 #include "Shaders.h"
-#include "FreeCam.h"
+#include "OrbitalManipulator.h"
 #include "Camera.h"
 #include "MVP.h"
 #include "DirectionalLight.h"
@@ -23,6 +23,8 @@
 #include "SelfIlluminMaterial.h"
 #include "CubeMap.h"
 #include "HeightMapFilter.h"
+#include "Noise.h"
+#include "Scene.h"
 
 #include "DefaultRenderer.h"
 
@@ -94,7 +96,8 @@ int main()
 	camera->transform.setPosition(glm::vec3(16.3f, 10.7f, -6.5f));
 	camera->transform.setRotation(glm::vec3(-40.f, 124.f, 0.f));
 
-	FreeCam freeCamManipulator(camera);
+	OrbitalManipulator* orbitalManipulator = new OrbitalManipulator(camera);
+	camera->setManipulator(orbitalManipulator);
 
 	// Set material textures
 	PhongMaterial *mat = new PhongMaterial();

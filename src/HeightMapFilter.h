@@ -1,6 +1,7 @@
-#pragma once
+#ifndef HEIGHTMAPFILTER_H
+#define HEIGHTMAPFILTER_H
 
-#include "HeightMap.h"
+class HeightMap;
 
 class HeightMapFilter
 {
@@ -14,21 +15,4 @@ private:
 
 };
 
-HeightMapFilter::HeightMapFilter()
-{
-}
-
-HeightMapFilter::~HeightMapFilter()
-{
-}
-
-void HeightMapFilter::binarize(HeightMap* hm, float threshold)
-{
-	for (int x = 0; x < hm->width(); x++) {
-		for (int y = 0; y < hm->height(); y++) {
-
-			if (hm->get(x, y) < threshold)
-				hm->set(x, y, 0);
-		}
-	}
-}
+#endif // !HEIGHTMAPFILTER_H

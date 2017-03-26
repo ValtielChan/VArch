@@ -82,7 +82,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(SolutionDir)\src;$(SolutionDir)\libs\glm;$(SolutionDir)\libs\glfw-3.2.bin.WIN64\include;$(SolutionDir)\libs\glew-1.13.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)\libs\glew-1.13.0\lib\Release\x64;$(SolutionDir)\libs\glfw-3.2.bin.WIN64\lib-vc2015;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)\x64\Release;$(SolutionDir)\libs\glew-1.13.0\lib\Release\x64;$(SolutionDir)\libs\glfw-3.2.bin.WIN64\lib-vc2015;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -133,7 +133,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32s.lib;VArch.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

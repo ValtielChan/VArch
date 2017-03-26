@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SELFILLUMINMATERIAL_H
+#define SELFILLUMINMATERIAL_H
 
 #include "Material.h"
 
@@ -12,17 +13,4 @@ public:
 	void setUniform();
 };
 
-// Default = Gold
-SelfIlluminMaterial::SelfIlluminMaterial()
-	: Material(Shaders::getInstance()->getShader(BuiltInShader::SELFILLUMIN))
-{
-}
-
-SelfIlluminMaterial::~SelfIlluminMaterial()
-{
-}
-
-void SelfIlluminMaterial::setUniform()
-{
-
-}
+#endif // !SELFILLUMINMATERIAL_H

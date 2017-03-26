@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TRANSFORM_H
+#define TRANSFORM_H
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
@@ -54,3 +55,4 @@ public:
 	}
 };
 
+#endif // !TRANSFORM_H

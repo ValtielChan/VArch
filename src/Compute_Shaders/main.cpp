@@ -24,6 +24,10 @@
 #include "VoxelOctree.h"
 #include "Texture1D_3F.h"
 #include "Texture1D_4I.h"
+#include "Noise.h"
+#include "Scene.h"
+#include "ColorTable.h"
+#include "HeightMap.h"
 
 // GLM Mathemtics
 #include <glm/glm.hpp>

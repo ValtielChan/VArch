@@ -20,6 +20,10 @@
 #include "DisplacementPhongMaterial.h"
 #include "QTNode.h"
 #include "DefaultRenderer.h"
+#include "Noise.h"
+#include "Scene.h"
+#include "ColorTable.h"
+#include "HeightMap.h"
 
 // GLM Mathemtics
 #include <glm/glm.hpp>

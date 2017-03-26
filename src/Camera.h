@@ -6,9 +6,8 @@
 #include <glm/gtc/matrix_access.hpp>
 
 #include "Object.h"
-#include "MVP.h"
 
-class FreeCam;
+class CameraManipulator;
 
 enum CameraMovement {
 	FORWARD,
@@ -19,7 +18,6 @@ enum CameraMovement {
 
 class Camera : public Object
 {
-	friend class FreeCam;
 
 private:
 
@@ -39,6 +37,8 @@ private:
 	float m_mouseSensitivity;
 	float m_movementSpeed;
 
+	CameraManipulator *m_manipulator;
+
 public:
 
 	Camera(float screenWidth = 16.f, float screenHeight = 9.f, float nearPlane = 0.1f, float farPlane = 1000.f, float zoom = 60.f);
@@ -56,9 +56,13 @@ public:
 	float farPlane() { return m_farPlane; }
 	float zoom() { return m_zoom; }
 	float sensitivity() { return m_mouseSensitivity; }
+	float movementSpeed() { return m_movementSpeed; }
 	glm::vec3 front() { return m_front; }
+	glm::vec3 right() { return m_right; }
 	glm::mat4 view() { return m_view; }
 	glm::mat4 projection() { return m_projection; }
+
+	void setManipulator(CameraManipulator* manipulator);
 
 	// Update
 	void updateProjectionMatrix();
@@ -80,8 +84,8 @@ public:
 	CameraManipulator(Camera* camera) : m_camera(camera) {}
 	~CameraManipulator() {}
 
-	/*virtual void processMove(CameraMovement direction, float deltaTime) = 0;
-	virtual void processLook(float xoffset, float yoffset, bool constrainPitch) = 0;*/
+	virtual void processMove(CameraMovement direction, float deltaTime) = 0;
+	virtual void processLook(float xoffset, float yoffset, bool constrainPitch) = 0;
 
 protected:
 	Camera* m_camera;

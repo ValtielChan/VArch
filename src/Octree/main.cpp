@@ -22,6 +22,10 @@
 #include "SelfIlluminMaterial.h"
 #include "CubeMap.h"
 #include "HeightMapFilter.h"
+#include "Noise.h"
+#include "Scene.h"
+#include "ColorTable.h"
+#include "HeightMap.h"
 
 #include "DefaultRenderer.h"
 

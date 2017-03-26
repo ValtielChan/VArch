@@ -1,10 +1,12 @@
-#pragma once
+#ifndef SHADERS_H
+#define SHADERS_H
+
 
 #include <iostream>
 #include <vector>
 
-#include "Shader.h"
 #include "Singleton.h"
+#include "Shader.h"
 
 enum BuiltInShader {
 	DEFAULT, SCREEN, PHONG, DISPLACEMENT, SELFILLUMIN, COMPUTE_SAMPLE, VOXEL_RAYTRACING
@@ -15,20 +17,8 @@ class Shaders : public Singleton<Shaders>
 	friend class Singleton<Shaders>;
 
 private:
-	Shaders() : m_currentShader(nullptr) {
-
-		m_shaders.push_back(new Shader("shaders\\default.vs", "shaders\\default.fs"));
-		m_shaders.push_back(new Shader("shaders\\screen.vs", "shaders\\screen.fs"));
-		m_shaders.push_back(new Shader("shaders\\phong.vs", "shaders\\phong.fs"));
-		m_shaders.push_back(new Shader("shaders\\displacement.vs", "shaders\\displacement.fs"));
-		m_shaders.push_back(new Shader("shaders\\selfillumin.vs", "shaders\\selfillumin.fs"));
-		m_shaders.push_back(new Shader("shaders\\sample.cs"));
-		m_shaders.push_back(new Shader("shaders\\voxelraytracing.cs"));
-
-		useShader(SCREEN);
-	}
-
-	~Shaders() {}
+	Shaders();
+	~Shaders();
 
 	Shader* m_currentShader;
 
@@ -37,31 +27,19 @@ private:
 
 public:
 
-	void useShader(BuiltInShader shader) {
+	void useShader(BuiltInShader shader);
 
-		m_shaders[shader]->use();
-		m_currentShader = m_shaders[shader];
-	}
+	void useShader(unsigned int shader);
 
-	void useShader(unsigned int shader) {
+	unsigned int addShader(const GLchar* vertexPath, const GLchar* fragmentPath);
 
-		m_shaders[shader]->use();
-		m_currentShader = m_shaders[shader];
-	}
+	unsigned int addShader(Shader* shader);
 
-	unsigned int addShader(const GLchar* vertexPath, const GLchar* fragmentPath) {
-		m_shaders.push_back(new Shader(vertexPath, fragmentPath));
-		return m_shaders.size() - 1;
-	}
+	Shader* currentShader();
 
-	unsigned int addShader(Shader* shader) {
-		m_shaders.push_back(shader);
-		return m_shaders.size() - 1;
-	}
-
-	Shader* currentShader() { return m_currentShader; }
-
-	Shader* getShader(BuiltInShader shader) { return m_shaders[shader]; }
-	Shader* getShader(int index) { return m_shaders[index]; }
-	std::vector<Shader*> getShaders() { return m_shaders; }
+	Shader* getShader(BuiltInShader shader);
+	Shader* getShader(int index);
+	std::vector<Shader*> getShaders();
 };
+
+#endif // !SHADERS_H

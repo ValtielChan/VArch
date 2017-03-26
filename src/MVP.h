@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MVP_H
+#define MVP_H
 
 #define GLEW_STATIC
 #include <GL/glew.h>
@@ -8,7 +9,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Singleton.h"
-#include "Shaders.h"
+
+class Shader;
 
 class MVP : public Singleton<MVP> {
 
@@ -33,36 +35,9 @@ public:
 	void setView(glm::mat4 view) { m_view = view; }
 	void setProjection(glm::mat4 projection) { m_projection = projection; }
 
-	void setMVP(glm::mat4 model, glm::mat4 view, glm::mat4 projection) {
-		m_model = model;
-		m_view = view;
-		m_projection = projection;
-	}
-
-	static void setUniform() {
-
-		Shader *shader = Shaders::getInstance()->currentShader();
-		MVP *mvp = MVP::getInstance();
-
-		GLint modelLoc = glGetUniformLocation(shader->program, "model");
-		GLint viewLoc = glGetUniformLocation(shader->program, "view");
-		GLint projectionLoc = glGetUniformLocation(shader->program, "projection");
-
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(mvp->model()));
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(mvp->view()));
-		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(mvp->projection()));
-	}
-
-	static void setUniform(Shader* shader) {
-
-		MVP *mvp = MVP::getInstance();
-
-		GLint modelLoc = glGetUniformLocation(shader->program, "model");
-		GLint viewLoc = glGetUniformLocation(shader->program, "view");
-		GLint projectionLoc = glGetUniformLocation(shader->program, "projection");
-
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(mvp->model()));
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(mvp->view()));
-		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(mvp->projection()));
-	}
+	void setMVP(glm::mat4 model, glm::mat4 view, glm::mat4 projection);
+	static void setUniform();
+	static void setUniform(Shader* shader);
 };
+
+#endif // !MVP_H

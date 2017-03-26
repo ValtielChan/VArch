@@ -1,149 +1,251 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{4afcd6a7-5c71-42f7-b149-0ed23a2e7a80}</UniqueIdentifier>
+    <Filter Include="Include">
+      <UniqueIdentifier>{ced8e6e2-7d35-4c00-a222-971f13782991}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine">
+    <Filter Include="Include\Engine">
       <UniqueIdentifier>{82645298-d77d-4b15-bb0d-7bb46050dd2e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Procedural">
-      <UniqueIdentifier>{0f6bf395-89f6-45bb-94ad-1afa17e35152}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Voxel">
-      <UniqueIdentifier>{0c4af16a-210c-4b33-9c96-3c8a25b4c424}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Exception">
+    <Filter Include="Include\Exception">
       <UniqueIdentifier>{cf1c1cf0-b56e-4803-87df-469be3f689f0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Texture">
+    <Filter Include="Include\Procedural">
+      <UniqueIdentifier>{0f6bf395-89f6-45bb-94ad-1afa17e35152}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Shaders">
+      <UniqueIdentifier>{4afcd6a7-5c71-42f7-b149-0ed23a2e7a80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Texture">
       <UniqueIdentifier>{3c64eb96-9ad0-499c-b34b-1c110d9340d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Voxel">
+      <UniqueIdentifier>{0c4af16a-210c-4b33-9c96-3c8a25b4c424}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src">
+      <UniqueIdentifier>{942ca706-f906-4950-81d8-0da97cc00db5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Camera.cpp">
-      <Filter>Engine</Filter>
+      <Filter>Src</Filter>
     </ClCompile>
+    <ClCompile Include="src\ColorTable.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ComputeShaderTexture.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CubeMap.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DefaultRenderer.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DirectionalLight.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DisplacementPhongMaterial.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Drawable.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Exception.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FrameBufferObject.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FreeCam.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HeightMap.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HeightMapFilter.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Light.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mesh.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MVP.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Noise.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NormalMap.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Object.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PhongMaterial.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Planet.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\QTNode.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SelfIlluminMaterial.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shader.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shaders.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Terrain.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Texture1D_3F.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Texture1D_4I.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TextureRGB.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\VoxelOctree.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OrbitalManipulator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Noise.h">
-      <Filter>Procedural</Filter>
+      <Filter>Include\Procedural</Filter>
     </ClInclude>
-    <ClInclude Include="src\Component.h" />
     <ClInclude Include="src\DisplacementPhongMaterial.h">
-      <Filter>Shaders</Filter>
+      <Filter>Include\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="src\PhongMaterial.h">
-      <Filter>Shaders</Filter>
+      <Filter>Include\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="src\Material.h">
-      <Filter>Shaders</Filter>
+      <Filter>Include\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="src\Shader.h">
-      <Filter>Shaders</Filter>
+      <Filter>Include\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="src\Shaders.h">
-      <Filter>Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Chunk.h">
-      <Filter>Voxel</Filter>
+      <Filter>Include\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="src\CubeMap.h">
-      <Filter>Procedural</Filter>
+      <Filter>Include\Procedural</Filter>
     </ClInclude>
     <ClInclude Include="src\HeightMapFilter.h">
-      <Filter>Procedural</Filter>
+      <Filter>Include\Procedural</Filter>
     </ClInclude>
     <ClInclude Include="src\VoxelOctree.h">
-      <Filter>Voxel</Filter>
+      <Filter>Include\Voxel</Filter>
     </ClInclude>
     <ClInclude Include="src\Camera.h">
-      <Filter>Engine</Filter>
+      <Filter>Include\Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\DefaultRenderer.h">
-      <Filter>Engine</Filter>
+      <Filter>Include\Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\DirectionalLight.h">
-      <Filter>Engine</Filter>
+      <Filter>Include\Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\Drawable.h">
-      <Filter>Engine</Filter>
+      <Filter>Include\Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\enum.h">
-      <Filter>Engine</Filter>
+      <Filter>Include\Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\FrameBufferObject.h">
-      <Filter>Engine</Filter>
+      <Filter>Include\Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\Light.h">
-      <Filter>Engine</Filter>
+      <Filter>Include\Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\Mesh.h">
-      <Filter>Engine</Filter>
+      <Filter>Include\Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\MVP.h">
-      <Filter>Engine</Filter>
+      <Filter>Include\Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\Object.h">
-      <Filter>Engine</Filter>
+      <Filter>Include\Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\QTNode.h">
-      <Filter>Engine</Filter>
+      <Filter>Include\Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer.h">
-      <Filter>Engine</Filter>
+      <Filter>Include\Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\Scene.h">
-      <Filter>Engine</Filter>
+      <Filter>Include\Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\Singleton.h">
-      <Filter>Engine</Filter>
+      <Filter>Include\Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\Transform.h">
-      <Filter>Engine</Filter>
+      <Filter>Include\Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\Terrain.h">
-      <Filter>Voxel</Filter>
+      <Filter>Include\Voxel</Filter>
     </ClInclude>
     <ClInclude Include="src\SelfIlluminMaterial.h">
-      <Filter>Shaders</Filter>
+      <Filter>Include\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="src\Exception.h">
-      <Filter>Exception</Filter>
+      <Filter>Include\Exception</Filter>
     </ClInclude>
     <ClInclude Include="src\Texture2D.h">
-      <Filter>Texture</Filter>
+      <Filter>Include\Texture</Filter>
     </ClInclude>
     <ClInclude Include="src\NormalMap.h">
-      <Filter>Texture</Filter>
+      <Filter>Include\Texture</Filter>
     </ClInclude>
     <ClInclude Include="src\HeightMap.h">
-      <Filter>Texture</Filter>
+      <Filter>Include\Texture</Filter>
     </ClInclude>
     <ClInclude Include="src\ColorTable.h">
-      <Filter>Texture</Filter>
+      <Filter>Include\Texture</Filter>
     </ClInclude>
     <ClInclude Include="src\TextureRGB.h">
-      <Filter>Texture</Filter>
+      <Filter>Include\Texture</Filter>
     </ClInclude>
     <ClInclude Include="src\ComputeShaderTexture.h">
-      <Filter>Texture</Filter>
+      <Filter>Include\Texture</Filter>
     </ClInclude>
     <ClInclude Include="src\Texture1D.h">
-      <Filter>Texture</Filter>
+      <Filter>Include\Texture</Filter>
     </ClInclude>
     <ClInclude Include="src\Texture1D_3F.h">
-      <Filter>Texture</Filter>
+      <Filter>Include\Texture</Filter>
     </ClInclude>
     <ClInclude Include="src\Texture1D_4I.h">
-      <Filter>Texture</Filter>
+      <Filter>Include\Texture</Filter>
     </ClInclude>
     <ClInclude Include="src\Planet.h">
-      <Filter>Voxel</Filter>
+      <Filter>Include\Voxel</Filter>
     </ClInclude>
     <ClInclude Include="src\FreeCam.h">
-      <Filter>Engine</Filter>
+      <Filter>Include\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="src\Component.h">
+      <Filter>Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\OrbitalManipulator.h" />
   </ItemGroup>
 </Project>
