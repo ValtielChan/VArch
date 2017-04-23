@@ -10,7 +10,7 @@ class Object;
 class Planet
 {
 public:
-	Planet(const CubeMap &cubeMap, const ColorTable &colorTable);
+	Planet(const CubeMap &cubeMap, const ColorTable &colorTable, int octreeDepth = 4);
 	~Planet();
 
 	void addMeshesToObject(Object* object);
@@ -20,6 +20,7 @@ private:
 
 	CubeMap m_cubeMap;
 	ColorTable m_colorTable;
+	int m_octreeDepth;
 
 	std::vector<Mesh*> m_meshes;
 };

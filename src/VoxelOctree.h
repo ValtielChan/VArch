@@ -12,16 +12,22 @@
 #include "enum.h"
 #include "Mesh.h"
 
-#define DEPTH 8
-#define DEPTH_LOD 4
-#define THRESHOLD 100
-#define PERVISSIVE_FRUSTUM false
 //#define BENCHMARK
 
 class TextureRGB;
 class NormalMap;
 class HeightMap;
 class Camera;
+
+struct VoxelOctreeLOD {
+	int maxDepth;
+	int depthLOD;
+	float threshold;
+	bool permissiveFrustum;
+
+	VoxelOctreeLOD(int md, int dLOD, float th, bool pf)
+		: maxDepth(md), depthLOD(dLOD), threshold(th), permissiveFrustum(pf) {}
+};
 
 struct Voxel {
 
@@ -81,12 +87,12 @@ public:
 	/// <summary>
 	/// Root Octree constructor
 	/// </summary>
-	VoxelOctree(glm::vec3 worldCenter = glm::vec3(0), float voxelSize = 1.f);
+	VoxelOctree(VoxelOctreeLOD& lod, glm::vec3 worldCenter = glm::vec3(0), float voxelSize = 1.f);
 
 	/// <summary>
 	/// Child Octree construtor
 	/// </summary>
-	VoxelOctree(VoxelOctree* parent, Mesh* mesh, glm::vec3 worldCenter, float voxelSize, int depth, OctreePosition relPos);
+	VoxelOctree(VoxelOctree* parent, Mesh* mesh, glm::vec3 worldCenter, float voxelSize, int depth, OctreePosition relPos, VoxelOctreeLOD& lod);
 
 	~VoxelOctree();
 
@@ -184,6 +190,7 @@ protected:
 	glm::vec3 m_worldCenter;
 	float m_voxelSize;
 	int m_depth;
+	VoxelOctreeLOD m_lod;
 
 	void addVertices();
 };

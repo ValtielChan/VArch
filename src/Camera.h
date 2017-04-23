@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/matrix_access.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include "Object.h"
 
@@ -59,14 +60,17 @@ public:
 	float movementSpeed() { return m_movementSpeed; }
 	glm::vec3 front() { return m_front; }
 	glm::vec3 right() { return m_right; }
+	glm::vec3 up() { return m_up; }
 	glm::mat4 view() { return m_view; }
 	glm::mat4 projection() { return m_projection; }
 
 	void setManipulator(CameraManipulator* manipulator);
+	void setSensitivity(float sensitivity) { m_mouseSensitivity = sensitivity; }
 
 	// Update
 	void updateProjectionMatrix();
 	void updateViewMatrix();
+	void updateVectors(glm::vec3 frontVector);
 	void updateVectors();
 
 	void update();

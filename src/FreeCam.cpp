@@ -23,6 +23,7 @@ void FreeCam::processMove(CameraMovement direction, float deltaTime)
 
 	//std::cout << "Moving" << std::endl;
 
+	m_camera->updateVectors();
 	m_camera->updateViewMatrix();
 }
 

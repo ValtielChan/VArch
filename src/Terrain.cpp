@@ -6,7 +6,7 @@
 #include "NormalMap.h"
 #include "ColorTable.h"
 
-Terrain::Terrain(HeightMap* heightMap, Camera* camera, int nbChunk, float chunkSize)
+Terrain::Terrain(HeightMap* heightMap, Camera* camera, VoxelOctreeLOD& octreeLOD, int nbChunk, float chunkSize)
 	: m_nbChunk(nbChunk), 
 	m_chunkSize(chunkSize),
 	m_alt(true),
@@ -27,7 +27,7 @@ Terrain::Terrain(HeightMap* heightMap, Camera* camera, int nbChunk, float chunkS
 
 			int hmStep = m_heightMap->width() / m_nbChunk;
 
-			m_chunks.push_back(new VoxelOctree(glm::vec3(x * m_chunkSize, 0, z * m_chunkSize), m_chunkSize));
+			m_chunks.push_back(new VoxelOctree(octreeLOD, glm::vec3(x * m_chunkSize, 0, z * m_chunkSize), m_chunkSize));
 			HeightMap* hm = m_heightMap->getPart(glm::vec2(z * hmStep, x * hmStep), glm::vec2((z + 1) * hmStep, (x + 1) * hmStep));
 			TextureRGB* cm = m_colorMap->getPart(glm::vec2(z * hmStep, x * hmStep), glm::vec2((z + 1) * hmStep, (x + 1) * hmStep));
 			NormalMap* nm = m_normalMap->getPart(glm::vec2(z * hmStep, x * hmStep), glm::vec2((z + 1) * hmStep, (x + 1) * hmStep));

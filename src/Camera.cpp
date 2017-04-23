@@ -16,9 +16,11 @@ Camera::Camera(float screenWidth, float screenHeight, float nearPlane, float far
 	m_worldUp(glm::vec3(0, 1.f, 0)),
 	m_front(glm::vec3(0, 0, -1.f))
 {
+	transform.setPosition(glm::vec3(1, 1, 1));
+
+	updateVectors();
 	updateProjectionMatrix();
 	updateViewMatrix();
-	updateVectors();
 }
 
 Camera::~Camera()
@@ -109,7 +111,16 @@ void Camera::updateProjectionMatrix()
 
 void Camera::updateViewMatrix()
 {
-	m_view = glm::lookAt(transform.position(), glm::vec3(0), m_up);
+	m_view = glm::lookAt(transform.position(), transform.position() + m_front, m_up);
+}
+
+void Camera::updateVectors(glm::vec3 frontVector) 
+{
+	m_front = glm::normalize(frontVector);
+
+	// Also re-calculate the Right and Up vector
+	m_right = glm::normalize(glm::cross(m_front, m_worldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
+	m_up = glm::normalize(glm::cross(m_right, m_front));
 }
 
 void Camera::updateVectors()
@@ -119,7 +130,9 @@ void Camera::updateVectors()
 	front.x = cos(glm::radians(transform.rotation().y)) * cos(glm::radians(transform.rotation().x));
 	front.y = sin(glm::radians(transform.rotation().x));
 	front.z = sin(glm::radians(transform.rotation().y)) * cos(glm::radians(transform.rotation().x));
-	m_front = glm::normalize(front);
+
+	//m_front = glm::normalize(front);
+	m_front = glm::normalize(glm::vec3(0) - transform.position());
 
 	// Also re-calculate the Right and Up vector
 	m_right = glm::normalize(glm::cross(m_front, m_worldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
@@ -128,7 +141,7 @@ void Camera::updateVectors()
 
 void Camera::update()
 {
-	updateVectors();
+	//updateVectors();
 	updateViewMatrix();
 
 	std::vector<Shader*> shaders = Shaders::getInstance()->getShaders();

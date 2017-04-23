@@ -18,7 +18,7 @@ class Terrain
 
 public:
 
-	Terrain(HeightMap* heightMap, Camera* camera, int nbChunk = 1, float chunkSize = 1.f);
+	Terrain(HeightMap* heightMap, Camera* camera, VoxelOctreeLOD& octreeLOD, int nbChunk = 1, float chunkSize = 1.f);
 	~Terrain();
 
 	TextureRGB* colorMap() { return m_colorMap; }

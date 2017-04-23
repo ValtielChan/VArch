@@ -4,9 +4,10 @@
 #include "HeightMap.h"
 #include "Object.h"
 
-Planet::Planet(const CubeMap &cubeMap, const ColorTable &colorTable) 
+Planet::Planet(const CubeMap &cubeMap, const ColorTable &colorTable, int octreeDepth) 
 	: m_cubeMap(cubeMap),
-	m_colorTable(colorTable)
+	m_colorTable(colorTable),
+	m_octreeDepth(octreeDepth)
 {
 		createPlanetSide(Side::UP);
 		createPlanetSide(Side::DOWN);
@@ -34,7 +35,8 @@ void Planet::createPlanetSide(Side side)
 	NormalMap* normalMap = heightMap->generateNormalMap();
 	TextureRGB* colorMap = heightMap->generateColorMap(m_colorTable);
 
-	VoxelOctree octree(glm::vec3(0), 1);
+	VoxelOctreeLOD lod(m_octreeDepth, 4, 100, true);
+	VoxelOctree octree(lod, glm::vec3(0), 1);
 
 	octree.buildTerrain(heightMap, colorMap, NULL);
 	octree.rootUpdateNeighbors();

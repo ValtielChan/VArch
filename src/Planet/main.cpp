@@ -34,7 +34,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-#define NBCHUNK 1
+#define OCTREE_DEPTH 7
 
 // Properties
 GLuint screenWidth = 1600, screenHeight = 900;
@@ -98,6 +98,7 @@ int main()
 
 	OrbitalManipulator* orbitalManipulator = new OrbitalManipulator(camera);
 	camera->setManipulator(orbitalManipulator);
+	camera->setSensitivity(0.1f);
 
 	// Set material textures
 	PhongMaterial *mat = new PhongMaterial();
@@ -110,9 +111,9 @@ int main()
 
 	// HeightMap
 	NoiseProperties np = NoiseProperties(0.4, 0.5, 8);
-	CubeMap cubeMap(256);
+	CubeMap cubeMap(pow(2, OCTREE_DEPTH));
 	cubeMap.generateSimplex(np);
-	cubeMap.transformInterval(-0.5f, -0.2f);
+	cubeMap.transformInterval(-0.5f, -0.3f);
 
 	// Light
 	DirectionalLight* light = new DirectionalLight;
@@ -126,7 +127,7 @@ int main()
 
 	// Planet
 	ColorTable colorTable = ColorTable::Nature(128);
-	Planet planet(cubeMap, colorTable);
+	Planet planet(cubeMap, colorTable, OCTREE_DEPTH);
 
 	Object *root = new Object();
 	planet.addMeshesToObject(root);

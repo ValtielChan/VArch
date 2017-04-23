@@ -6,10 +6,11 @@
 #include "NormalMap.h"
 #include "Camera.h"
 
-VoxelOctree::VoxelOctree(glm::vec3 worldCenter, float voxelSize)
+VoxelOctree::VoxelOctree(VoxelOctreeLOD& lod, glm::vec3 worldCenter, float voxelSize)
 	: m_voxelSize(voxelSize), 
 	m_worldCenter(worldCenter),
-	m_depth(0)
+	m_depth(0),
+	m_lod(lod)
 {
 	m_parent = nullptr;
 
@@ -43,8 +44,8 @@ VoxelOctree::VoxelOctree(glm::vec3 worldCenter, float voxelSize)
 
 }
 
-VoxelOctree::VoxelOctree(VoxelOctree* parent, Mesh* mesh, glm::vec3 worldCenter, float voxelSize, int depth, OctreePosition relPos)
-
+VoxelOctree::VoxelOctree(VoxelOctree* parent, Mesh* mesh, glm::vec3 worldCenter, float voxelSize, int depth, OctreePosition relPos, VoxelOctreeLOD& lod)
+	: m_lod(lod)
 {
 	m_voxelSize = voxelSize;
 	m_worldCenter = worldCenter;
@@ -140,27 +141,27 @@ bool VoxelOctree::isInFrustum(Camera * camera, int subLevel)
 			glm::vec3 back(m_worldCenter.x - halfSize + i * subSize, m_worldCenter.y - halfSize + j * subSize, m_worldCenter.z - halfSize);
 			glm::vec3 front(m_worldCenter.x - halfSize + i * subSize, m_worldCenter.y - halfSize + j * subSize, m_worldCenter.z + halfSize);
 
-			if (camera->isInFrustum(down, PERVISSIVE_FRUSTUM)) {
+			if (camera->isInFrustum(down, m_lod.permissiveFrustum)) {
 				isInFrustum = true; 
 				goto abort;
 			}
-			else if (camera->isInFrustum(up, PERVISSIVE_FRUSTUM)) {
+			else if (camera->isInFrustum(up, m_lod.permissiveFrustum)) {
 				isInFrustum = true; 
 				goto abort;
 			}
-			else if (camera->isInFrustum(left, PERVISSIVE_FRUSTUM)) {
+			else if (camera->isInFrustum(left, m_lod.permissiveFrustum)) {
 				isInFrustum = true; 
 				goto abort;
 			}
-			else if (camera->isInFrustum(right, PERVISSIVE_FRUSTUM)) {
+			else if (camera->isInFrustum(right, m_lod.permissiveFrustum)) {
 				isInFrustum = true; 
 				goto abort;
 			}
-			else if (camera->isInFrustum(back, PERVISSIVE_FRUSTUM)) {
+			else if (camera->isInFrustum(back, m_lod.permissiveFrustum)) {
 				isInFrustum = true; 
 				goto abort;
 			}
-			else if (camera->isInFrustum(front, PERVISSIVE_FRUSTUM)) {
+			else if (camera->isInFrustum(front, m_lod.permissiveFrustum)) {
 				isInFrustum = true; 
 				goto abort;
 			}
@@ -177,14 +178,14 @@ void VoxelOctree::subdivide() {
 	float quartSize = m_voxelSize / 4.f;
 	float halfSize = m_voxelSize / 2.f;
 
-	m_cells[UP_LEFT_BACK] = new VoxelOctree(this, m_mesh, m_worldCenter + glm::vec3(-quartSize, quartSize, -quartSize), halfSize, m_depth + 1, UP_LEFT_BACK);
-	m_cells[UP_RIGHT_BACK] = new VoxelOctree(this, m_mesh, m_worldCenter + glm::vec3(-quartSize, quartSize, quartSize), halfSize, m_depth + 1, UP_RIGHT_BACK);
-	m_cells[UP_LEFT_FRONT] = new VoxelOctree(this, m_mesh, m_worldCenter + glm::vec3(quartSize, quartSize, -quartSize), halfSize, m_depth + 1, UP_LEFT_FRONT);
-	m_cells[UP_RIGHT_FRONT] = new VoxelOctree(this, m_mesh, m_worldCenter + glm::vec3(quartSize, quartSize, quartSize), halfSize, m_depth + 1, UP_RIGHT_FRONT);
-	m_cells[DOWN_LEFT_BACK] = new VoxelOctree(this, m_mesh, m_worldCenter + glm::vec3(-quartSize, -quartSize, -quartSize), halfSize, m_depth + 1, DOWN_LEFT_BACK);
-	m_cells[DOWN_RIGHT_BACK] = new VoxelOctree(this, m_mesh, m_worldCenter + glm::vec3(-quartSize, -quartSize, quartSize), halfSize, m_depth + 1, DOWN_RIGHT_BACK);
-	m_cells[DOWN_LEFT_FRONT] = new VoxelOctree(this, m_mesh, m_worldCenter + glm::vec3(quartSize, -quartSize, -quartSize), halfSize, m_depth + 1, DOWN_LEFT_FRONT);
-	m_cells[DOWN_RIGHT_FRONT] = new VoxelOctree(this, m_mesh, m_worldCenter + glm::vec3(quartSize, -quartSize, quartSize), halfSize, m_depth + 1, DOWN_RIGHT_FRONT);
+	m_cells[UP_LEFT_BACK] = new VoxelOctree(this, m_mesh, m_worldCenter + glm::vec3(-quartSize, quartSize, -quartSize), halfSize, m_depth + 1, UP_LEFT_BACK, m_lod);
+	m_cells[UP_RIGHT_BACK] = new VoxelOctree(this, m_mesh, m_worldCenter + glm::vec3(-quartSize, quartSize, quartSize), halfSize, m_depth + 1, UP_RIGHT_BACK, m_lod);
+	m_cells[UP_LEFT_FRONT] = new VoxelOctree(this, m_mesh, m_worldCenter + glm::vec3(quartSize, quartSize, -quartSize), halfSize, m_depth + 1, UP_LEFT_FRONT, m_lod);
+	m_cells[UP_RIGHT_FRONT] = new VoxelOctree(this, m_mesh, m_worldCenter + glm::vec3(quartSize, quartSize, quartSize), halfSize, m_depth + 1, UP_RIGHT_FRONT, m_lod);
+	m_cells[DOWN_LEFT_BACK] = new VoxelOctree(this, m_mesh, m_worldCenter + glm::vec3(-quartSize, -quartSize, -quartSize), halfSize, m_depth + 1, DOWN_LEFT_BACK, m_lod);
+	m_cells[DOWN_RIGHT_BACK] = new VoxelOctree(this, m_mesh, m_worldCenter + glm::vec3(-quartSize, -quartSize, quartSize), halfSize, m_depth + 1, DOWN_RIGHT_BACK, m_lod);
+	m_cells[DOWN_LEFT_FRONT] = new VoxelOctree(this, m_mesh, m_worldCenter + glm::vec3(quartSize, -quartSize, -quartSize), halfSize, m_depth + 1, DOWN_LEFT_FRONT, m_lod);
+	m_cells[DOWN_RIGHT_FRONT] = new VoxelOctree(this, m_mesh, m_worldCenter + glm::vec3(quartSize, -quartSize, quartSize), halfSize, m_depth + 1, DOWN_RIGHT_FRONT, m_lod);
 
 	// UP_LEFT_BACK NEIGHBORS
 	m_cells[UP_LEFT_BACK]->setNeighbor(Side::UP, m_neighbors[Side::UP]);
@@ -259,7 +260,7 @@ void VoxelOctree::build()
 	if (m_relativePosition != OctreePosition::DOWN_RIGHT_FRONT)
 		exist = true;
 
-	if (m_depth < DEPTH && exist) {
+	if (m_depth < m_lod.maxDepth && exist) {
 
 		subdivide();
 
@@ -329,7 +330,7 @@ abort:
 		}
 	}
 
-	if (middle && m_depth < DEPTH) {
+	if (middle && m_depth < m_lod.maxDepth) {
 		exist = true;
 		subdivide();
 
@@ -371,7 +372,8 @@ void VoxelOctree::select(Camera* camera)
 			float y = m_worldCenter.z - pov.z;
 			float dist = sqrt(x*x + y*y);
 
-			LOD = camera ? isInFrustum(camera, pow(2, DEPTH - m_depth)) && (dist < THRESHOLD / (m_depth + 1) || m_depth < DEPTH_LOD) : false;
+			// If cell id in the frustum AND not too far OR the current depth is the minimum detail required 
+			LOD = camera ? isInFrustum(camera, pow(2, m_lod.maxDepth - m_depth)) && (dist < m_lod.threshold / (m_depth + 1) || m_depth < m_lod.depthLOD) : false;
 		}
 
 		// don't take LOD stuff in account when there's not camera
@@ -397,7 +399,7 @@ void VoxelOctree::select(Camera* camera)
 	t = clock() - t;
 
 	if (!m_parent) // Only root print the whole bench result
-		std::cout << "[BENCH] VoxelOctree::select() | depth " << DEPTH << " : " << ((float)t) << " ms" << std::endl;
+		std::cout << "[BENCH] VoxelOctree::select() | depth " << m_lod.maxDepth << " : " << ((float)t) << " ms" << std::endl;
 #endif
 }
 
@@ -422,7 +424,7 @@ void VoxelOctree::resetSelection()
 	t = clock() - t;
 
 	if (!m_parent) // Only root print the whole bench result
-		std::cout << "[BENCH] VoxelOctree::resetSelection() | depth " << DEPTH << " : " << ((float)t) << " ms" << std::endl;
+		std::cout << "[BENCH] VoxelOctree::resetSelection() | depth " << m_lod.maxDepth << " : " << ((float)t) << " ms" << std::endl;
 #endif
 }
 
@@ -496,7 +498,7 @@ void VoxelOctree::buildTriangles()
 	t = clock() - t;
 
 	if (!m_parent) // Only root print the whole bench result
-		std::cout << "[BENCH] VoxelOctree::buildTriangles() | depth " << DEPTH << " : " << ((float)t) << " ms" << std::endl;
+		std::cout << "[BENCH] VoxelOctree::buildTriangles() | depth " << m_lod.maxDepth << " : " << ((float)t) << " ms" << std::endl;
 #endif
 }
 
@@ -786,7 +788,7 @@ void VoxelOctree::rootUpdateNeighbors()
 	t = clock() - t;
 
 	if (!m_parent) // Only root print the whole bench result
-		std::cout << "[BENCH] VoxelOctree::rootUpdateNeighbors() | depth " << DEPTH << " : " << ((float)t) << " ms" << std::endl;
+		std::cout << "[BENCH] VoxelOctree::rootUpdateNeighbors() | depth " << m_lod.maxDepth << " : " << ((float)t) << " ms" << std::endl;
 #endif
 
 }

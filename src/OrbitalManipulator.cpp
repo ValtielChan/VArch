@@ -6,7 +6,7 @@ OrbitalManipulator::OrbitalManipulator(Camera* camera)
 	: CameraManipulator(camera),
 	m_phi(0.f),
 	m_theta(0.f),
-	m_radius(2.f)
+	m_radius(4.f)
 {
 }
 
@@ -21,15 +21,13 @@ void OrbitalManipulator::processMove(CameraMovement direction, float deltaTime)
 
 	if (direction == CameraMovement::FORWARD)
 		m_radius -= velocity;
-		//m_camera->transform.translate(m_camera->front() * velocity);
+		
 	if (direction == CameraMovement::BACKWARD)
 		m_radius += velocity;
-		//m_camera->transform.translate(-m_camera->front() * velocity);
 
-	updateCameraPosition();
 
-	m_camera->updateVectors();
-	m_camera->updateViewMatrix();
+
+	processLook(0, 0, false);
 }
 
 void OrbitalManipulator::processLook(float xoffset, float yoffset, bool constrainPitch)
@@ -37,12 +35,13 @@ void OrbitalManipulator::processLook(float xoffset, float yoffset, bool constrai
 	xoffset *= m_camera->sensitivity();
 	yoffset *= m_camera->sensitivity();
 
-	m_phi += xoffset;
-	//m_theta += yoffset;
+	m_camera->transform.translate(-m_camera->up() * yoffset);
+	m_camera->transform.translate(-m_camera->right() * xoffset);
 
-	updateCameraPosition();
+	glm::vec3 front = glm::normalize(glm::vec3(0) - m_camera->transform.position());
+	m_camera->transform.setPosition(-front * m_radius);
 
-	m_camera->updateVectors();
+	m_camera->updateVectors(front);
 	m_camera->updateViewMatrix();
 }
 
