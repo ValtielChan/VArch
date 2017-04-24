@@ -131,8 +131,7 @@ void Camera::updateVectors()
 	front.y = sin(glm::radians(transform.rotation().x));
 	front.z = sin(glm::radians(transform.rotation().y)) * cos(glm::radians(transform.rotation().x));
 
-	//m_front = glm::normalize(front);
-	m_front = glm::normalize(glm::vec3(0) - transform.position());
+	m_front = glm::normalize(front);
 
 	// Also re-calculate the Right and Up vector
 	m_right = glm::normalize(glm::cross(m_front, m_worldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
