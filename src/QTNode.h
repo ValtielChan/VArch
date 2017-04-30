@@ -141,7 +141,7 @@ private:
 
 	glm::vec3 m_childsCenters[4];
 
-	// OSG Shared Geometry & VertexArray (pointer towards an external geometry)
+	// Mesh Shared Geometry & VertexArray (pointer towards an external geometry)
 	std::vector<GLuint> *m_sharedPrimitives;
 	std::vector<Vertex> *m_sharedVertexArray;
 	Object* ref_object;

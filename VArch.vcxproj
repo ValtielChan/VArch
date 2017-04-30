@@ -48,6 +48,7 @@
     <ClCompile Include="src\SelfIlluminMaterial.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\Shaders.cpp" />
+    <ClCompile Include="src\Skybox.cpp" />
     <ClCompile Include="src\Terrain.cpp" />
     <ClCompile Include="src\Texture1D_3F.cpp" />
     <ClCompile Include="src\Texture1D_4I.cpp" />
@@ -87,6 +88,7 @@
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\Shaders.h" />
     <ClInclude Include="src\Singleton.h" />
+    <ClInclude Include="src\Skybox.h" />
     <ClInclude Include="src\Terrain.h" />
     <ClInclude Include="src\Texture1D.h" />
     <ClInclude Include="src\Texture1D_4I.h" />
@@ -156,8 +158,8 @@
     <LibraryPath>$(ProjectDir)\libs\glfw-3.2.bin.WIN32\lib-vc2015;$(ProjectDir)\libs\glew-1.13.0\lib\Release\Win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)\libs\glm;$(SolutionDir)\libs\glfw-3.2.bin.WIN64\include;$(SolutionDir)\libs\glew-1.13.0\include;$(SolutionDir)\src;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)\libs\glew-1.13.0\lib\Release\x64;$(ProjectDir)\libs\glfw-3.2.bin.WIN64\lib-vc2015;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\libs\glm;$(SolutionDir)\libs\glfw-3.2.bin.WIN64\include;$(SolutionDir)\libs\glew-1.13.0\include;$(SolutionDir)\libs\SOIL\src;$(SolutionDir)\src;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\libs\SOIL\lib;$(ProjectDir)\libs\glew-1.13.0\lib\Release\x64;$(ProjectDir)\libs\glfw-3.2.bin.WIN64\lib-vc2015;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -208,7 +210,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32s.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

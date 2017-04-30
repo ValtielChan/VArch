@@ -9,6 +9,7 @@ Shaders::Shaders() : m_currentShader(nullptr) {
 	m_shaders.push_back(new Shader("shaders\\selfillumin.vs", "shaders\\selfillumin.fs"));
 	m_shaders.push_back(new Shader("shaders\\sample.cs"));
 	m_shaders.push_back(new Shader("shaders\\voxelraytracing.cs"));
+	m_shaders.push_back(new Shader("shaders\\skybox.vs", "shaders\\skybox.fs"));
 
 	useShader(SCREEN);
 }

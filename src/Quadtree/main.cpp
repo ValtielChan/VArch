@@ -85,15 +85,16 @@ int main()
 
 
 	// Material Setup
-	PhongMaterial *mat = new PhongMaterial();
-	mat->ambient = glm::vec3(1);
-	mat->diffuse = glm::vec3(1);
-	mat->specular = glm::vec3(1);
-	mat->shininess = 32;
+	DisplacementPhongMaterial* mat = new DisplacementPhongMaterial;
+
+	mat->ambient = glm::vec3(0.1, 0.5, 0.2);
+	mat->diffuse = glm::vec3(0.1, 0.75, 0.2);
+	mat->specular = glm::vec3(0);
+	mat->shininess = 256;
 
 	HeightMap* heightMap = new HeightMap(512, 512);
 	NormalMap* normalMap;
-	
+
 	// Generate Noise & normalize range
 	NoiseProperties np = NoiseProperties(2, 1, 4);
 	heightMap->generateSimplex(&np);
@@ -102,16 +103,14 @@ int main()
 	// Generate Normal Map
 	normalMap = heightMap->generateNormalMap();
 
-
-
+	// Set material textures
+	mat->heightmap = heightMap;
+	mat->normalMap = normalMap;
 
 	DirectionalLight* light = new DirectionalLight;
 	light->direction = glm::vec3(1, -.5f, 1);
 	light->diffuse = glm::vec3(0, 0.5, 0);
 	//light->transform.translate(glm::vec3(0, 2, 0));
-
-	Mesh* cube = new Mesh();
-	cube->generateCube(1.f, glm::vec3(0), glm::vec3(0, 0.5, 1));
 
 	// QuadTree
 	std::vector<Vertex> vertices;
@@ -130,13 +129,14 @@ int main()
 	Object* terrainWrap = new Object;
 
 	terrainWrap->addComponent(terrain);
-	terrainWrap->addComponent(cube);
 	QTNode node(terrainWrap, vertexArray, terrain->getIndices(), terrain->getVertices(), glm::vec3(step, 0, step), step);
 
-	//terrainWrap->transform.translate(glm::vec3(-step, 0, -step));
+	terrainWrap->transform.translate(glm::vec3(-step, 0, -step));
 
 	node.selection(glm::vec3(step, 0, step));
 	node.buildTriangles();
+
+	terrain->updateGL();
 
 	// Scene
 	Scene scene = Scene(terrainWrap, camera);
@@ -166,14 +166,16 @@ int main()
 
 		renderer.render();
 
-		/*terrain->getIndices()->clear();
+		terrain->getIndices()->clear();
 		node.resetSelection();
 		// Auto position selection
 		node.selection(glm::vec3(cos(time * circleSpeed) * 3, 0, sin(time * circleSpeed) * 3));
 		//node.selection(glm::vec3(0, 0, 0));
 		// From camera position selection
 		//node.selection(camera->transform.position());
-		node.buildTriangles();*/
+		node.buildTriangles();
+
+		terrain->updateGL();
 
 		// Swap the buffers
 		glfwSwapBuffers(window);
@@ -199,9 +201,9 @@ void Do_Movement()
 
 	// LOD autocircle speed control
 	if (keys[GLFW_KEY_H])
-		circleSpeed ++;
+		circleSpeed++;
 	if (keys[GLFW_KEY_G])
-		if (circleSpeed > 0) circleSpeed --;
+		if (circleSpeed > 0) circleSpeed--;
 }
 
 void wireframe(DefaultRenderer * renderer)
@@ -249,5 +251,5 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	camera->processZoom(yoffset/100.f);
+	camera->processZoom(yoffset / 100.f);
 }

@@ -124,7 +124,8 @@ int main()
 	landMarkMesh->generateLandmark();
 
 	// Octree
-	Terrain terrain(heightMap, camera, NBCHUNK, 2);
+	VoxelOctreeLOD lod(5, 4, 100, false);
+	Terrain terrain(heightMap, camera, lod, NBCHUNK, 2);
 
 	Object *root = new Object();
 	terrain.addMeshesToObject(root);

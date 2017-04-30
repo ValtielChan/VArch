@@ -127,6 +127,7 @@
       <Filter>Src</Filter>
     </ClCompile>
     <ClCompile Include="src\OrbitalManipulator.cpp" />
+    <ClCompile Include="src\Skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Noise.h">
@@ -247,5 +248,6 @@
       <Filter>Include\Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\OrbitalManipulator.h" />
+    <ClInclude Include="src\Skybox.h" />
   </ItemGroup>
 </Project>
