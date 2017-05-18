@@ -66,6 +66,7 @@ public:
 
 	void setManipulator(CameraManipulator* manipulator);
 	void setSensitivity(float sensitivity) { m_mouseSensitivity = sensitivity; }
+	void setSpeed(float speed) { m_movementSpeed = speed; }
 
 	// Update
 	void updateProjectionMatrix();

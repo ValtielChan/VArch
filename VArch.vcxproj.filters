@@ -128,6 +128,7 @@
     </ClCompile>
     <ClCompile Include="src\OrbitalManipulator.cpp" />
     <ClCompile Include="src\Skybox.cpp" />
+    <ClCompile Include="src\SkyboxMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Noise.h">
@@ -249,5 +250,6 @@
     </ClInclude>
     <ClInclude Include="src\OrbitalManipulator.h" />
     <ClInclude Include="src\Skybox.h" />
+    <ClInclude Include="src\SkyboxMaterial.h" />
   </ItemGroup>
 </Project>

@@ -34,7 +34,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-#define OCTREE_DEPTH 7
+#define OCTREE_DEPTH 5
+#define NB_CHUNK 5
 
 // Properties
 GLuint screenWidth = 1600, screenHeight = 900;
@@ -48,7 +49,7 @@ void wireframe(DefaultRenderer * renderer);
 void stopSelection();
 
 // Camera
-Camera* camera = new Camera((float)screenWidth, (float)screenHeight, 0.01f, 1000.f, 0.90f);
+Camera* camera = new Camera((float)screenWidth, (float)screenHeight, 0.01f, 100000.f, 0.90f);
 
 bool keys[1024];
 GLfloat lastX = 400, lastY = 300;
@@ -98,7 +99,8 @@ int main()
 
 	OrbitalManipulator* orbitalManipulator = new OrbitalManipulator(camera);
 	camera->setManipulator(orbitalManipulator);
-	camera->setSensitivity(0.1f);
+	camera->setSensitivity(.5f);
+	camera->setSpeed(100);
 
 	// Set material textures
 	PhongMaterial *mat = new PhongMaterial();
@@ -110,10 +112,10 @@ int main()
 	SelfIlluminMaterial *SIMat = new SelfIlluminMaterial();
 
 	// HeightMap
-	NoiseProperties np = NoiseProperties(0.4, 0.5, 8);
-	CubeMap cubeMap(pow(2, OCTREE_DEPTH));
+	NoiseProperties np = NoiseProperties(NB_CHUNK * 0.3, 0.5, 4);
+	CubeMap cubeMap(pow(2, OCTREE_DEPTH) * NB_CHUNK * 2);
 	cubeMap.generateSimplex(np);
-	cubeMap.transformInterval(-0.5f, -0.3f);
+	//cubeMap.transformInterval(-0.5f, 0.5f);
 
 	// Light
 	DirectionalLight* light = new DirectionalLight;
@@ -127,10 +129,13 @@ int main()
 
 	// Planet
 	ColorTable colorTable = ColorTable::Nature(128);
-	Planet planet(cubeMap, colorTable, OCTREE_DEPTH);
+	Planet planet(cubeMap, colorTable, OCTREE_DEPTH, NB_CHUNK);
 
 	Object *root = new Object();
 	planet.addMeshesToObject(root);
+
+	root->transform.setScale(glm::vec3(10));
+	// Diametre equivalent to earth : 3678
 
 	Object *landMark = new Object();
 	landMark->addComponent(landMarkMesh);

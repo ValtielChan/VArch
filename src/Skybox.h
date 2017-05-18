@@ -1,16 +1,24 @@
-#pragma once
+#ifndef SKYBOX_H
+#define SKYBOX_H
+
+class Mesh;
 
 // GLEW
 #define GLEW_STATIC
 #include <GL/glew.h>
 
+// STL
 #include <vector>
 
-class Skybox
+// VArch
+#include "Object.h"
+
+class Skybox : public Object
 {
 private:
 
 	GLuint m_texture;
+	Mesh* m_mesh;
 	std::vector<const GLchar*> m_faces;
 
 public:
@@ -20,3 +28,4 @@ public:
 	void Skybox::loadCubemap();
 };
 
+#endif // SKYBOX_H

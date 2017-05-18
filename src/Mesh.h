@@ -44,6 +44,7 @@ public:
 
 	Mesh();
 	Mesh(Material *material);
+	Mesh(std::vector<Vertex> vertices, Material *material);
 	Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, Material *material);
 	~Mesh();
 
@@ -66,6 +67,7 @@ public:
 	void normalizePositions(glm::vec3 norm);
 	void projectToSphere(Side side);
 	void translate(glm::vec3 translation);
+	void scale(glm::vec3 scale);
 	void rotate(glm::vec3 rotation);
 
 	int sizeOf();

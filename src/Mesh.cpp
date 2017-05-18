@@ -25,6 +25,14 @@ Mesh::Mesh(Material *material) : m_material(material)
 	//generateCube(1.f, glm::vec3(1, 2, 3), glm::vec3(.5f));
 }
 
+Mesh::Mesh(std::vector<Vertex> vertices, Material *material)
+	: m_vertices(vertices),
+	m_material(material)
+{
+	glGenVertexArrays(1, &m_VAO);
+	glGenBuffers(1, &m_VBO);
+}
+
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, Material *material)
 	: m_vertices(vertices),
 	m_indices(indices),
@@ -66,13 +74,18 @@ void Mesh::update(glm::mat4 model)
 void Mesh::draw()
 {
 	glBindVertexArray(m_VAO);
-	glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
+
+	if (m_indices.size() > 0) // if EBO is set
+		glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
+	else
+		glDrawArrays(GL_TRIANGLES, 0, m_vertices.size());
+
 	glBindVertexArray(0);
 }
 
 void Mesh::updateGL()
 {
-	if (m_vertices.size() > 0 && m_indices.size() > 0) {
+	if (m_vertices.size() > 0) {
 
 		glBindVertexArray(m_VAO);
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
@@ -80,9 +93,11 @@ void Mesh::updateGL()
 		glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(Vertex),
 			&m_vertices[0], GL_STATIC_DRAW);
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(GLuint),
-			&m_indices[0], GL_STATIC_DRAW);
+		if (m_indices.size() > 0) {
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(GLuint),
+				&m_indices[0], GL_STATIC_DRAW);
+		}
 
 		// Vertex Positions
 		glEnableVertexAttribArray(0);
@@ -426,6 +441,15 @@ void Mesh::translate(glm::vec3 translation)
 {
 	for (auto it = m_vertices.begin(); it != m_vertices.end(); it++) {
 		(*it).position = (*it).position + translation;
+	}
+
+	updateGL();
+}
+
+void Mesh::scale(glm::vec3 scale)
+{
+	for (auto it = m_vertices.begin(); it != m_vertices.end(); it++) {
+		(*it).position = (*it).position * scale;
 	}
 
 	updateGL();

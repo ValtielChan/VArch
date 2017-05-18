@@ -4,11 +4,15 @@
 #include "Renderer.h"
 
 class Scene;
+class Skybox;
+class Camera;
 
 class DefaultRenderer : public Renderer
 {
 private:
 	Scene* m_scene;
+	Camera* m_camera;
+	Skybox* m_skybox;
 
 public:
 	DefaultRenderer(Scene* scene);
@@ -16,6 +20,7 @@ public:
 
 	void render();
 	void lightPass();
+	void skyboxPass();
 	void setWireframe(bool active);
 };
 

@@ -440,12 +440,6 @@ void VoxelOctree::buildTriangles()
 
 	if (selected) {
 
-		std::vector<OctreePosition> path;
-		path.push_back(UP_RIGHT_BACK); path.push_back(DOWN_RIGHT_BACK); path.push_back(DOWN_LEFT_BACK);
-		
-		/*if (debugIsPath(path))
-			goto exception;*/
-
 		if (deeper) {
 
 			for (int i = 0; i < 8; i++)
@@ -867,7 +861,7 @@ void VoxelOctree::countExistingVoxel(int &count)
 
 int VoxelOctree::sizeOf()
 {
-	return m_vertices.size() * sizeof(int) + sizeof(*this) + m_mesh->sizeOf();
+	return m_vertices.size() * sizeof(int) + sizeof(*this);// +m_mesh->sizeOf();
 }
 
 void VoxelOctree::addVertices()

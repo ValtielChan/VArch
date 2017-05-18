@@ -49,6 +49,7 @@
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\Shaders.cpp" />
     <ClCompile Include="src\Skybox.cpp" />
+    <ClCompile Include="src\SkyboxMaterial.cpp" />
     <ClCompile Include="src\Terrain.cpp" />
     <ClCompile Include="src\Texture1D_3F.cpp" />
     <ClCompile Include="src\Texture1D_4I.cpp" />
@@ -89,6 +90,7 @@
     <ClInclude Include="src\Shaders.h" />
     <ClInclude Include="src\Singleton.h" />
     <ClInclude Include="src\Skybox.h" />
+    <ClInclude Include="src\SkyboxMaterial.h" />
     <ClInclude Include="src\Terrain.h" />
     <ClInclude Include="src\Texture1D.h" />
     <ClInclude Include="src\Texture1D_4I.h" />

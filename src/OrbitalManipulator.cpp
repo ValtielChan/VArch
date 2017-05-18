@@ -39,10 +39,16 @@ void OrbitalManipulator::processLook(float xoffset, float yoffset, bool constrai
 	m_camera->transform.translate(-m_camera->right() * xoffset);
 
 	glm::vec3 front = glm::normalize(glm::vec3(0) - m_camera->transform.position());
-	m_camera->transform.setPosition(-front * m_radius);
 
-	m_camera->updateVectors(front);
-	m_camera->updateViewMatrix();
+	if (front.y < 0.99f && front.y > -0.99f) {
+		m_camera->transform.setPosition(-front * m_radius);
+		m_camera->updateVectors(front);
+		m_camera->updateViewMatrix();
+	}
+	else { // Cancel Translation
+		m_camera->transform.translate(m_camera->up() * yoffset);
+		m_camera->transform.translate(m_camera->right() * xoffset);
+	}
 }
 
 void OrbitalManipulator::updateCameraPosition()

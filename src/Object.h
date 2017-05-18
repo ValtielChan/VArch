@@ -24,7 +24,7 @@ public:
 	Transform transform;
 
 	Object() {}
-	~Object() {}
+	virtual ~Object() {}
 
 	void update();
 	void voidUpdate();

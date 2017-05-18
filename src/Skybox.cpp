@@ -1,22 +1,84 @@
-#include "Skybox.h"
 #include <SOIL.h>
 
+#include "Skybox.h"
+#include "Mesh.h"
+#include "SkyboxMaterial.h"
 
 Skybox::Skybox()
 {
-	m_faces.push_back("ressources\\right.jpg");
-	m_faces.push_back("ressources\\left.jpg");
-	m_faces.push_back("ressources\\top.jpg");
-	m_faces.push_back("ressources\\bottom.jpg");
-	m_faces.push_back("ressources\\back.jpg");
-	m_faces.push_back("ressources\\front.jpg");
+	std::cout << "Build Skybox" << std::endl;
+
+	// Load images
+
+	m_faces.push_back("ressources/right.png");
+	m_faces.push_back("ressources/left.png");
+	m_faces.push_back("ressources/up.png");
+	m_faces.push_back("ressources/down.png");
+	m_faces.push_back("ressources/back.png");
+	m_faces.push_back("ressources/front.png");
 
 	loadCubemap();
-}
 
+	// Material
+
+	SkyboxMaterial *mat = new SkyboxMaterial();
+	mat->cubemap = m_texture;
+
+	// VAO & Mesh Setup
+
+	std::vector<Vertex> vertices;
+     
+	vertices.push_back(Vertex(glm::vec3(-1.0f,  1.0f, -1.0f)));
+	vertices.push_back(Vertex(glm::vec3(-1.0f, -1.0f, -1.0f)));
+	vertices.push_back(Vertex(glm::vec3(1.0f, -1.0f, -1.0f)));
+	vertices.push_back(Vertex(glm::vec3(1.0f, -1.0f, -1.0f)));
+	vertices.push_back(Vertex(glm::vec3(1.0f,  1.0f, -1.0f)));
+	vertices.push_back(Vertex(glm::vec3(-1.0f,  1.0f, -1.0f)));
+
+	vertices.push_back(Vertex(glm::vec3(-1.0f, -1.0f,  1.0f)));
+	vertices.push_back(Vertex(glm::vec3(-1.0f, -1.0f, -1.0f)));
+	vertices.push_back(Vertex(glm::vec3(-1.0f,  1.0f, -1.0f)));
+	vertices.push_back(Vertex(glm::vec3(-1.0f,  1.0f, -1.0f)));
+	vertices.push_back(Vertex(glm::vec3(-1.0f,  1.0f,  1.0f)));
+	vertices.push_back(Vertex(glm::vec3(-1.0f, -1.0f,  1.0f)));
+
+	vertices.push_back(Vertex(glm::vec3(1.0f, -1.0f, -1.0f)));
+	vertices.push_back(Vertex(glm::vec3(1.0f, -1.0f,  1.0f)));
+	vertices.push_back(Vertex(glm::vec3(1.0f,  1.0f,  1.0f)));
+	vertices.push_back(Vertex(glm::vec3(1.0f,  1.0f,  1.0f)));
+	vertices.push_back(Vertex(glm::vec3(1.0f,  1.0f, -1.0f)));
+	vertices.push_back(Vertex(glm::vec3(1.0f, -1.0f, -1.0f)));
+
+	vertices.push_back(Vertex(glm::vec3(-1.0f, -1.0f,  1.0f)));
+	vertices.push_back(Vertex(glm::vec3(-1.0f,  1.0f,  1.0f)));
+	vertices.push_back(Vertex(glm::vec3(1.0f,  1.0f,  1.0f)));
+	vertices.push_back(Vertex(glm::vec3(1.0f,  1.0f,  1.0f)));
+	vertices.push_back(Vertex(glm::vec3(1.0f, -1.0f,  1.0f)));
+	vertices.push_back(Vertex(glm::vec3(-1.0f, -1.0f,  1.0f)));
+
+	vertices.push_back(Vertex(glm::vec3(-1.0f,  1.0f, -1.0f)));
+	vertices.push_back(Vertex(glm::vec3(1.0f,  1.0f, -1.0f)));
+	vertices.push_back(Vertex(glm::vec3(1.0f,  1.0f,  1.0f)));
+	vertices.push_back(Vertex(glm::vec3(1.0f,  1.0f,  1.0f)));
+	vertices.push_back(Vertex(glm::vec3(-1.0f,  1.0f,  1.0f)));
+	vertices.push_back(Vertex(glm::vec3(-1.0f,  1.0f, -1.0f)));
+
+	vertices.push_back(Vertex(glm::vec3(-1.0f, -1.0f, -1.0f)));
+	vertices.push_back(Vertex(glm::vec3(-1.0f, -1.0f,  1.0f)));
+	vertices.push_back(Vertex(glm::vec3(1.0f, -1.0f, -1.0f)));
+	vertices.push_back(Vertex(glm::vec3(1.0f, -1.0f, -1.0f)));
+	vertices.push_back(Vertex(glm::vec3(-1.0f, -1.0f,  1.0f)));
+	vertices.push_back(Vertex(glm::vec3(1.0f, -1.0f,  1.0f)));
+
+	m_mesh = new Mesh(vertices, mat);
+	m_mesh->updateGL();
+
+	addComponent(m_mesh);
+}
 
 Skybox::~Skybox()
 {
+	delete(m_mesh);
 }
 
 void Skybox::loadCubemap()

@@ -1,8 +1,11 @@
 #include "Object.h"
 
 #include "Component.h"
+#include "Skybox.h"
 
 void Object::update() {
+
+	Skybox* s = dynamic_cast<Skybox*>(this);
 
 	for (Component* c : m_components)
 		c->update(transform.model());

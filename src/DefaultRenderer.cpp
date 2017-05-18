@@ -4,9 +4,11 @@
 #include "Camera.h"
 #include "Light.h"
 #include "Shaders.h"
+#include "Skybox.h"
 
 DefaultRenderer::DefaultRenderer(Scene* scene) : Renderer(), m_scene(scene) {
 
+	m_skybox = new Skybox();
 }
 
 void DefaultRenderer::render() {
@@ -16,10 +18,14 @@ void DefaultRenderer::render() {
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		Camera* camera = m_scene->getCamera();
-		camera->useMVP();
+		m_camera = m_scene->getCamera();
 
-		camera->update();
+		glDepthMask(GL_FALSE);
+		skyboxPass();
+		glDepthMask(GL_TRUE);
+
+		m_camera->useMVP();
+		m_camera->update();
 
 		lightPass();
 
@@ -38,6 +44,16 @@ void DefaultRenderer::lightPass() {
 			light->setLightUniform(shader);
 		}
 	}
+}
+
+void DefaultRenderer::skyboxPass()
+{
+	MVP* mvp = MVP::getInstance();
+
+	mvp->setView(glm::mat4(glm::mat3(m_camera->view())));
+	mvp->setProjection(m_camera->projection());
+
+	m_skybox->update();
 }
 
 void DefaultRenderer::setWireframe(bool active)
