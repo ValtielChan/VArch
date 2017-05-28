@@ -6,12 +6,16 @@
 #include "NormalMap.h"
 #include "Camera.h"
 
+#include <algorithm>
+
 VoxelOctree::VoxelOctree(VoxelOctreeLOD& lod, glm::vec3 worldCenter, float voxelSize)
 	: m_voxelSize(voxelSize), 
 	m_worldCenter(worldCenter),
 	m_depth(0),
 	m_lod(lod)
 {
+	srand(time(NULL));
+
 	m_parent = nullptr;
 
 	selected = false;
@@ -77,6 +81,9 @@ VoxelOctree::~VoxelOctree()
 {
 	for (int i = 0; i < 8; i++)
 		delete m_cells[i];
+
+	if (!m_parent)
+		delete m_mesh;
 }
 
 VoxelOctree* VoxelOctree::getCell(OctreePosition position)
@@ -347,6 +354,86 @@ abort:
 	if (!m_parent) // Only root print the whole bench result
 		std::cout << "[BENCH] VoxelOctree::buildTerrain() : " << ((float)t) << " ms" << std::endl;
 #endif
+}
+
+void VoxelOctree::buildSphere(glm::vec3 center, float radius, glm::vec3 color)
+{
+	// Intersection test of each child for subdivide
+
+	float halfSize = m_voxelSize / 2.0f;
+	glm::vec3 voxelCenter = m_worldCenter;
+
+	float r = radius;
+	glm::vec3 C1 = glm::vec3(voxelCenter.x - halfSize, voxelCenter.y - halfSize, voxelCenter.z - halfSize);
+	glm::vec3 C2 = glm::vec3(voxelCenter.x + halfSize, voxelCenter.y + halfSize, voxelCenter.z + halfSize);;
+	glm::vec3 S = center;
+
+	float r2 = r * r;
+
+	if (S.x < C1.x) r2 -= pow(S.x - C1.x, 2);
+	else if (S.x > C2.x) r2 -= pow(S.x - C2.x, 2);
+	if (S.y < C1.y) r2 -= pow(S.y - C1.y, 2) * 2;
+	else if (S.y > C2.y) r2 -= pow(S.y - C2.y, 2) * 2;
+	if (S.z < C1.z) r2 -= pow(S.z - C1.z, 2) * 2;
+	else if (S.z > C2.z) r2 -= pow(S.z - C2.z, 2) * 2;
+
+	if (r2 > 0) {
+
+		if (m_depth < m_lod.maxDepth) {
+
+			if (!haveChilds())
+				subdivide();
+
+			for (int i = 0; i < 8; i++)
+				m_cells[i]->buildSphere(center, radius, color);
+		}
+				
+		exist = true;
+		for (int i : m_vertices) {
+			ref_vertices->at(i).color = color;
+		}
+	}
+	
+}
+
+void VoxelOctree::buildEllipsoid(glm::vec3 center, glm::vec3 dimensions, glm::vec3 color)
+{
+	// Intersection test of each child for subdivide
+
+	float halfSize = m_voxelSize / 2.0f;
+	glm::vec3 voxelCenter = m_worldCenter;
+
+	float r = std::max(dimensions.x, std::max(dimensions.y, dimensions.z));
+	glm::vec3 C1 = glm::vec3(voxelCenter.x - halfSize, voxelCenter.y - halfSize, voxelCenter.z - halfSize);
+	glm::vec3 C2 = glm::vec3(voxelCenter.x + halfSize, voxelCenter.y + halfSize, voxelCenter.z + halfSize);;
+	glm::vec3 S = center;
+
+	float r2 = r * r;
+
+	if (S.x < C1.x) r2 -= pow(S.x - C1.x, 2) * (r / dimensions.x);
+	else if (S.x > C2.x) r2 -= pow(S.x - C2.x, 2) * (r / dimensions.x);
+	if (S.y < C1.y) r2 -= pow(S.y - C1.y, 2) * (r / dimensions.y);
+	else if (S.y > C2.y) r2 -= pow(S.y - C2.y, 2) * (r / dimensions.y);
+	if (S.z < C1.z) r2 -= pow(S.z - C1.z, 2) * (r / dimensions.z);
+	else if (S.z > C2.z) r2 -= pow(S.z - C2.z, 2) * (r / dimensions.z);
+
+	if (r2 > 0) {
+
+		if (m_depth < m_lod.maxDepth) {
+
+			if (!haveChilds())
+				subdivide();
+
+			for (int i = 0; i < 8; i++)
+				m_cells[i]->buildEllipsoid(center, dimensions, color);
+		}
+
+		exist = true;
+		for (int i : m_vertices) {
+			ref_vertices->at(i).color = color;
+		}
+	}
+
 }
 
 void VoxelOctree::select(Camera* camera)

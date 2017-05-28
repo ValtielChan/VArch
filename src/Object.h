@@ -31,6 +31,7 @@ public:
 	std::vector<Object*> getChilds();
 	void addChild(Object* child);
 	void addComponent(Component* c);
+	void clearComponents() { m_components.clear(); }
 	bool isActive();
 	void setActive(bool active);
 };

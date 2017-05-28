@@ -19,92 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Camera.cpp" />
-    <ClCompile Include="src\ColorTable.cpp" />
-    <ClCompile Include="src\ComputeShaderTexture.cpp" />
-    <ClCompile Include="src\CubeMap.cpp" />
-    <ClCompile Include="src\DefaultRenderer.cpp" />
-    <ClCompile Include="src\DirectionalLight.cpp" />
-    <ClCompile Include="src\DisplacementPhongMaterial.cpp" />
-    <ClCompile Include="src\Drawable.cpp" />
-    <ClCompile Include="src\Exception.cpp" />
-    <ClCompile Include="src\FrameBufferObject.cpp" />
-    <ClCompile Include="src\FreeCam.cpp" />
-    <ClCompile Include="src\HeightMap.cpp" />
-    <ClCompile Include="src\HeightMapFilter.cpp" />
-    <ClCompile Include="src\Light.cpp" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Mesh.cpp" />
-    <ClCompile Include="src\MVP.cpp" />
-    <ClCompile Include="src\Noise.cpp" />
-    <ClCompile Include="src\NormalMap.cpp" />
-    <ClCompile Include="src\Object.cpp" />
-    <ClCompile Include="src\OrbitalManipulator.cpp" />
-    <ClCompile Include="src\PhongMaterial.cpp" />
-    <ClCompile Include="src\Planet.cpp" />
-    <ClCompile Include="src\QTNode.cpp" />
-    <ClCompile Include="src\Renderer.cpp" />
-    <ClCompile Include="src\Scene.cpp" />
-    <ClCompile Include="src\SelfIlluminMaterial.cpp" />
-    <ClCompile Include="src\Shader.cpp" />
-    <ClCompile Include="src\Shaders.cpp" />
-    <ClCompile Include="src\Skybox.cpp" />
-    <ClCompile Include="src\SkyboxMaterial.cpp" />
-    <ClCompile Include="src\Terrain.cpp" />
-    <ClCompile Include="src\Texture1D_3F.cpp" />
-    <ClCompile Include="src\Texture1D_4I.cpp" />
-    <ClCompile Include="src\TextureRGB.cpp" />
-    <ClCompile Include="src\Tree.cpp" />
-    <ClCompile Include="src\VoxelOctree.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\Camera.h" />
-    <ClInclude Include="src\ColorTable.h" />
-    <ClInclude Include="src\Component.h" />
-    <ClInclude Include="src\ComputeShaderTexture.h" />
-    <ClInclude Include="src\CubeMap.h" />
-    <ClInclude Include="src\DefaultRenderer.h" />
-    <ClInclude Include="src\DirectionalLight.h" />
-    <ClInclude Include="src\DisplacementPhongMaterial.h" />
-    <ClInclude Include="src\Drawable.h" />
-    <ClInclude Include="src\enum.h" />
-    <ClInclude Include="src\Exception.h" />
-    <ClInclude Include="src\FrameBufferObject.h" />
-    <ClInclude Include="src\FreeCam.h" />
-    <ClInclude Include="src\HeightMap.h" />
-    <ClInclude Include="src\HeightMapFilter.h" />
-    <ClInclude Include="src\Light.h" />
-    <ClInclude Include="src\Material.h" />
-    <ClInclude Include="src\Mesh.h" />
-    <ClInclude Include="src\MVP.h" />
-    <ClInclude Include="src\Noise.h" />
-    <ClInclude Include="src\NormalMap.h" />
-    <ClInclude Include="src\Object.h" />
-    <ClInclude Include="src\OrbitalManipulator.h" />
-    <ClInclude Include="src\PhongMaterial.h" />
-    <ClInclude Include="src\Planet.h" />
-    <ClInclude Include="src\QTNode.h" />
-    <ClInclude Include="src\Renderer.h" />
-    <ClInclude Include="src\Scene.h" />
-    <ClInclude Include="src\SelfIlluminMaterial.h" />
-    <ClInclude Include="src\Shader.h" />
-    <ClInclude Include="src\Shaders.h" />
-    <ClInclude Include="src\Singleton.h" />
-    <ClInclude Include="src\Skybox.h" />
-    <ClInclude Include="src\SkyboxMaterial.h" />
-    <ClInclude Include="src\Terrain.h" />
-    <ClInclude Include="src\Texture1D.h" />
-    <ClInclude Include="src\Texture1D_4I.h" />
-    <ClInclude Include="src\Texture1D_3F.h" />
-    <ClInclude Include="src\Texture2D.h" />
-    <ClInclude Include="src\TextureRGB.h" />
-    <ClInclude Include="src\Transform.h" />
-    <ClInclude Include="src\Tree.h" />
-    <ClInclude Include="src\VoxelOctree.h" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{40CD7850-BF53-42AD-BA5C-DCC98519F044}</ProjectGuid>
-    <RootNamespace>VArch</RootNamespace>
+    <ProjectGuid>{1F849948-4644-4B25-A841-DF32EC6B9847}</ProjectGuid>
+    <RootNamespace>Tree</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -122,13 +41,13 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -154,7 +73,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <SourcePath>$(VC_SourcePath);</SourcePath>
-    <IncludePath>$(SolutionDir)\libs\glm;$(SolutionDir)\libs\glfw-3.2.bin.WIN64\include;$(SolutionDir)\libs\glew-1.13.0\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\src;$(SolutionDir)\libs\glm;$(SolutionDir)\libs\glfw-3.2.bin.WIN64\include;$(SolutionDir)\libs\glew-1.13.0\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\libs\glew-1.13.0\lib\Release\x64;$(SolutionDir)\libs\glfw-3.2.bin.WIN64\lib-vc2015;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -162,8 +81,8 @@
     <LibraryPath>$(ProjectDir)\libs\glfw-3.2.bin.WIN32\lib-vc2015;$(ProjectDir)\libs\glew-1.13.0\lib\Release\Win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)\libs\glm;$(SolutionDir)\libs\glfw-3.2.bin.WIN64\include;$(SolutionDir)\libs\glew-1.13.0\include;$(SolutionDir)\libs\SOIL\src;$(SolutionDir)\src;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)\libs\SOIL\lib;$(ProjectDir)\libs\glew-1.13.0\lib\Release\x64;$(ProjectDir)\libs\glfw-3.2.bin.WIN64\lib-vc2015;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\src;$(SolutionDir)\libs\glm;$(SolutionDir)\libs\glfw-3.2.bin.WIN64\include;$(SolutionDir)\libs\glew-1.13.0\include;$(SolutionDir)\libs\SOIL\src;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\x64\Release;$(SolutionDir)\libs\glew-1.13.0\lib\Release\x64;$(SolutionDir)\libs\glfw-3.2.bin.WIN64\lib-vc2015;$(SolutionDir)\libs\SOIL\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -214,7 +133,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32s.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32s.lib;SOIL.lib;VArch.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -12,7 +12,7 @@
 #include "enum.h"
 #include "Mesh.h"
 
-//#define BENCHMARK
+#define BENCHMARK
 
 class TextureRGB;
 class NormalMap;
@@ -105,6 +105,7 @@ public:
 	Mesh* mesh() { return m_mesh; }
 	float voxelSize() { return m_voxelSize; }
 	OctreePosition relativePosition() { return m_relativePosition; }
+	glm::vec3 worldCenter() { return m_worldCenter; }
 	glm::vec3 rootWorldPosition();
 
 	/// <summary>
@@ -130,9 +131,19 @@ public:
 	void build();
 
 	/// <summary>
-	/// build with heightmap
+	/// build terrain according to heightmap, normal map & colormap
 	/// </summary>
 	void buildTerrain(HeightMap* hm, TextureRGB* colorMap = nullptr, NormalMap* normalMap = nullptr);
+
+	/// <summary>
+	/// build a sphere
+	/// </summary>
+	void buildSphere(glm::vec3 center, float radius, glm::vec3 color = glm::vec3(1));
+
+	/// <summary>
+	/// build an ellipsoid
+	/// </summary>
+	void buildEllipsoid(glm::vec3 center, glm::vec3 dimensions, glm::vec3 color = glm::vec3(1));
 
 	/// <summary>
 	/// select the cells according to certains conditions
