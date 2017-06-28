@@ -26,7 +26,7 @@ public:
 	Object() {}
 	virtual ~Object() {}
 
-	void update();
+	void update(Shader* shader = NULL);
 	void voidUpdate();
 	std::vector<Object*> getChilds();
 	void addChild(Object* child);

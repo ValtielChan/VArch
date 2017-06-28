@@ -57,10 +57,11 @@ void Mesh::update()
 	draw();
 }
 
-void Mesh::update(glm::mat4 model)
+void Mesh::update(glm::mat4 model, Shader * shader)
 {
+	if (shader == NULL)
+		shader = m_material->getShader();
 
-	Shader* shader = m_material->getShader();
 	shader->use();
 
 	MVP::getInstance()->setModel(model);

@@ -3,15 +3,13 @@
 #include "Component.h"
 #include "Skybox.h"
 
-void Object::update() {
-
-	Skybox* s = dynamic_cast<Skybox*>(this);
+void Object::update(Shader* shader) {
 
 	for (Component* c : m_components)
-		c->update(transform.model());
+		c->update(transform.model(), shader);
 
 	for (Object* child : m_childs)
-		child->update();
+		child->update(shader);
 }
 
 void Object::voidUpdate() {

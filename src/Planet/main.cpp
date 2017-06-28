@@ -17,6 +17,7 @@
 #include "Camera.h"
 #include "MVP.h"
 #include "DirectionalLight.h"
+#include "PointLight.h"
 #include "Mesh.h"
 #include "DisplacementPhongMaterial.h"
 #include "PhongMaterial.h"
@@ -34,7 +35,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-#define OCTREE_DEPTH 5
+#define OCTREE_DEPTH 4
 #define NB_CHUNK 5
 
 // Properties
@@ -93,7 +94,7 @@ int main()
 	// Setup some OpenGL options
 	glEnable(GL_DEPTH_TEST);
 
-	// Camera
+	// Camera ==========================================
 	camera->transform.setPosition(glm::vec3(16.3f, 10.7f, -6.5f));
 	camera->transform.setRotation(glm::vec3(-40.f, 124.f, 0.f));
 
@@ -102,7 +103,12 @@ int main()
 	camera->setSensitivity(.5f);
 	camera->setSpeed(100);
 
-	// Set material textures
+	// Scene ==========================================
+
+	Object *root = new Object();
+	Scene scene = Scene(root, camera);
+
+	// Set material ==========================================
 	PhongMaterial *mat = new PhongMaterial();
 	mat->ambient = glm::vec3(1);
 	mat->diffuse = glm::vec3(1);
@@ -111,31 +117,34 @@ int main()
 
 	SelfIlluminMaterial *SIMat = new SelfIlluminMaterial();
 
-	// HeightMap
+	// HeightMap ==========================================
 	NoiseProperties np = NoiseProperties(NB_CHUNK * 0.3, 0.5, 4);
 	CubeMap cubeMap(pow(2, OCTREE_DEPTH) * NB_CHUNK * 2);
 	cubeMap.generateSimplex(np);
 	//cubeMap.transformInterval(-0.5f, 0.5f);
 
-	// Light
+	// Light ==========================================
 	DirectionalLight* light = new DirectionalLight;
-	light->direction = glm::vec3(0.f, -1, 0.f);
-	light->diffuse = glm::vec3(1);
+	light->direction = glm::vec3(-1.f, -1, 0.f);
+	light->diffuse = glm::vec3(.3f);
 	//light->transform.translate(glm::vec3(0, 2, 0));
 
+	PointLight* pointLight = new PointLight;
+	pointLight->position = glm::vec3(20, 20, 20);
+	pointLight->diffuse = glm::vec3(1, .5f, .5f);
+
+	PointLight* pointLight2 = new PointLight;
+	pointLight2->position = glm::vec3(20, -20, 20);
+	pointLight2->diffuse = glm::vec3(0, 0.5, 1);
+
+	scene.addLight(light);
+	//scene.addLight(pointLight);
+	//scene.addLight(pointLight2);
+
+	// LandMark ==========================================
 	Mesh* refCube = new Mesh(mat);
 	Mesh* landMarkMesh = new Mesh(SIMat);
 	landMarkMesh->generateLandmark();
-
-	// Planet
-	ColorTable colorTable = ColorTable::Nature(128);
-	Planet planet(cubeMap, colorTable, OCTREE_DEPTH, NB_CHUNK);
-
-	Object *root = new Object();
-	planet.addMeshesToObject(root);
-
-	root->transform.setScale(glm::vec3(10));
-	// Diametre equivalent to earth : 3678
 
 	Object *landMark = new Object();
 	landMark->addComponent(landMarkMesh);
@@ -144,16 +153,31 @@ int main()
 
 	root->addChild(landMark);
 
-	// Scene
-	Scene scene = Scene(root, camera);
-	scene.addLight(light);
+	// Planet ==========================================
+	ColorTable colorTable = ColorTable::Nature(128);
+	Planet planet(cubeMap, colorTable, OCTREE_DEPTH, NB_CHUNK);
+
+	
+	planet.addMeshesToObject(root);
+
+	root->transform.setScale(glm::vec3(10));
+	// Diametre equivalent to earth : 3678
+
+	Mesh* cubeMesh = new Mesh();
+	cubeMesh->generateCube(2, glm::vec3(0), glm::vec3(0.5));
+	Object* cube = new Object();
+	cube->addComponent(cubeMesh);
+	cube->transform.setScale(glm::vec3(100));
+	cube->transform.translate(glm::vec3(0, -200, 0));
+
+	root->addChild(cube);
+
+	// Renderer ==========================================
 
 	DefaultRenderer renderer(&scene);
 	renderer.setWireframe(false);
 
 	Shaders::getInstance()->useShader(BuiltInShader::PHONG);
-
-	int demulti = 0;
 
 	// Game loop
 	while (!glfwWindowShouldClose(window))
@@ -171,15 +195,7 @@ int main()
 
 		//light->direction = camera->front();
 
-		if (!stopSelect) {
-
-			demulti = 0;
-		}
-
-		demulti++;
-
 		renderer.render();
-		//renderer.renderToQuad(terrain.colorMap()->genGLTexture());
 
 		// Swap the buffers
 		glfwSwapBuffers(window);

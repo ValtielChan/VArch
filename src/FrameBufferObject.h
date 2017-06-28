@@ -11,21 +11,25 @@ class FrameBufferObject
 {
 private:
 
+	int m_width;
+	int m_height;
+
 	GLuint m_framebuffer;
-	GLuint m_colorBuffer;
+	GLuint m_texture;
 	GLuint m_renderBuffer;
 
 public:
 
-	FrameBufferObject(int width, int height);
+	FrameBufferObject(int width, int height, GLuint internalFormat, GLenum format, GLenum type, GLenum attachement);
 	~FrameBufferObject();
 
 	void bind();
 	void unbind();
+	void createRenderBuffer();
 	void deleteFrameBuffer();
 
 	GLuint frameBuffer() { return m_framebuffer; }
-	GLuint colorBuffer() { return m_colorBuffer; }
+	GLuint texture() { return m_texture; }
 	GLuint renderBuffer() { return m_renderBuffer; }
 };
 

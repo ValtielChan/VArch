@@ -12,7 +12,7 @@
 #include "enum.h"
 #include "Mesh.h"
 
-#define BENCHMARK
+//#define BENCHMARK
 
 class TextureRGB;
 class NormalMap;

@@ -18,7 +18,7 @@ public:
 
 	void update();
 	void voidUpdate();
-	virtual void setLightUniform(Shader* shader);
+	virtual void setLightUniform(Shader* shader, int index = 0);
 
 private:
 

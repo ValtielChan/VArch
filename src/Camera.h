@@ -53,6 +53,9 @@ public:
 	void processZoom(float yoffset);
 
 	// Getter/Setter
+	int screenWidth() { return m_screenWidth; }
+	int screenHeight() { return m_screenHeight; }
+
 	float nearPlane() { return m_nearPlane; }
 	float farPlane() { return m_farPlane; }
 	float zoom() { return m_zoom; }

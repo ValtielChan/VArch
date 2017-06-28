@@ -12,7 +12,7 @@ public:
 	DirectionalLight();
 	~DirectionalLight();
 
-	void setLightUniform(Shader* shader);
+	void setLightUniform(Shader* shader, int index = 0);
 
 private:
 

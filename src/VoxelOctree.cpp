@@ -26,9 +26,9 @@ VoxelOctree::VoxelOctree(VoxelOctreeLOD& lod, glm::vec3 worldCenter, float voxel
 	m_mesh = new Mesh();
 
 	PhongMaterial* mat = new PhongMaterial();
-	//mat->ambient = glm::vec3(1);
-	//mat->diffuse = glm::vec3(1);
-	//mat->specular = glm::vec3(1);
+	mat->ambient = glm::vec3(1);
+	mat->diffuse = glm::vec3(1);
+	mat->specular = glm::vec3(1);
 	mat->shininess = 1;
 
 	m_mesh->setMaterial(mat);
@@ -82,8 +82,8 @@ VoxelOctree::~VoxelOctree()
 	for (int i = 0; i < 8; i++)
 		delete m_cells[i];
 
-	if (!m_parent)
-		delete m_mesh;
+	/*if (!m_parent)
+		delete m_mesh;*/
 }
 
 VoxelOctree* VoxelOctree::getCell(OctreePosition position)

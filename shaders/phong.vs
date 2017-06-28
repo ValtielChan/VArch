@@ -8,12 +8,15 @@ layout (location = 3) in vec3 color;
 out vec3 Normal;
 out vec2 TexCoords;
 out vec3 FragPos;
+out vec4 FragPosLightSpace;
 out vec3 Color;
 out vec4 DebugColor;
 
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+
+uniform mat4 lightSpaceMatrix;
 
 void main()
 {
@@ -23,6 +26,8 @@ void main()
 
     TexCoords = texCoord;
     Color = color;
+
+    FragPosLightSpace = lightSpaceMatrix * vec4(FragPos, 1.0);
 
     DebugColor = vec4(0, 0, 1, 1);
 } 

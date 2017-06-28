@@ -126,10 +126,19 @@
     <ClCompile Include="src\VoxelOctree.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="src\OrbitalManipulator.cpp" />
-    <ClCompile Include="src\Skybox.cpp" />
-    <ClCompile Include="src\SkyboxMaterial.cpp" />
-    <ClCompile Include="src\Tree.cpp" />
+    <ClCompile Include="src\OrbitalManipulator.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Skybox.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SkyboxMaterial.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tree.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PointLight.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Noise.h">
@@ -249,9 +258,18 @@
     <ClInclude Include="src\Component.h">
       <Filter>Include\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="src\OrbitalManipulator.h" />
-    <ClInclude Include="src\Skybox.h" />
-    <ClInclude Include="src\SkyboxMaterial.h" />
-    <ClInclude Include="src\Tree.h" />
+    <ClInclude Include="src\Tree.h">
+      <Filter>Include\Voxel</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SkyboxMaterial.h">
+      <Filter>Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\OrbitalManipulator.h">
+      <Filter>Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Skybox.h">
+      <Filter>Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PointLight.h" />
   </ItemGroup>
 </Project>

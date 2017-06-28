@@ -7,6 +7,8 @@ uniform sampler2D screenTexture;
 void main()
 { 
 	vec4 texel = texture(screenTexture, TexCoords);
+	float depth = texture(screenTexture, TexCoords).r;
+
     color = vec4(texel.x, texel.y, texel.z, 1);
-    //color = vec4(1, 0, 1, 1);
+    //color = vec4(vec3(depth), 1);
 }

@@ -27,7 +27,7 @@ void Light::voidUpdate()
 	// Must do nothing
 }
 
-void Light::setLightUniform(Shader* shader) 
+void Light::setLightUniform(Shader* shader, int index)
 {
 	shader->setUniform3f("light.position", transform.position());
 	shader->setUniform3f("light.ambient", ambient);

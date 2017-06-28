@@ -1,24 +1,25 @@
 #include "DefaultRenderer.h"
 
 #include "Scene.h"
-#include "Camera.h"
-#include "Light.h"
+#include "PointLight.h"
 #include "Shaders.h"
 #include "Skybox.h"
+#include "FrameBufferObject.h"
 
 DefaultRenderer::DefaultRenderer(Scene* scene) : Renderer(), m_scene(scene) {
 
 	m_skybox = new Skybox();
+	m_camera = m_scene->getCamera();
 }
 
 void DefaultRenderer::render() {
 
 	if (m_scene) {
 
+		shadowPass();
+
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		m_camera = m_scene->getCamera();
 
 		glDepthMask(GL_FALSE);
 		skyboxPass();
@@ -33,16 +34,79 @@ void DefaultRenderer::render() {
 	}
 }
 
+void DefaultRenderer::shadowPass()
+{
+	// Light space matrix
+	float near_plane = 1.f, far_plane = 1000.f;
+	float frustum = 500.f;
+	glm::mat4 lightProjection = glm::ortho(-frustum, frustum, -frustum, frustum, near_plane, far_plane);
+
+	glm::mat4 lightView = glm::lookAt(glm::vec3(20, 20, 0),
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 1.0f, 0.0f));
+
+	Shader *depthShader = Shaders::getInstance()->getShader(BuiltInShader::DEPTH);
+	depthShader->use();
+
+	MVP::getInstance()->setView(lightView);
+	MVP::getInstance()->setProjection(lightProjection);
+
+	// Render to FBO
+	if (!m_shadowMap)
+		m_shadowMap = new FrameBufferObject(1024, 1024, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT, GL_DEPTH_ATTACHMENT);
+
+	m_shadowMap->bind();
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	// Render
+	m_scene->getRoot()->update(depthShader);
+
+	m_shadowMap->unbind();
+	resetViewport();
+
+	// Set unforms for the real render
+	glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_shadowMap->texture());
+
+	std::vector<Shader*> shaders = Shaders::getInstance()->getShaders();
+	for (Shader* shader : shaders) {
+
+		shader->use();
+
+		shader->setUniform1i("shadowMap", 0);
+		shader->setUniformMatrix4fv("lightSpaceMatrix", lightSpaceMatrix);
+	}
+
+	// Debug purpose
+	renderToQuad(m_shadowMap->texture());
+}
+
 void DefaultRenderer::lightPass() {
 
 	std::vector<Shader*> shaders = Shaders::getInstance()->getShaders();
 
-	for (Light* light : m_scene->getLights()) {
+	int pointLightIndex = 0;
 
-		for (Shader* shader : shaders) {
+	// Set all light uniforms for each shader
+	for (Shader* shader : shaders) {
+
+		for (Light* light : m_scene->getLights()) {
+
+			PointLight* pl = dynamic_cast<PointLight*>(light);
+
 			shader->use();
-			light->setLightUniform(shader);
+
+			light->setLightUniform(shader, pointLightIndex);
+
+			// If pointLight type, increment index
+			if (pl != NULL) 
+				pointLightIndex++;
 		}
+
+		shader->setUniform1i("nbPointLights", pointLightIndex);
+		pointLightIndex = 0;
 	}
 }
 

@@ -16,6 +16,7 @@
 #include "Component.h"
 
 class Material;
+class Shader;
 
 struct Vertex {
 
@@ -52,7 +53,7 @@ public:
 	std::vector<GLuint>* getIndices() { return &m_indices; }
 
 	void update();
-	void update(glm::mat4 model);
+	void update(glm::mat4 model, Shader* shader = NULL);
 
 	void setMaterial(Material* material) { m_material = material; }
 

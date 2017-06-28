@@ -49,7 +49,7 @@ void Planet::createPlanetSide(Side side)
 	for (int x = 0; x < m_nbChunk; x++) {
 		for (int z = 0; z < m_nbChunk; z++) {
 
-			std::cout << "New Chunk" << std::endl;
+			//std::cout << "New Chunk" << std::endl;
 
 			int hmStep = heightMap->width() / m_nbChunk;
 
