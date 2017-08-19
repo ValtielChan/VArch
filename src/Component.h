@@ -7,7 +7,7 @@ class Component {
 
 public:
 	Component() {}
-	~Component() {}
+	virtual ~Component() {}
 
 	virtual void update() = 0;
 	virtual void update(glm::mat4 model, Shader* shader = NULL) {}

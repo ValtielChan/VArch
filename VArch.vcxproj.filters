@@ -69,9 +69,6 @@
     <ClCompile Include="src\Light.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="src\main.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
     <ClCompile Include="src\Mesh.cpp">
       <Filter>Src</Filter>
     </ClCompile>

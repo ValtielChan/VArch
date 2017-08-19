@@ -45,6 +45,11 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, Material *
 
 Mesh::~Mesh()
 {
+	std::cout << "~Mesh" << std::endl;
+
+	m_vertices.clear();
+	m_indices.clear();
+
 	glDeleteVertexArrays(1, &m_VAO);
 	glDeleteBuffers(1, &m_VBO);
 	glDeleteBuffers(1, &m_EBO);

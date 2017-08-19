@@ -10,5 +10,5 @@ void main()
 	float depth = texture(screenTexture, TexCoords).r;
 
     color = vec4(texel.x, texel.y, texel.z, 1);
-    //color = vec4(vec3(depth), 1);
+    color = vec4(vec3(depth), 1);
 }

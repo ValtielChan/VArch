@@ -1,10 +1,17 @@
 ﻿  main.cpp
-c:\users\metaldiamond\documents\visual studio 2015\projects\varch\src\Mesh.h(55): error C2061: syntax error: identifier 'Shader'
 C:\Users\MetalDiamond\Documents\Visual Studio 2015\Projects\VArch\src\PhongMaterial.h(19): warning C4305: 'argument': truncation from 'double' to 'const float'
 C:\Users\MetalDiamond\Documents\Visual Studio 2015\Projects\VArch\src\Noise.h(7): warning C4099: 'NoiseProperties': type name first seen using 'class' now seen using 'struct'
   C:\Users\MetalDiamond\Documents\Visual Studio 2015\Projects\VArch\src\Noise.h(7): note: see declaration of 'NoiseProperties'
 C:\Users\MetalDiamond\Documents\Visual Studio 2015\Projects\VArch\src\HeightMap.h(19): warning C4005: 'EXCEPTION_ID': macro redefinition
   c:\users\metaldiamond\documents\visual studio 2015\projects\varch\src\Texture2D.h(9): note: see previous definition of 'EXCEPTION_ID'
+main.cpp(136): error C2440: '<function-style-cast>': cannot convert from 'initializer list' to 'Scene'
+  main.cpp(136): note: No constructor could take the source type, or constructor overload resolution was ambiguous
+main.cpp(136): error C2248: 'Scene::Scene': cannot access private member declared in class 'Scene'
+  C:\Users\MetalDiamond\Documents\Visual Studio 2015\Projects\VArch\src\Scene.h(29): note: see declaration of 'Scene::Scene'
+  C:\Users\MetalDiamond\Documents\Visual Studio 2015\Projects\VArch\src\DefaultRenderer.h(8): note: see declaration of 'Scene'
+main.cpp(139): error C2664: 'DefaultRenderer::DefaultRenderer(const DefaultRenderer &)': cannot convert argument 1 from 'Scene *' to 'const DefaultRenderer &'
+  main.cpp(139): note: Reason: cannot convert from 'Scene *' to 'const DefaultRenderer'
+  main.cpp(139): note: No constructor could take the source type, or constructor overload resolution was ambiguous
 main.cpp(148): warning C4244: 'initializing': conversion from 'double' to 'GLfloat', possible loss of data
 main.cpp(245): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
 main.cpp(246): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data

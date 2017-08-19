@@ -32,7 +32,7 @@ Terrain::Terrain(HeightMap* heightMap, Camera* camera, VoxelOctreeLOD& octreeLOD
 			TextureRGB* cm = m_colorMap->getPart(glm::vec2(z * hmStep, x * hmStep), glm::vec2((z + 1) * hmStep, (x + 1) * hmStep));
 			NormalMap* nm = m_normalMap->getPart(glm::vec2(z * hmStep, x * hmStep), glm::vec2((z + 1) * hmStep, (x + 1) * hmStep));
 
-			m_chunks.back()->buildTerrain(hm, cm, nm);
+			m_chunks.back()->buildTerrain(hm, cm, NULL);
 			
 			m_chunks.back()->rootUpdateNeighbors();
 		}

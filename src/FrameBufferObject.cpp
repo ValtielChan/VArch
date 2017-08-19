@@ -12,17 +12,20 @@ FrameBufferObject::FrameBufferObject(int width, int height, GLuint internalForma
 	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 	//glBindTexture(GL_TEXTURE_2D, 0);
 
 	// Attach it to currently bound framebuffer object
 	glFramebufferTexture2D(GL_FRAMEBUFFER, attachement, GL_TEXTURE_2D, m_texture, 0);
 
-	//if (attachement == GL_DEPTH_ATTACHMENT) {
+	if (attachement == GL_DEPTH_ATTACHMENT) {
 		glDrawBuffer(GL_NONE);
 		glReadBuffer(GL_NONE);
-	//}
+
+		float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+	}
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;

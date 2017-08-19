@@ -2,12 +2,14 @@
 
 #include "Scene.h"
 #include "PointLight.h"
+#include "DirectionalLight.h"
 #include "Shaders.h"
 #include "Skybox.h"
 #include "FrameBufferObject.h"
 
-DefaultRenderer::DefaultRenderer(Scene* scene) : Renderer(), m_scene(scene) {
+DefaultRenderer::DefaultRenderer() : Renderer() {
 
+	m_scene = Scene::getInstance();
 	m_skybox = new Skybox();
 	m_camera = m_scene->getCamera();
 }
@@ -16,9 +18,11 @@ void DefaultRenderer::render() {
 
 	if (m_scene) {
 
+		/*glCullFace(GL_FRONT);
 		shadowPass();
+		glCullFace(GL_BACK);*/
 
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClearColor(0.1f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glDepthMask(GL_FALSE);
@@ -37,11 +41,23 @@ void DefaultRenderer::render() {
 void DefaultRenderer::shadowPass()
 {
 	// Light space matrix
-	float near_plane = 1.f, far_plane = 1000.f;
-	float frustum = 500.f;
+	float near_plane = 1.f, far_plane = 50.f;
+	float frustum = 10.f;
 	glm::mat4 lightProjection = glm::ortho(-frustum, frustum, -frustum, frustum, near_plane, far_plane);
 
-	glm::mat4 lightView = glm::lookAt(glm::vec3(20, 20, 0),
+	// Get the only dir light
+	glm::vec3 lightDir;
+
+	for (Light* light : m_scene->getLights()) {
+
+		DirectionalLight* dl = dynamic_cast<DirectionalLight*>(light);
+
+		if (dl != NULL) {
+			lightDir = (dl->direction * -1.0f) * 10.0f;
+		}
+	}
+
+	glm::mat4 lightView = glm::lookAt(lightDir,
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -53,7 +69,7 @@ void DefaultRenderer::shadowPass()
 
 	// Render to FBO
 	if (!m_shadowMap)
-		m_shadowMap = new FrameBufferObject(1024, 1024, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT, GL_DEPTH_ATTACHMENT);
+		m_shadowMap = new FrameBufferObject(10240, 10240, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT, GL_DEPTH_ATTACHMENT);
 
 	m_shadowMap->bind();
 	glClear(GL_DEPTH_BUFFER_BIT);

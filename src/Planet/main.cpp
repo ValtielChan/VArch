@@ -50,7 +50,8 @@ void wireframe(DefaultRenderer * renderer);
 void stopSelection();
 
 // Camera
-Camera* camera = new Camera((float)screenWidth, (float)screenHeight, 0.01f, 100000.f, 0.90f);
+//Camera* camera = new Camera((float)screenWidth, (float)screenHeight, 0.01f, 100000.f, 0.90f);
+Camera* camera = Scene::getInstance()->getCamera();
 
 bool keys[1024];
 GLfloat lastX = 400, lastY = 300;
@@ -99,14 +100,13 @@ int main()
 	camera->transform.setRotation(glm::vec3(-40.f, 124.f, 0.f));
 
 	OrbitalManipulator* orbitalManipulator = new OrbitalManipulator(camera);
-	camera->setManipulator(orbitalManipulator);
+	//camera->setManipulator(orbitalManipulator);
 	camera->setSensitivity(.5f);
 	camera->setSpeed(100);
 
 	// Scene ==========================================
 
-	Object *root = new Object();
-	Scene scene = Scene(root, camera);
+	Scene* scene = Scene::getInstance();//Scene(root, camera);
 
 	// Set material ==========================================
 	PhongMaterial *mat = new PhongMaterial();
@@ -125,8 +125,8 @@ int main()
 
 	// Light ==========================================
 	DirectionalLight* light = new DirectionalLight;
-	light->direction = glm::vec3(-1.f, -1, 0.f);
-	light->diffuse = glm::vec3(.3f);
+	light->direction = glm::vec3(-1, -1, -1);
+	light->diffuse = glm::vec3(.5f);
 	//light->transform.translate(glm::vec3(0, 2, 0));
 
 	PointLight* pointLight = new PointLight;
@@ -137,7 +137,7 @@ int main()
 	pointLight2->position = glm::vec3(20, -20, 20);
 	pointLight2->diffuse = glm::vec3(0, 0.5, 1);
 
-	scene.addLight(light);
+	scene->addLight(light);
 	//scene.addLight(pointLight);
 	//scene.addLight(pointLight2);
 
@@ -151,33 +151,49 @@ int main()
 
 	//landMark->transform.translate(glm::vec3(-1, -1, -1));
 
-	root->addChild(landMark);
+	//root->addChild(landMark);
 
 	// Planet ==========================================
 	ColorTable colorTable = ColorTable::Nature(128);
 	Planet planet(cubeMap, colorTable, OCTREE_DEPTH, NB_CHUNK);
 
 	
-	planet.addMeshesToObject(root);
+	planet.addMeshesToObject(scene->getRoot());
 
-	root->transform.setScale(glm::vec3(10));
 	// Diametre equivalent to earth : 3678
 
+	// Cubes
 	Mesh* cubeMesh = new Mesh();
-	cubeMesh->generateCube(2, glm::vec3(0), glm::vec3(0.5));
+	cubeMesh->generateCube(2, glm::vec3(0), glm::vec3(0.8));
 	Object* cube = new Object();
 	cube->addComponent(cubeMesh);
-	cube->transform.setScale(glm::vec3(100));
-	cube->transform.translate(glm::vec3(0, -200, 0));
+	cube->transform.setScale(glm::vec3(20, 0.1f, 20));
+	cube->transform.translate(glm::vec3(0, 0, 0));
 
-	root->addChild(cube);
+	scene->addObject(cube);
+
+	cubeMesh = new Mesh();
+	cubeMesh->generateCube(2, glm::vec3(0), glm::vec3(1, 0, 0));
+	cube = new Object();
+	cube->addComponent(cubeMesh);
+	cube->transform.translate(glm::vec3(5, 1, 5));
+
+	scene->addObject(cube);
+
+	cubeMesh = new Mesh();
+	cubeMesh->generateCube(2, glm::vec3(0), glm::vec3(0, 0, 1));
+	cube = new Object();
+	cube->addComponent(cubeMesh);
+	cube->transform.translate(glm::vec3(5, 2, -5));
+
+	scene->addObject(cube);
 
 	// Renderer ==========================================
 
-	DefaultRenderer renderer(&scene);
-	renderer.setWireframe(false);
+	DefaultRenderer* renderer = DefaultRenderer::getInstance();// (&scene);
+	renderer->setWireframe(false);
 
-	Shaders::getInstance()->useShader(BuiltInShader::PHONG);
+	//Shaders::getInstance()->useShader(BuiltInShader::PHONG);
 
 	// Game loop
 	while (!glfwWindowShouldClose(window))
@@ -190,12 +206,12 @@ int main()
 		// Check and call events
 		glfwPollEvents();
 		Do_Movement();
-		wireframe(&renderer);
+		wireframe(renderer);
 		stopSelection();
 
-		//light->direction = camera->front();
+		light->direction = glm::normalize(camera->front() + glm::vec3(0.5, 0, 0));
 
-		renderer.render();
+		renderer->render();
 
 		// Swap the buffers
 		glfwSwapBuffers(window);

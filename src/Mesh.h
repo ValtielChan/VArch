@@ -59,7 +59,7 @@ public:
 
 	void draw();
 	void updateGL();
-	void generateCube(float size, glm::vec3 offset, glm::vec3 color);
+	void generateCube(float size = 1.0f, glm::vec3 offset = glm::vec3(0, 0, 0), glm::vec3 color = glm::vec3(0.5, 0.5, 0.5));
 	void generateLandmark();
 
 	glm::vec3 getMax();

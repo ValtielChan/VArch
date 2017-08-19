@@ -53,8 +53,8 @@ public:
 	void processZoom(float yoffset);
 
 	// Getter/Setter
-	int screenWidth() { return m_screenWidth; }
-	int screenHeight() { return m_screenHeight; }
+	int screenWidth() { return (int)m_screenWidth; }
+	int screenHeight() { return (int)m_screenHeight; }
 
 	float nearPlane() { return m_nearPlane; }
 	float farPlane() { return m_farPlane; }
@@ -66,7 +66,9 @@ public:
 	glm::vec3 up() { return m_up; }
 	glm::mat4 view() { return m_view; }
 	glm::mat4 projection() { return m_projection; }
+	CameraManipulator* cameraManipulator() { return m_manipulator; }
 
+	void setScreenSize(float width, float height);
 	void setManipulator(CameraManipulator* manipulator);
 	void setSensitivity(float sensitivity) { m_mouseSensitivity = sensitivity; }
 	void setSpeed(float speed) { m_movementSpeed = speed; }

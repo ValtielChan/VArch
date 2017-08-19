@@ -24,7 +24,7 @@ public:
 	Transform transform;
 
 	Object() {}
-	virtual ~Object() {}
+	virtual ~Object();
 
 	void update(Shader* shader = NULL);
 	void voidUpdate();

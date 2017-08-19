@@ -98,6 +98,14 @@ void Camera::processZoom(float yoffset)
 	std::cout << "Zooming : " << m_zoom << std::endl;
 }
 
+void Camera::setScreenSize(float width, float height)
+{
+	m_screenWidth = width;
+	m_screenHeight = height;
+
+	updateProjectionMatrix();
+}
+
 void Camera::setManipulator(CameraManipulator * manipulator)
 {
 	m_manipulator = manipulator;

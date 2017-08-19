@@ -166,6 +166,8 @@ int main()
 
 		renderer.render();
 
+		light->direction = camera->front();
+
 		terrain->getIndices()->clear();
 		node.resetSelection();
 		// Auto position selection

@@ -3,6 +3,18 @@
 #include "Component.h"
 #include "Skybox.h"
 
+Object::~Object()
+{
+	std::cout << "~Object" << std::endl;
+
+	for (Component* c : m_components) {
+		delete(c);
+	}
+
+	for (Object* child : m_childs)
+		delete(child);
+}
+
 void Object::update(Shader* shader) {
 
 	for (Component* c : m_components)

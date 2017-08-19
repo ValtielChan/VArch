@@ -33,7 +33,6 @@
     <ClCompile Include="src\HeightMap.cpp" />
     <ClCompile Include="src\HeightMapFilter.cpp" />
     <ClCompile Include="src\Light.cpp" />
-    <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\MVP.cpp" />
     <ClCompile Include="src\Noise.cpp" />

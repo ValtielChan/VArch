@@ -3,23 +3,31 @@
 
 #include <vector>
 
+#include "Singleton.h"
+
 class Object;
 class Camera;
 class Light;
 
-class Scene
+class Scene : public Singleton<Scene>
 {
+
+	friend class Singleton<Scene>;
+
 public:
-	Scene(Object* root, Camera* camera);
-	~Scene();
-
+	
 	void addLight(Light* light);
-
 	std::vector<Light*> getLights() { return m_lights; }
 	Camera* getCamera() { return m_camera; }
 	Object* getRoot() { return m_root; }
+	void addObject(Object* object);
+
+	void clearScene();
 
 private:
+
+	Scene();
+	~Scene();
 
 	Object* m_root;
 	Camera* m_camera;

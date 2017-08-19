@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VArch", "VArch.vcxproj", "{40CD7850-BF53-42AD-BA5C-DCC98519F044}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Octree", "src\Octree\Octree.vcxproj", "{40CD7850-BF53-42AD-BA5C-DCC98519F045}"
+	ProjectSection(ProjectDependencies) = postProject
+		{40CD7850-BF53-42AD-BA5C-DCC98519F044} = {40CD7850-BF53-42AD-BA5C-DCC98519F044}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Quadtree", "src\Quadtree\Quadtree.vcxproj", "{40CD7850-BF53-42AD-BA5C-DCC98519F046}"
 	ProjectSection(ProjectDependencies) = postProject

@@ -108,14 +108,14 @@ int main()
 	SelfIlluminMaterial *SIMat = new SelfIlluminMaterial();
 
 	// HeightMap
-	NoiseProperties np = NoiseProperties(1, 1, 4);
+	NoiseProperties np = NoiseProperties(2, 0.5f, 4);
 	HeightMap* heightMap = new HeightMap(NBCHUNK * 150, NBCHUNK * 150);
 	heightMap->generateSimplex(&np);
 	heightMap->transformInterval(-1.f, 0.f);
 
 	// Light
 	DirectionalLight* light = new DirectionalLight;
-	light->direction = glm::vec3(.5f, -1, .5f);
+	light->direction = glm::vec3(1.f, -0.5, 1.f);
 	light->diffuse = glm::vec3(1);
 	//light->transform.translate(glm::vec3(0, 2, 0));
 
