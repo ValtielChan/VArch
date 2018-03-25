@@ -26,4 +26,13 @@ Rectangle {
         anchors.verticalCenter: parent.verticalCenter
         anchors.top: parent.top
     }
+
+    PlanetPanel {
+        id: planetPanel
+        x: 799
+        y: 0
+        anchors.right: proceduralPanel.left
+        anchors.rightMargin: 0
+        visible: true
+    }
 }

@@ -19,6 +19,14 @@ Item {
         anchors.top: parent.top
         anchors.topMargin: 6
         sourceImage: "../icons/worlwide.svg"
+
+        MouseArea {
+	        anchors.fill: parent
+	        
+	        onClicked: {
+	            planetPanel.visible = true;
+	        }
+	    }
     }
 
     ImageButton {
