@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.3.1, 2017-08-19T22:02:41. -->
+<!-- Written by QtCreator 4.5.2, 2018-03-25T18:27:43. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -177,7 +177,7 @@
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">VArch</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">VArch2</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:C:/Users/MetalDiamond/Documents/Visual Studio 2015/Projects/VArch/VArch_Desktop/VArch/VArch.pro</value>
     <value type="bool" key="QmakeProjectManager.QmakeRunConfiguration.UseLibrarySearchPath">true</value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.CommandLineArguments"></value>

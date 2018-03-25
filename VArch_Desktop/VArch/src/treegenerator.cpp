@@ -1,48 +1,38 @@
-#include <Planet.h>
+#include <Tree.h>
 #include <Scene.h>
 #include <Mesh.h>
 #include <DirectionalLight.h>
 #include <OrbitalManipulator.h>
-#include <Noise.h>
 
-#include "planetgenerator.h"
+#include "treegenerator.h"
 #include "ui_mainwindow.h"
 #include <QMainWindow>
 
-PlanetGenerator::PlanetGenerator(Ui::MainWindow* ui) : ref_ui(ui)
+TreeGenerator::TreeGenerator(Ui::MainWindow *ui) : ref_ui(ui)
 {
 
 }
 
-PlanetGenerator::~PlanetGenerator()
+TreeGenerator::~TreeGenerator()
 {
 
 }
 
-void PlanetGenerator::generatePlanet()
+void TreeGenerator::generateTree()
 {
     ref_ui->openGLWidget->makeCurrent();
 
     // Get UI form datas ==
 
-    // Perlin noise
-    float frequency = ref_ui->frequency->value();
-    float scale = ref_ui->scale->value();
-    int octaves = ref_ui->octaves->value();
+    TreeParameters treeParams(
+                ref_ui->trunkWidth->value(),
+                ref_ui->trunkHeight->value(),
+                ref_ui->nbBranches->value()
+            );
 
-    // Properties
-    int nbChunk = ref_ui->nbChunk->value();
-    int depth = ref_ui->depth->value();
-    float meshScale = ref_ui->meshScale->value();
+    VoxelOctreeLOD lod(7, 4, 20, false);
 
-    // Planet generation ==
-
-    NoiseProperties np = NoiseProperties(frequency * nbChunk, scale, octaves);
-    CubeMap cubeMap(pow(2, depth) * nbChunk * 2);
-    cubeMap.generateSimplex(np);
-
-    ColorTable colorTable = ColorTable::Nature(128);
-    m_planet = new Planet (cubeMap, colorTable, depth, nbChunk);
+    m_tree = new Tree(treeParams, lod);
 
     // (Re)Build scene ==
 
@@ -62,8 +52,9 @@ void PlanetGenerator::generatePlanet()
     light->direction = glm::vec3(-1, -1, -1);
     light->diffuse = glm::vec3(.5f);
 
+    Mesh* treeMesh = m_tree->mesh();
     Object* object = new Object();
-    m_planet->addMeshesToObject(object);
+    object->addComponent(treeMesh);
 
     scene->addObject(object);
     scene->addLight(light);

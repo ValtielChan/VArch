@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core opengl gui
+QT       += quick core opengl gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -33,12 +33,42 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     src/openglwidget.cpp \
-    src/planetgenerator.cpp
+    src/planetgenerator.cpp \
+    src/treegenerator.cpp \
+    src/cameraconfig.cpp \
+    src/cameraconfig.cpp \
+    src/openglwidget.cpp \
+    src/planetgenerator.cpp \
+    src/treegenerator.cpp \
+    main.cpp \
+    mainwindow.cpp
 
 HEADERS += \
         mainwindow.h \
     src/openglwidget.h \
-    src/planetgenerator.h
+    src/planetgenerator.h \
+    src/treegenerator.h \
+    src/cameraconfig.h \
+    src/cameraconfig.h \
+    src/openglwidget.h \
+    src/planetgenerator.h \
+    src/treegenerator.h \
+    mainwindow.h
 
 FORMS += \
         mainwindow.ui
+
+win32: RC_ICONS += icon.ico
+
+RESOURCES += resources.qrc
+
+DISTFILES += \
+    qml/ImageButton.qmlc \
+    qml/ProceduralPanel.qmlc \
+    qml/VArch.qmlc \
+    qml/qmldir \
+    qml/ImageButton.qml \
+    qml/PlanetPanel.qml \
+    qml/ProceduralPanel.qml \
+    qml/VArch.qml \
+    qml/VColors.qml

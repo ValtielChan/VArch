@@ -133,11 +133,12 @@ int main()
 	root->addChild(landMark);
 
 	// Scene
-	Scene scene = Scene(root, camera);
-	scene.addLight(light);
+	Scene *scene = Scene::getInstance(); //Scene(root, camera);
+	scene->setCamera(camera);
+	scene->addLight(light);
 
-	DefaultRenderer renderer(&scene);
-	renderer.setWireframe(false);
+	DefaultRenderer* renderer = DefaultRenderer::getInstance();
+	renderer->setWireframe(false);
 
 	Shaders::getInstance()->useShader(BuiltInShader::PHONG);
 
@@ -152,7 +153,7 @@ int main()
 		// Check and call events
 		glfwPollEvents();
 		Do_Movement();
-		wireframe(&renderer);
+		wireframe(renderer);
 		changeLODDepth();
 
 		tree->select(camera);
@@ -170,7 +171,7 @@ int main()
 			std::cout << "Mesh Size : " << tree->mesh()->sizeOf() / 1000000 << "Mo" << std::endl;
 		}
 
-		renderer.render();
+		renderer->render();
 
 		// Swap the buffers
 		glfwSwapBuffers(window);

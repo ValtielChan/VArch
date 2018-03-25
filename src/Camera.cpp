@@ -108,6 +108,9 @@ void Camera::setScreenSize(float width, float height)
 
 void Camera::setManipulator(CameraManipulator * manipulator)
 {
+	if (m_manipulator != nullptr)
+		delete m_manipulator;
+
 	m_manipulator = manipulator;
 }
 

@@ -4,6 +4,8 @@
 #include <QMainWindow>
 
 class PlanetGenerator;
+class TreeGenerator;
+class CameraConfig;
 
 namespace Ui {
 class MainWindow;
@@ -21,6 +23,9 @@ private:
     Ui::MainWindow *ui;
 
     PlanetGenerator* m_planetGenerator;
+    TreeGenerator* m_treeGenerator;
+
+    CameraConfig* m_cameraConfig;
 };
 
 #endif // MAINWINDOW_H

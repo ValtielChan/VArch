@@ -19,6 +19,7 @@ public:
 	void addLight(Light* light);
 	std::vector<Light*> getLights() { return m_lights; }
 	Camera* getCamera() { return m_camera; }
+	void setCamera(Camera* camera) { m_camera = camera; }
 	Object* getRoot() { return m_root; }
 	void addObject(Object* object);
 

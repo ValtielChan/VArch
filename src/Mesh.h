@@ -71,6 +71,8 @@ public:
 	void scale(glm::vec3 scale);
 	void rotate(glm::vec3 rotation);
 
+	void exportObj(const char* filename);
+
 	int sizeOf();
 };
 

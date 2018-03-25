@@ -56,16 +56,16 @@ public:
 	int screenWidth() { return (int)m_screenWidth; }
 	int screenHeight() { return (int)m_screenHeight; }
 
-	float nearPlane() { return m_nearPlane; }
-	float farPlane() { return m_farPlane; }
-	float zoom() { return m_zoom; }
-	float sensitivity() { return m_mouseSensitivity; }
-	float movementSpeed() { return m_movementSpeed; }
-	glm::vec3 front() { return m_front; }
-	glm::vec3 right() { return m_right; }
-	glm::vec3 up() { return m_up; }
-	glm::mat4 view() { return m_view; }
-	glm::mat4 projection() { return m_projection; }
+	float& nearPlane() { return m_nearPlane; }
+	float& farPlane() { return m_farPlane; }
+	float& zoom() { return m_zoom; }
+	float& sensitivity() { return m_mouseSensitivity; }
+	float& movementSpeed() { return m_movementSpeed; }
+	glm::vec3& front() { return m_front; }
+	glm::vec3& right() { return m_right; }
+	glm::vec3& up() { return m_up; }
+	glm::mat4& view() { return m_view; }
+	glm::mat4& projection() { return m_projection; }
 	CameraManipulator* cameraManipulator() { return m_manipulator; }
 
 	void setScreenSize(float width, float height);

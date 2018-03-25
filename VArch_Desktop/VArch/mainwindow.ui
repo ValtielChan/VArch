@@ -76,7 +76,7 @@
          <x>10</x>
          <y>30</y>
          <width>211</width>
-         <height>81</height>
+         <height>83</height>
         </rect>
        </property>
        <layout class="QFormLayout" name="formLayout">
@@ -99,7 +99,7 @@
            <double>0.100000000000000</double>
           </property>
           <property name="value">
-           <double>1.000000000000000</double>
+           <double>0.700000000000000</double>
           </property>
          </widget>
         </item>
@@ -133,7 +133,7 @@
            <number>20</number>
           </property>
           <property name="value">
-           <number>4</number>
+           <number>2</number>
           </property>
          </widget>
         </item>
@@ -146,7 +146,7 @@
         <x>10</x>
         <y>150</y>
         <width>231</width>
-        <height>311</height>
+        <height>131</height>
        </rect>
       </property>
       <property name="title">
@@ -174,6 +174,9 @@
           <property name="minimum">
            <number>1</number>
           </property>
+          <property name="value">
+           <number>3</number>
+          </property>
          </widget>
         </item>
         <item row="1" column="0">
@@ -192,7 +195,7 @@
            <number>7</number>
           </property>
           <property name="value">
-           <number>4</number>
+           <number>5</number>
           </property>
          </widget>
         </item>
@@ -212,19 +215,19 @@
         </item>
        </layout>
       </widget>
-      <widget class="QPushButton" name="pb_generatePlanet">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>270</y>
-         <width>211</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Generate</string>
-       </property>
-      </widget>
+     </widget>
+     <widget class="QPushButton" name="pb_generatePlanet">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>420</y>
+        <width>231</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Generate</string>
+      </property>
      </widget>
     </widget>
     <widget class="QWidget" name="terrainTab">
@@ -236,6 +239,104 @@
      <attribute name="title">
       <string>Tree</string>
      </attribute>
+     <widget class="QGroupBox" name="groupBox_4">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>231</width>
+        <height>121</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Properties</string>
+      </property>
+      <widget class="QWidget" name="formLayoutWidget_4">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>30</y>
+         <width>211</width>
+         <height>83</height>
+        </rect>
+       </property>
+       <layout class="QFormLayout" name="formLayout_4">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_9">
+          <property name="text">
+           <string>Trunk Width</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QDoubleSpinBox" name="trunkWidth">
+          <property name="minimum">
+           <double>0.010000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>1.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.100000000000000</double>
+          </property>
+          <property name="value">
+           <double>0.050000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_10">
+          <property name="text">
+           <string>Trunk Height</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_11">
+          <property name="text">
+           <string>Nb Branches</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QDoubleSpinBox" name="trunkHeight">
+          <property name="minimum">
+           <double>0.010000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>1.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.100000000000000</double>
+          </property>
+          <property name="value">
+           <double>0.250000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QSpinBox" name="nbBranches">
+          <property name="value">
+           <number>20</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+     <widget class="QPushButton" name="pb_generateTree">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>420</y>
+        <width>231</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Generate</string>
+      </property>
+     </widget>
     </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox">
@@ -253,7 +354,7 @@
     <property name="title">
      <string>Camera</string>
     </property>
-    <widget class="QWidget" name="formLayoutWidget_3">
+    <widget class="QWidget" name="gridLayoutWidget">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -262,15 +363,49 @@
        <height>101</height>
       </rect>
      </property>
-     <layout class="QFormLayout" name="formLayout_3">
-      <item row="0" column="0">
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="2" column="2">
+       <widget class="QLabel" name="lb_cameraSpeed">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QSlider" name="slider_cameraSensitivity">
+        <property name="maximum">
+         <number>100</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="lb_cameraSensitivity">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
        <widget class="QLabel" name="label_7">
         <property name="text">
          <string>Sensitivity</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
+      <item row="2" column="1">
+       <widget class="QSlider" name="slider_cameraSpeed">
+        <property name="maximum">
+         <number>100</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
        <widget class="QLabel" name="label_8">
         <property name="text">
          <string>Movement Speed</string>
@@ -278,16 +413,29 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QSlider" name="horizontalSlider">
+       <widget class="QSlider" name="slider_cameraFOV">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>200</number>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QSlider" name="horizontalSlider_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_12">
+        <property name="text">
+         <string>FOV</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="lb_cameraFOV">
+        <property name="text">
+         <string>TextLabel</string>
         </property>
        </widget>
       </item>

@@ -478,7 +478,46 @@ void Mesh::rotate(glm::vec3 rotation)
 	updateGL();
 }
 
+void Mesh::exportObj(const char * filename)
+{
+	std::ofstream file(filename);
 
+	if (file.is_open()) {
+
+		file << "o side\n\n";
+
+		// Positions
+		for (Vertex v : m_vertices) {
+			glm::vec3 pos = v.position;
+			file << "v " << pos.x << " " << pos.y << " " << pos.z << "\n";
+		}
+
+		// Normals
+		for (Vertex v : m_vertices) {
+			glm::vec3 normal = v.normal;
+			file << "vn " << normal.x << " " << normal.y << " " << normal.z << "\n";
+		}
+
+		// TexCoords
+		for (Vertex v : m_vertices) {
+			glm::vec2 texCoord = v.texCoord;
+			file << "vt " << texCoord.x << " " << texCoord.y << "\n";
+		}
+
+		file << "s off\n";
+
+		// Faces
+		for (int i = 0; i < m_indices.size(); i += 3) {
+			file << "f " << m_indices[i] + 1 << "/" << m_indices[i] + 1 << "/" << m_indices[i] + 1 << " "
+				<< m_indices[i + 1] + 1 << "/" << m_indices[i + 1] + 1 << "/" << m_indices[i + 1] + 1 << " "
+				<< m_indices[i + 2] + 1 << "/" << m_indices[i + 2] + 1 << "/" << m_indices[i + 2] + 1 << "\n";
+		}
+
+		file.close();
+	}
+
+	else std::cout << "Unable to open file";
+}
 
 int Mesh::sizeOf()
 {
