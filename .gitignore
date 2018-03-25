@@ -4,7 +4,9 @@ x64/Debug/
 src/Octree/x64/
 src/Planet/x64/
 src/Quadtree/x64/
+src/Tree/x64/
 src/Compute_Shaders/x64/
+VArch_Desktop\build-VArch-Desktop_Qt_5_9_1_MSVC2015_64bit-Release/
 *.opensdf
 *.sdf
 *.VC.db
